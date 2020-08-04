@@ -22,3 +22,9 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### See Store data
+```
+document.getElementsByTagName('a')[0].__vue__.$store.state
+```
+
