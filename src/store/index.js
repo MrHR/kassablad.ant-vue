@@ -8,12 +8,13 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    debug: false,
+    debug: true,
     debugUI: false,
     controllerUrl: 'https://localhost:5001/api/',
     loadingStatus: 'notLoading',
     nominations: [],
-    beginNominations: [],
+    consumptions: [],
+    consumptionCounts: [],
     visibleComponent: 'createKassabladButton',
     visibleWrapper: 'beginKassaWrapper',
     kassaContainerId: 0,
@@ -35,11 +36,24 @@ export default new Vuex.Store({
     },
     SET_NOMINATIONS (state, nominations) {
       state.nominations = nominations
-      if (this.debug) console.log('set Nominations triggered with', nominations)
+      if (this.state.debug) console.log('set Nominations triggered with', nominations)
     },
-    SET_BEGIN_NOMINATIONA (state, beginNominations) {
-      state.beginNominations = beginNominations
-      if (this.debug) console.log('set begin Nominations triggered with', beginNominations)
+    SET_CONSUMPTIONS (state, consumptions) {
+      // for (let i = 0; i < consumptions.length; i++) {
+      //   consumptions[i].aantal = 0
+      //   consumptions[i].total = 0
+      // }
+      state.consumptions = consumptions
+      if (this.state.debug) console.log('set Consumptions triggered with', consumptions)
+    },
+    SET_CONSUMPTION_COUNT (state, consumptionCount) {
+      for (var i in state.consumptions) {
+        if (state.consumptions[i].id === consumptionCount.consumptieId) {
+          state.consumptions[i].consumptieCountId = consumptionCount.id
+          break
+        }
+      }
+      this.state.consumptionCounts.push(consumptionCount)
     },
     SET_VISIBLE_COMPONENT (state, componentName) {
       state.visibleComponent = componentName
@@ -69,7 +83,6 @@ export default new Vuex.Store({
         naamTapperSluit: '',
         Errors: []
       }
-      state.beginNominations = []
     }
   },
   actions: {
@@ -77,6 +90,13 @@ export default new Vuex.Store({
       context.commit('SET_LOADING_STATUS', 'loading')
       axios.get(`${this.state.controllerUrl}nomination`).then(response => {
         context.commit('SET_NOMINATIONS', response.data)
+        context.commit('SET_LOADING_STATUS', 'notLoading')
+      })
+    },
+    fetchConsumptions (context) {
+      context.commit('SET_LOADING_STATUS', 'loading')
+      axios.get(`${this.state.controllerUrl}consumptie`).then(response => {
+        context.commit('SET_CONSUMPTIONS', response.data)
         context.commit('SET_LOADING_STATUS', 'notLoading')
       })
     },
@@ -157,15 +177,39 @@ export default new Vuex.Store({
         })
       })
     },
+    createConsumption (context, item) {
+      context.commit('SET_LOADING_STATUS', 'loading')
+      axios.post(`${this.state.controllerUrl}consumptiecount`, {
+        kassaContainerId: this.state.kassaContainerId,
+        consumptieId: item.id,
+        aantal: item.aantal
+      }).then(response => {
+        context.commit('SET_CONSUMPTION_COUNT', response.data)
+        context.commit('SET_LOADING_STATUS', 'notLoading')
+      }).catch(error => {
+        console.log('consumptie post error', error.response)
+        console.log('SET_LOADING_STATUS', 'notLoading')
+      })
+    },
+    updateConsumption (context, item) {
+      context.commit('SET_LOADING_STATUS', 'loading')
+      let objConsumptionCount = null
+      for (var i in this.state.consumptionCounts) {
+        if (this.state.consumptionCounts[i].id === item.consumptieCountId) {
+          this.state.consumptionCounts[i].aantal = item.aantal
+          objConsumptionCount = this.state.consumptionCounts[i]
+        }
+      }
+      axios.put(`${this.state.controllerUrl}consumptiecount/${objConsumptionCount.id}`, objConsumptionCount)
+        .then(response => {
+          context.commit('SET_LOADING_STATUS', 'notLoading')
+        }).catch(error => {
+          console.log('consumptie put error', error.response)
+          console.log('SET_LOADING_STATUS', 'notLoading')
+        })
+    },
     resetKassaData (context) {
       context.commit('RESET_KASSA_DATA')
-    },
-    fetchBeginNominations (context) {
-      context.commit('SET_LOADING_STATUS', 'loading')
-      axios.get(`${this.state.controllerUrl}beginnomination`).then(response => {
-        context.commit('SET_BEGIN_NOMINATIONS', response.data)
-        context.commit('SET_LOADING_STATUS', 'notLoading')
-      })
     }
   },
   getters: {

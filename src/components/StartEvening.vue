@@ -70,7 +70,7 @@
       <!--FORMPART: KASSA OPENEN-->
       <div v-if="visibleComponent ==='showNomination'">
         <!-- {{ this.kassas }} -->
-        <!-- {{ nominations }} -->
+        {{ nominations }}
           <Nomination
             v-for="(item, index) in nominations"
             v-bind:item="item"

@@ -25,6 +25,8 @@
   </div>
 </template>
 <script>
+import helperFunctions from '../../functions/helperFunctions.js'
+
 export default {
   name: 'Nomination',
   props: ['item', 'count', 'index', 'value', 'next'],
@@ -47,7 +49,7 @@ export default {
   },
   computed: {
     nomTotal: function () {
-      return ((this.item.multiplier * 100) * this.amount) / 100
+      return helperFunctions.calculatePrice(this.item.multiplier, this.aantal)
     }
   },
   mounted: function () {
@@ -65,8 +67,8 @@ export default {
     next (newValue) {
       setTimeout(() => {
         if (this.next && this.count === this.index) {
-          // console.log('next', this.next, 'item 2', this.item, 'amount 2', this.amount)
-          this.goToNextItem(this.item, this.amount)
+          // console.log('next', this.next, 'item 2', this.item, 'amount 2', this.aantal)
+          this.goToNextItem(this.item, this.aantal)
         }
       }, 10)
     }

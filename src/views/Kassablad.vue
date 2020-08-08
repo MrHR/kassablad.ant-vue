@@ -1,22 +1,22 @@
 <template>
   <div class="home">
-    <!-- <StartEvening />
-    <EndEvening /> -->
+    <StartEvening />
+    <EndEvening />
     <Consumptieblad />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-// import StartEvening from '@/components/StartEvening.vue'
-// import EndEvening from '@/components/EndEvening.vue'
+import StartEvening from '@/components/StartEvening.vue'
+import EndEvening from '@/components/EndEvening.vue'
 import Consumptieblad from '@/components/Consumptieblad.vue'
 
 export default {
   name: 'Kassablad',
   components: {
-    // StartEvening,
-    // EndEvening
+    StartEvening,
+    EndEvening,
     Consumptieblad
   }
 }

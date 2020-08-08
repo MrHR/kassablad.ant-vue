@@ -1,27 +1,84 @@
 <template>
   <div class="consumptieRow">
-    <div class="consumptie">
-      <span class="consumptieName">
-        {{ consumptieName }}
-      </span>
+    <span class="consumptieName">
+      <b>{{ consumptieName }} </b>
+    </span>
+    <span style="min-width:30px">€ {{ this.item.prijs }}</span>
+    <span>x</span>
+    <span class="consumptieAmount" style="margin-right:10px;min-width:50px;text-align:right;">
+      <!-- {{ consumptieAmount }} -->
       <a-form-model-item>
         <a-input-number
+          ref="amountInput"
           :default-value="0"
           :min="0"
           :max="1000"
           :precision="0"
-          @pressEnter="goToNextItem()"
-          @change="updateAmount()"
-          @focus="$event.target.select()"
+          v-model="consumptieAmount"
         />
       </a-form-model-item>
-    </div>
+    </span>
+    <span style="min-width:30px">=</span>
+    <span style="min-width:40px">€ {{ this.item.total }}</span>
+    <a-button-group class="consumptieButtons">
+      <a-button class="subtractConsumptie" :size="size" @click="subtractConsumptie">
+        <a-icon type="minus" />
+      </a-button>
+      <a-button class="consumptie" :size="size" @click="addConsumptie" type="primary">
+        <a-icon type="plus" />
+      </a-button>
+    </a-button-group>
   </div>
 </template>
 <script>
+import helperFunctions from '../../functions/helperFunctions.js'
+import { mapState } from 'vuex'
+
 export default {
   name: 'Consumptie',
-  props: ['consumptieName']
+  props: ['item', 'consumptieName'],
+  data () {
+    return {
+      size: null,
+      disabled: true,
+      amount: 0,
+      consumptieAmount: 0
+    }
+  },
+  computed: {
+    ...mapState(['consumptions', 'consumptionCounts'])
+  },
+  methods: {
+    addConsumptie () {
+      this.consumptieAmount += 1
+      this.item.aantal = this.consumptieAmount
+      if (!this.item.consumptieCountId) {
+        this.createConsumption(this.item)
+      } else {
+        this.updateConsumption(this.item)
+      }
+    },
+    subtractConsumptie () {
+      if (this.consumptieAmount > 0) {
+        this.consumptieAmount -= 1
+        this.item.aantal = this.consumptieAmount
+        this.updateConsumption(this.item.consumptieCountId)
+      }
+    },
+    updateConsumption (item) { // TODO: fix this shizzel just like create
+      this.$store.dispatch('updateConsumption', item)
+    },
+    createConsumption (item) {
+      this.$store.dispatch('createConsumption', item)
+    }
+  },
+  watch: {
+    consumptieAmount (newValue) {
+      this.item.aantal = newValue
+      // TODO: also update consumptionCount Array Object
+      this.item.total = helperFunctions.calculatePrice(newValue, this.item.prijs)
+    }
+  }
 }
 </script>
 <style scoped>
@@ -29,17 +86,15 @@ export default {
   display:flex;
   flex-wrap:none;
   align-items:center;
-  justify-content:center;
+  justify-content:space-between;
+  margin:10px;
+  padding:5px 5px 15px 5px;
+  border-bottom:1px solid #ccc;
+  position:relative;
 }
-.consumptieRow .consumptie {
-  background-color:rgba(0, 0, 0, 0.5);
-  color: white;
-  max-width:200px;
-  display:flex;
-  flex-wrap:none;
-  align-items:center;
-  padding:5px 20px;
-  border-radius:10px;
+.consumptieName {
+  min-width:100px;
+  text-align: left;
 }
 .consumptieRow .consumptieName {
   margin-right:20px;
