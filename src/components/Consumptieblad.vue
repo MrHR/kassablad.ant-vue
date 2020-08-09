@@ -1,8 +1,10 @@
 <template>
-  <div class="consumptieblad">
-    <b>consumptions: </b>{{ consumptions }}<br />
-    <b>totalConsumptionCost: </b>{{ totalConsumptionCost }}<br />
-    <b>cosumptionCounts: </b>{{ consumptionCounts }}<br />
+  <div  v-if="visibleWrapper === 'consumpiteWrapper'" class="consumptieblad">
+    <div v-if="this.debug">
+      <b>consumptions: </b>{{ consumptions }}<br />
+      <b>totalConsumptionCost: </b>{{ totalConsumptionCost }}<br />
+      <b>cosumptionCounts: </b>{{ consumptionCounts }}<br />
+    </div>
     <Consumptie
       v-for="(item, index) in consumptions"
       v-bind:item="item"
@@ -16,6 +18,9 @@
       </span>
       <span><b>€ {{ totalConsumptionCost }}</b></span>
     </div>
+    <a-button @click="showEinde">
+      Einde Avond
+    </a-button>
   </div>
 </template>
 <script>
@@ -38,7 +43,9 @@ export default {
   computed: {
     ...mapState([
       'consumptions',
-      'consumptionCounts'
+      'consumptionCounts',
+      'debug',
+      'visibleWrapper'
     ]),
     totalConsumptionCost: function () {
       let totalCost = 0
@@ -49,7 +56,10 @@ export default {
     }
   },
   methods: {
-    moment
+    moment,
+    showEinde () {
+      this.$store.dispatch('showWrapper', 'eindKassaWrapper')
+    }
   },
   created () {
     this.$store.dispatch('fetchConsumptions')

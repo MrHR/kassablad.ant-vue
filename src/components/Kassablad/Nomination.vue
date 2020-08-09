@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     nomTotal: function () {
-      return helperFunctions.calculatePrice(this.item.multiplier, this.aantal)
+      return helperFunctions.calculatePrice(this.item.multiplier, this.item.defaultAmount)
     }
   },
   mounted: function () {

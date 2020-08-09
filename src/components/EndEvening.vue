@@ -114,7 +114,7 @@
       <!-- FORMPART: EINDKASSA TABEL-->
       <div v-if="visibleComponent ==='showOverview'">
         <a-form-model-item>
-          <BeginKassaTable class="startEveningTableWrapper center" v-bind:nominations="nominations" />
+          <EindKassaTable class="endEveningTableWrapper center" v-bind:nominations="nominations" v-bind:beginKassaNominations="beginKassaNominations" />
           <a-button @click="next('showNomination')">
             <a-icon type="double-left" />
           </a-button>
@@ -145,14 +145,14 @@ import locale from 'ant-design-vue/es/date-picker/locale/nl_BE'
 import moment from 'moment'
 import Nomination from '@/components/Kassablad/Nomination.vue'
 import { mapState } from 'vuex'
-import BeginKassaTable from '@/components/Kassablad/BeginKassaTable.vue'
+import EindKassaTable from '@/components/Kassablad/EindKassaTable.vue'
 import CreateKassaBlad from '@/components/Kassablad/CreateKassaBlad.vue'
 
 export default {
-  name: 'StartEvening',
+  name: 'EndEvening',
   components: {
     Nomination,
-    BeginKassaTable,
+    EindKassaTable,
     CreateKassaBlad
   },
   data () {
@@ -169,6 +169,7 @@ export default {
     ...mapState([
       'debug',
       'nominations',
+      'beginKassaNominations',
       'debugUI',
       'visibleComponent',
       'visibleWrapper',
@@ -230,15 +231,18 @@ export default {
 .title {
   margin-bottom:100px;
 }
-.startEveningTableWrapper thead th {
+.endEveningTableWrapper table {
+  margin:10px 0;
+}
+.endEveningTableWrapper thead th {
   padding-top:5px;
   padding-bottom:5px;
 }
-.startEveningTableWrapper tbody td {
+.endEveningTableWrapper tbody td {
   padding-top:5px;
   padding-bottom:5px;
 }
-.startEveningTableWrapper tbody td:nth-child(2) {
+.endEveningTableWrapper tbody td:nth-child(5) {
   font-weight: bolder;
 }
 </style>

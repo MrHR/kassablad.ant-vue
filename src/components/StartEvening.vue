@@ -70,7 +70,9 @@
       <!--FORMPART: KASSA OPENEN-->
       <div v-if="visibleComponent ==='showNomination'">
         <!-- {{ this.kassas }} -->
-        {{ nominations }}
+        <div v-if="this.debug">
+          {{ nominations }}
+        </div>
           <Nomination
             v-for="(item, index) in nominations"
             v-bind:item="item"
@@ -230,6 +232,9 @@ export default {
 }
 .title {
   margin-bottom:100px;
+}
+.startEveningTableWrapper table {
+  margin:10px;
 }
 .startEveningTableWrapper thead th {
   padding-top:5px;

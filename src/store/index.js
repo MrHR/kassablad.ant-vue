@@ -8,11 +8,13 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    debug: true,
+    debug: false,
     debugUI: false,
+    debugStore: false,
     controllerUrl: 'https://localhost:5001/api/',
     loadingStatus: 'notLoading',
     nominations: [],
+    beginKassaNominations: [],
     consumptions: [],
     consumptionCounts: [],
     visibleComponent: 'createKassabladButton',
@@ -36,15 +38,19 @@ export default new Vuex.Store({
     },
     SET_NOMINATIONS (state, nominations) {
       state.nominations = nominations
-      if (this.state.debug) console.log('set Nominations triggered with', nominations)
+      if (state.debug) console.log('set Nominations triggered with', nominations)
+    },
+    SET_BEGINKASSA_NOMINATIONS (state) {
+      state.beginKassaNominations = JSON.parse(JSON.stringify(state.nominations))
+      if (state.debugStore) console.log('beginkassanominations triggered with', this.state.beginKassaNominations)
     },
     SET_CONSUMPTIONS (state, consumptions) {
-      // for (let i = 0; i < consumptions.length; i++) {
-      //   consumptions[i].aantal = 0
-      //   consumptions[i].total = 0
-      // }
+      for (let i = 0; i < consumptions.length; i++) {
+        consumptions[i].aantal = 0
+        consumptions[i].total = 0
+      }
       state.consumptions = consumptions
-      if (this.state.debug) console.log('set Consumptions triggered with', consumptions)
+      if (this.state.debugStore) console.log('set Consumptions triggered with', consumptions)
     },
     SET_CONSUMPTION_COUNT (state, consumptionCount) {
       for (var i in state.consumptions) {
@@ -163,7 +169,9 @@ export default new Vuex.Store({
           amount: el.defaultAmount
         }).then(response => {
           if (this.state.kassaType === 'begin') {
-            this.dispatch('showWrapper', 'eindKassaWrapper')
+            this.commit('SET_BEGINKASSA_NOMINATIONS')
+            this.dispatch('showWrapper', 'consumpiteWrapper')
+            // this.dispatch('showWrapper', 'eindKassaWrapper')
             this.dispatch('showComponent', 'createKassabladButton')
           } else {
             this.dispatch('showWrapper', 'beginKassaWrapper')

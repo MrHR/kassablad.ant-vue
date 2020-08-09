@@ -66,16 +66,15 @@ export default {
       }
     },
     updateConsumption (item) { // TODO: fix this shizzel just like create
-      this.$store.dispatch('updateConsumption', item)
+      this.$store.dispatch('updateConsumption', item) // update consumption in db
     },
     createConsumption (item) {
-      this.$store.dispatch('createConsumption', item)
+      this.$store.dispatch('createConsumption', item) // create consumption in db
     }
   },
   watch: {
     consumptieAmount (newValue) {
-      this.item.aantal = newValue
-      // TODO: also update consumptionCount Array Object
+      // Update Row Total
       this.item.total = helperFunctions.calculatePrice(newValue, this.item.prijs)
     }
   }
