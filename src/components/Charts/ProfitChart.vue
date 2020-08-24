@@ -1,5 +1,6 @@
 <script>
-import { Bar } from 'vue-chartjs'
+// import { Bar } from 'vue-chartjs'
+import { Line } from 'vue-chartjs'
 import { mapState } from 'vuex'
 
 var options = {
@@ -25,11 +26,16 @@ var options = {
       },
       stacked: false
     }]
+  },
+  plugins: {
+    filler: {
+      propagate: true
+    }
   }
 }
 
 export default {
-  extends: Bar,
+  extends: Line,
   computed: {
     ...mapState(['profitChartData'])
   },
