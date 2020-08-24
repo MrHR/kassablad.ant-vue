@@ -5,7 +5,7 @@
         <router-link to="/">Home</router-link> |
         <router-link to="/about">About</router-link> |
         <router-link to="/kassablad">Kassablad</router-link> |
-        <router-link to="/data">Dashboard</router-link>
+        <router-link to="/dashboard">Dashboard</router-link>
       </div>
       <router-view/>
     </div>
@@ -19,7 +19,6 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  padding:10px;
 }
 
 #nav {

@@ -23,14 +23,16 @@ export default new Vuex.Store({
     kassaContainer: {
       id: 0,
       beginUur: moment(),
-      eindUur: moment(),
+      eindUur: null,
+      dateFormat: 'DD/MM/YYYY',
       naamTapper: '',
       naamTapperSluit: '',
       Errors: []
     },
     kassaId: 0,
     kassaType: null,
-    kassas: []
+    kassas: [],
+    profitChartData: null
   },
   mutations: {
     SET_LOADING_STATUS (state, status) {
@@ -71,6 +73,9 @@ export default new Vuex.Store({
       state.kassaContainer = data
       state.kassaContainerId = data.id
     },
+    SET_PROFIT_CHART (state, data) {
+      state.profitChartData = data
+    },
     ADD_KASSA (state, data) {
       state.kassas.push(data)
       state.kassaId = data.id
@@ -103,6 +108,13 @@ export default new Vuex.Store({
       context.commit('SET_LOADING_STATUS', 'loading')
       axios.get(`${this.state.controllerUrl}consumptie`).then(response => {
         context.commit('SET_CONSUMPTIONS', response.data)
+        context.commit('SET_LOADING_STATUS', 'notLoading')
+      })
+    },
+    fetchProfitChartData (context, data = []) {
+      context.commit('SET_LOADING_STATUS', 'loading')
+      axios.get(`${this.state.controllerUrl}chart?startdate=${data.startDate}&enddate=${data.endDate}`).then(response => {
+        context.commit('SET_PROFIT_CHART', response.data)
         context.commit('SET_LOADING_STATUS', 'notLoading')
       })
     },

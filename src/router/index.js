@@ -22,6 +22,11 @@ const routes = [
     path: '/kassablad',
     name: 'Kassablad',
     component: () => import('../views/Kassablad.vue')
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: () => import('../views/Dashboard.vue')
   }
 ]
 

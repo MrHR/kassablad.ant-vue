@@ -41,8 +41,7 @@
           <a-form-model-item label="Openingsuur">
             <a-date-picker
               ref="beginUur"
-              :default-value="moment()"
-              :locale="locale"
+              :format="kassaContainer.dateFormat"
               show-time
               showNom
               v-model="kassaContainer.beginUur"
