@@ -7,7 +7,10 @@
         @tabChange="key => onTabChange(key, 'noTitleKey')"
       >
         <div v-if="noTitleKey === 'profitChart'">
-          <ProfitChart/>
+          <ProfitChart :profitChartData="profitChartData" :stacked="false"/>
+        </div>
+        <div v-if="noTitleKey === 'beginVsEindChart'">
+          <ProfitChart :profitChartData="beginVsEndChartData" :stacked="true" />
         </div>
         <a-range-picker @change="onChangeSetProfitChartDate" slot="tabBarExtraContent" style="margin:10px"/>
       </a-card>
@@ -15,10 +18,17 @@
 </template>
 <script>
 import ProfitChart from '../Charts/ProfitChart'
+import { mapState } from 'vuex'
 
 export default {
   components: {
     ProfitChart
+  },
+  computed: {
+    ...mapState([
+      'profitChartData',
+      'beginVsEndChartData'
+    ])
   },
   methods: {
     onTabChange (key, type) {
@@ -28,7 +38,12 @@ export default {
     onChangeSetProfitChartDate (date, dateString) {
       console.log('date', date, 'datestring', dateString)
       this.$store.dispatch('fetchProfitChartData', { startDate: dateString[0], endDate: dateString[1] })
+      this.$store.dispatch('fetchBeginVsEndChartData', { startDate: dateString[0], endDate: dateString[1] })
     }
+  },
+  mounted () {
+    this.$store.dispatch('fetchProfitChartData')
+    this.$store.dispatch('fetchBeginVsEndChartData')
   },
   data () {
     return {
@@ -40,7 +55,7 @@ export default {
           tab: 'Opbrengsten per avond'
         },
         {
-          key: 'beginVsEind',
+          key: 'beginVsEindChart',
           tab: 'Begin-kassa vs Eind-kassa'
         }
       ],

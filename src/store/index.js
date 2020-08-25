@@ -32,7 +32,9 @@ export default new Vuex.Store({
     kassaId: 0,
     kassaType: null,
     kassas: [],
-    profitChartData: null
+    profitChartData: null,
+    beginVsEndChartData: null,
+    kassabladen: []
   },
   mutations: {
     SET_LOADING_STATUS (state, status) {
@@ -76,6 +78,12 @@ export default new Vuex.Store({
     SET_PROFIT_CHART (state, data) {
       state.profitChartData = data
     },
+    SET_BEGIN_VS_END_CHART (state, data) {
+      state.beginVsEndChartData = data
+    },
+    SET_KASSABLADEND (state, data) {
+      state.kassabladen = data
+    },
     ADD_KASSA (state, data) {
       state.kassas.push(data)
       state.kassaId = data.id
@@ -115,6 +123,20 @@ export default new Vuex.Store({
       context.commit('SET_LOADING_STATUS', 'loading')
       axios.get(`${this.state.controllerUrl}chart?startdate=${data.startDate}&enddate=${data.endDate}`).then(response => {
         context.commit('SET_PROFIT_CHART', response.data)
+        context.commit('SET_LOADING_STATUS', 'notLoading')
+      })
+    },
+    fetchBeginVsEndChartData (context, data = []) {
+      context.commit('SET_LOADING_STATUS', 'loading')
+      axios.get(`${this.state.controllerUrl}chart/beginvsendchart?startdate=${data.startDate}&enddate=${data.endDate}`).then(response => {
+        context.commit('SET_BEGIN_VS_END_CHART', response.data)
+        context.commit('SET_LOADING_STATUS', 'notLoading')
+      })
+    },
+    fetchKassabladen (context, data = []) {
+      context.commit('SET_LOADING_STATUS', 'loading')
+      axios.get(`${this.state.controllerUrl}kassa?startdate=${data.startDate}&enddate=${data.endDate}`).then(response => {
+        context.commit('SET_KASSABLADEND', response.data)
         context.commit('SET_LOADING_STATUS', 'notLoading')
       })
     },

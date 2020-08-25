@@ -1,7 +1,6 @@
 <script>
 // import { Bar } from 'vue-chartjs'
-import { Line } from 'vue-chartjs'
-import { mapState } from 'vuex'
+import { Bar } from 'vue-chartjs'
 
 var options = {
   responsive: true,
@@ -17,14 +16,12 @@ var options = {
   },
   scales: {
     xAxes: [{
-      barPercentage: 0.3,
       stacked: true
     }],
     yAxes: [{
       ticks: {
         beginAtZero: true
-      },
-      stacked: false
+      }
     }]
   },
   plugins: {
@@ -35,16 +32,20 @@ var options = {
 }
 
 export default {
-  extends: Line,
-  computed: {
-    ...mapState(['profitChartData'])
-  },
+  extends: Bar,
+  props: ['profitChartData', 'stacked'],
   mounted () {
-    this.$store.dispatch('fetchProfitChartData')
+    if (this.stacked) {
+      options.scales.yAxes.stacked = this.stacked
+    }
+    this.renderChart(this.profitChartData, options)
   },
   watch: {
     profitChartData (newData) {
       setTimeout(() => {
+        if (this.stacked) {
+          options.scales.yAxes[0].stacked = this.stacked
+        }
         this.renderChart(this.profitChartData, options)
       }, 10)
     }
