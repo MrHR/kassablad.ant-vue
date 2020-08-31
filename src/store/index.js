@@ -34,7 +34,8 @@ export default new Vuex.Store({
     kassas: [],
     profitChartData: null,
     beginVsEndChartData: null,
-    kassabladen: []
+    kassabladen: [],
+    kassaContainers: []
   },
   mutations: {
     SET_LOADING_STATUS (state, status) {
@@ -74,6 +75,9 @@ export default new Vuex.Store({
     SET_KASSACONTAINER (state, data) {
       state.kassaContainer = data
       state.kassaContainerId = data.id
+    },
+    SET_KASSACONTAINERS (state, data) {
+      state.kassaContainers = data
     },
     SET_PROFIT_CHART (state, data) {
       state.profitChartData = data
@@ -140,6 +144,20 @@ export default new Vuex.Store({
         context.commit('SET_LOADING_STATUS', 'notLoading')
       })
     },
+    fetchKassaContainer (context, id) {
+      context.commit('SET_LOADING_STATUS', 'loading')
+      axios.get(`${this.state.controllerUrl}kassacontainer/ext/${id}`).then(response => {
+        context.commit('SET_KASSACONTAINER', response.data)
+        context.commit('SET_LOADING_STATUS', 'notLoading')
+      })
+    },
+    fetchKassaContainers (context) {
+      context.commit('SET_LOADING_STATUS', 'loading')
+      axios.get(`${this.state.controllerUrl}kassacontainer/ext`).then(response => {
+        context.commit('SET_KASSACONTAINERS', response.data)
+        context.commit('SET_LOADING_STATUS', 'notLoading')
+      })
+    },
     showComponent (context, componentName) {
       context.commit('SET_VISIBLE_COMPONENT', componentName)
     },
@@ -149,6 +167,7 @@ export default new Vuex.Store({
     createKassablad (context, kassaType) {
       context.commit('SET_LOADING_STATUS', 'loading')
       if (this.state.kassaContainerId === 0) {
+        console.log('is zero')
         axios.post(`${this.state.controllerUrl}kassacontainer`, {
           beginUur: moment(this.state.kassaContainer.beginUur).format('YYYY-MM-DDThh:mm:ss'),
           naamTapper: this.state.kassaContainer.naamTapper
@@ -162,6 +181,7 @@ export default new Vuex.Store({
           context.commit('SET_LOADING_STATUS', 'notLoading')
         })
       } else {
+        console.log('is not zero')
         axios.put(
           `${this.state.controllerUrl}kassacontainer/${this.state.kassaContainer.id}`,
           this.state.kassaContainer

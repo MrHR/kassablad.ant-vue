@@ -2,7 +2,7 @@
   <div>
     <a-list
       bordered
-      :data-source="kassabladen"
+      :data-source="kassaContainers"
       style="text-align:left"
     >
       <a-list-item class="listItem" slot="renderItem" slot-scope="item">
@@ -39,7 +39,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['kassabladen'])
+    ...mapState(['kassaContainers'])
   },
   mounted () {
   },
@@ -47,7 +47,7 @@ export default {
     moment
   },
   created () {
-    this.$store.dispatch('fetchKassabladen')
+    this.$store.dispatch('fetchKassaContainers')
     moment.locale()
   }
 }
