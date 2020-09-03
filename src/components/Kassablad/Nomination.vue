@@ -79,16 +79,19 @@ export default {
   .nomination .ant-form-item-children::before {
     content:'';
     position:absolute;
-    top:-16px;
+    top:-18px;
     left:-5px;
     right:-5px;
     bottom:0;
     padding:25px 35px 25px 25px;
     border-radius:10px;
-    border:1px solid rgb(240, 240, 240);
-    background-color:rgb(250, 250, 250);
+    border:1px solid rgb(220, 220, 220);
+    background-color:rgb(255, 255, 255);
     /* box-shadow: 1px 1px 10px rgb(0, 0, 0, 0.06); */
     z-index:-1;
+  }
+  .nomination .ant-form-item-children {
+    z-index: 0;
   }
   .nom-multi {
     display:inline-block;

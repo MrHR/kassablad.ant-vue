@@ -1,6 +1,5 @@
 <template>
   <div v-if="visibleWrapper === 'eindKassaWrapper'">
-    <h1 class="title">Eindkassa</h1>
     <a-form-model class="center" layout="vertical" :model="kassaContainer">
       <!-- FORMPART: EIND AVOND -->
       <CreateKassaBlad
@@ -39,17 +38,48 @@
         <a-form-model-item label="Eind Uur">
           <a-date-picker
             ref="beginUur"
-            :default-value="moment()"
-            :locale="locale"
-            show-time
+            :show-time="{ format: 'HH:mm' }"
+            :format="dateFormat"
             showNom
-            v-model="kassaContainer.eindUur"
+            :default-value="moment()"
+            :v-model="kassaContainer.eindUur"
             type="date"
+            placeholder="Pick a date"
             style="width: 100%;"
           />
         </a-form-model-item>
         <a-form-model-item>
           <a-button @click="next('naamTapperSluit')">
+            <a-icon type="double-left" />
+          </a-button>
+          <a-tooltip placement="bottom" title="Volgende" :mouseEnterDelay="1">
+            <a-button
+              type="primary"
+              ref="toNomButton"
+              style="margin-left: 10px;"
+              @click="bezoekers"
+            >
+              <a-icon type="double-right" />
+            </a-button>
+          </a-tooltip>
+        </a-form-model-item>
+      </div>
+      <!--FORMPART: BEZOEKERS -->
+      <div v-if="visibleComponent === 'bezoekers'">
+        <a-form-label-item label="bezoekers">
+          <a-input-number
+            ref="bezoekers"
+            :default-value="0"
+            :min="0"
+            :max="300"
+            :precision="0"
+            id="bezoekers"
+            v-model="bezoekers"
+            @pressEnter="createEindKassa"
+          />
+        </a-form-label-item>
+        <a-form-model-item>
+          <a-button @click="next('eindUur')">
             <a-icon type="double-left" />
           </a-button>
           <a-tooltip placement="bottom" title="Volgende" :mouseEnterDelay="1">
@@ -120,7 +150,7 @@
           </a-button>
           <a-tooltip placement="bottom" title="Submit data(Enter)" :mouseEnterDelay="1">
             <a-button
-              ref="avondstartSubmitInput"
+              ref="showOverview"
               type="primary"
               style="margin-left: 10px;"
               @click="onSubmit"
@@ -162,7 +192,8 @@ export default {
       wrapperCol: { span: 14 },
       formCount: 0,
       nomFocus: false,
-      nextNomBool: false
+      nextNomBool: false,
+      dateFormat: 'DD/MM/YYYY HH:mm'
     }
   },
   computed: {
@@ -199,7 +230,6 @@ export default {
       this.nextNomBool = false
     },
     createEindKassa () {
-      // this.$store.dispatch('createKassa', 'end')
       // TODO: Update KassaContainer with tapper sluit and
       this.$store.dispatch('createKassablad', 'end')
       this.next('showNomination')
@@ -241,6 +271,7 @@ export default {
 .endEveningTableWrapper tbody td {
   padding-top:5px;
   padding-bottom:5px;
+  background-color:white;
 }
 .endEveningTableWrapper tbody td:nth-child(5) {
   font-weight: bolder;

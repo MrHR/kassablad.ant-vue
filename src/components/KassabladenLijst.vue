@@ -6,7 +6,7 @@
       style="text-align:left"
     >
       <a-list-item class="listItem" slot="renderItem" slot-scope="item">
-        <a slot="actions">edit</a>
+        <a slot="actions" :href="'http://localhost:3000/#/kassabladen/' + item.id">edit</a>
         <a-list-item-meta
           :description="'' + item.type"
         >

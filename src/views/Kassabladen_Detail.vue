@@ -1,8 +1,12 @@
 <template>
-  <div>
-    <h1>ID: {{ $route.params.id }}</h1>
+  <div class="kassabladen_detail">
     <a-table :columns="columns" :data-source="kassaData" :pagination="false" bordered>
-      <a slot="multiplier" slot-scope="text">€ {{ text }}</a>
+      <div slot="multiply" slot-scope="text" class="extraIconWrapper">{{ text }} <a-icon class="extraIcon" type="close" /></div>
+      <div slot="equals" slot-scope="text" class="extraIconWrapper">
+        <a>€ {{ text }}</a>
+        <span class="extraIcon">=</span>
+      </div>
+      <b slot="difference" slot-scope="text">{{ text }}</b>
     </a-table>
   </div>
 </template>
@@ -11,36 +15,68 @@ import { mapState } from 'vuex'
 import helperFunctions from '../functions/helperFunctions'
 const columns = [
   {
-    title: 'Begin Aantal',
-    dataIndex: 'beginAantal',
-    key: 'beginAantal',
-    width: '16,6%'
+    title: 'Beginkassa',
+    children: [
+      {
+        title: 'Nominatie',
+        dataIndex: 'nomination',
+        key: 'nomination',
+        width: '14.28%',
+        className: 'nomination, right'
+      },
+      {
+        title: 'Begin Aantal',
+        dataIndex: 'beginAmount',
+        key: 'beginAmount',
+        width: '14.28%',
+        className: 'amount, right',
+        scopedSlots: { customRender: 'multiply' }
+      },
+      {
+        title: 'Begin Totaal',
+        dataIndex: 'beginTotal',
+        key: 'beginTotal',
+        width: '14.28%',
+        className: 'end-total, right',
+        scopedSlots: { customRender: 'equals' }
+      }
+    ]
   },
   {
-    title: 'Beginwaarde',
-    dataIndex: 'beginWaarde',
-    key: 'beginWaarde',
-    width: '16,6%',
-    scopedSlots: { customRender: 'multiplier' }
-  },
-  {
-    title: 'Eind Aantal',
-    dataIndex: 'eindAantal',
-    key: 'eindAantal',
-    width: '16,6%'
-  },
-  {
-    title: 'Eindwaarde',
-    dataIndex: 'total',
-    key: 'total',
-    width: '16,6%',
-    scopedSlots: { customRender: 'multiplier' }
+    title: 'Eindkassa',
+    children: [
+      {
+        title: 'Nominatie',
+        dataIndex: 'nomination',
+        key: 'nomination, right',
+        with: '14.28 %',
+        className: 'nomination, right'
+      },
+      {
+        title: 'Eind Aantal',
+        dataIndex: 'endAmount',
+        key: 'endAmount',
+        width: '14.28%',
+        className: 'amount, right',
+        scopedSlots: { customRender: 'multiply' }
+      },
+      {
+        title: 'Eind Totaal',
+        dataIndex: 'endTotal',
+        key: 'endTotal',
+        width: '14.28%',
+        className: 'end-total, right',
+        scopedSlots: { customRender: 'equals' }
+      }
+    ]
   },
   {
     title: 'Verschil',
-    dataIndex: 'endTotal',
-    key: 'endTotal',
-    width: '16,6%'
+    dataIndex: 'difference',
+    key: 'difference',
+    width: '14.28%',
+    className: 'right',
+    scopedSlots: { customRender: 'difference' }
   }
 ]
 export default {
@@ -66,12 +102,12 @@ export default {
         const eindNom = this.kassaContainer.eindKassa.nominationList
           .filter(endNom => endNom.nominationId === beginNom.nominationId)[0]
         const tempObj = {
-          multiplier: eindNom.nomination.multiplier,
-          beginAantal: `€ ${beginNom.nomination.multiplier} x ${beginNom.amount}`,
-          beginWaarde: `${helperFunctions.calculatePrice(beginNom.amount, beginNom.nomination.multiplier)}`,
-          eindAantal: `€ ${eindNom.nomination.multiplier} x ${eindNom.amount}`,
-          total: `${helperFunctions.calculatePrice(eindNom.amount, eindNom.nomination.multiplier)}`,
-          endTotal: `€ ${helperFunctions.subtractPrices(
+          nomination: `€ ${beginNom.nomination.multiplier}`,
+          beginAmount: `${beginNom.amount}`,
+          beginTotal: `${helperFunctions.calculatePrice(beginNom.amount, beginNom.nomination.multiplier)}`,
+          endAmount: `${eindNom.amount}`,
+          endTotal: `${helperFunctions.calculatePrice(eindNom.amount, eindNom.nomination.multiplier)}`,
+          difference: `€ ${helperFunctions.subtractPrices(
             helperFunctions.calculatePrice(eindNom.amount, eindNom.nomination.multiplier),
             helperFunctions.calculatePrice(beginNom.amount, beginNom.nomination.multiplier))
           }`
@@ -82,8 +118,34 @@ export default {
   }
 }
 </script>
-<style scoped>
-.editable-row-operations a {
-  margin-right: 8px;
+<style>
+.kassabladen_detail {
+  padding:40px;
+}
+.kassabladen_detail .ant-table-tbody tr td {
+  border-right:0px solid transparent;
+  padding:10px;
+  background-color: white;
+  text-align:center;
+}
+
+.kassabladen_detail .ant-table-tbody tr td:nth-child(3),
+.kassabladen_detail .ant-table-tbody tr td:nth-child(6) {
+  border-right:1px solid #e8e8e8;
+}
+
+.kassabladen_detail .extraIconWrapper {
+  position:relative;
+}
+
+.kassabladen_detail .extraIcon {
+  position:absolute;
+  left:-15px;
+  top:4px;
+  opacity:0.2;
+}
+
+.kassabladen_detail .iconMultipli svg {
+  width:10px;
 }
 </style>

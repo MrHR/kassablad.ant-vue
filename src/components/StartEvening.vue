@@ -1,6 +1,5 @@
 <template>
-  <div v-if="visibleWrapper === 'beginKassaWrapper'">
-    <h1 class="title">Beginkassa</h1>
+  <div id="beginKassaWrapper" v-if="visibleWrapper === 'beginKassaWrapper'">
     <a-form-model class="center" layout="vertical" :model="kassaContainer">
       <!-- FORMPART: CREATE KASSACONTAINER -->
       <CreateKassaBlad
@@ -41,10 +40,11 @@
           <a-form-model-item label="Openingsuur">
             <a-date-picker
               ref="beginUur"
-              :format="kassaContainer.dateFormat"
-              show-time
+              :show-time="{ format: 'HH:mm' }"
+              :format="dateFormat"
               showNom
-              v-model="kassaContainer.beginUur"
+              :default-value="moment()"
+              :v-model="kassaContainer.beginUur"
               type="date"
               placeholder="Pick a date"
               style="width: 100%;"
@@ -124,7 +124,7 @@
           </a-button>
           <a-tooltip placement="bottom" title="Submit data(Enter)" :mouseEnterDelay="1">
             <a-button
-              ref="avondstartSubmitInput"
+              ref="showOverview"
               type="primary"
               style="margin-left: 10px;"
               @click="onSubmit"
@@ -166,7 +166,8 @@ export default {
       wrapperCol: { span: 14 },
       formCount: 0,
       nomFocus: false,
-      nextNomBool: false
+      nextNomBool: false,
+      dateFormat: 'DD/MM/YYYY HH:mm'
     }
   },
   computed: {
@@ -191,7 +192,6 @@ export default {
     gotoNextNom (item) {
       if (this.formCount >= (this.nominations.length - 1)) {
         this.next('showOverview')
-        // this.$refs.avondstartSubmitInput.click()
       } else {
         // this.$refs.nextNom.$el.click()
         if (this.formCount < (this.nominations.length - 1)) {
@@ -217,7 +217,7 @@ export default {
     visibleComponent (newValue) {
       setTimeout(() => {
         if (this.$refs[newValue]) {
-          this.$refs[newValue].focus()
+          this.$refs[newValue].$el.focus()
         }
       }, 10)
     }
@@ -225,6 +225,9 @@ export default {
 }
 </script>
 <style>
+#beginKassaWrapper {
+  padding-top:40px;
+}
 .center {
   margin:auto;
   max-width:80%;
@@ -242,6 +245,7 @@ export default {
 .startEveningTableWrapper tbody td {
   padding-top:5px;
   padding-bottom:5px;
+  background-color:white;
 }
 .startEveningTableWrapper tbody td:nth-child(2) {
   font-weight: bolder;

@@ -75,4 +75,10 @@ export default {
 .editable-row-operations a {
   margin-right: 8px;
 }
+.ant-table-row {
+  background-color:white !important;
+}
+.ant-table-row {
+  background-color:white !important;
+}
 </style>

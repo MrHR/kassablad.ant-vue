@@ -11,6 +11,7 @@ export default new Vuex.Store({
     debug: false,
     debugUI: false,
     debugStore: false,
+    title: 'Hello World',
     controllerUrl: 'https://localhost:5001/api/',
     loadingStatus: 'notLoading',
     nominations: [],
@@ -23,11 +24,11 @@ export default new Vuex.Store({
     kassaContainer: {
       id: 0,
       beginUur: moment(),
-      eindUur: null,
-      dateFormat: 'DD/MM/YYYY',
+      eindUur: moment(),
       naamTapper: '',
       naamTapperSluit: '',
-      Errors: []
+      Errors: [],
+      bezoekers: 0
     },
     kassaId: 0,
     kassaType: null,
@@ -104,7 +105,8 @@ export default new Vuex.Store({
         eindUur: moment(),
         naamTapper: '',
         naamTapperSluit: '',
-        Errors: []
+        Errors: [],
+        bezoekers: 0
       }
     }
   },
@@ -166,6 +168,7 @@ export default new Vuex.Store({
     },
     createKassablad (context, kassaType) {
       context.commit('SET_LOADING_STATUS', 'loading')
+      // if kassacontainer does not exist
       if (this.state.kassaContainerId === 0) {
         console.log('is zero')
         axios.post(`${this.state.controllerUrl}kassacontainer`, {
@@ -180,7 +183,7 @@ export default new Vuex.Store({
           console.log('kassacontainer post error', error)
           context.commit('SET_LOADING_STATUS', 'notLoading')
         })
-      } else {
+      } else { // if kassacontainer does exist
         console.log('is not zero')
         axios.put(
           `${this.state.controllerUrl}kassacontainer/${this.state.kassaContainer.id}`,
