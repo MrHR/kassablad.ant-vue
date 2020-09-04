@@ -202,7 +202,7 @@ export default {
       this.nextNomBool = false
     },
     createKassaContainer () {
-      this.$store.dispatch('createKassablad')
+      this.$store.dispatch('createKassaContainer')
       this.next('showNomination')
     },
     onSubmit () {
@@ -226,7 +226,7 @@ export default {
 </script>
 <style>
 #beginKassaWrapper {
-  padding-top:40px;
+  padding-top:calc(50vh - 200px);
 }
 .center {
   margin:auto;

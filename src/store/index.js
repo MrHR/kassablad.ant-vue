@@ -28,7 +28,8 @@ export default new Vuex.Store({
       naamTapper: '',
       naamTapperSluit: '',
       Errors: [],
-      bezoekers: 0
+      bezoekers: 0,
+      afroomkluis: 0.00
     },
     kassaId: 0,
     kassaType: null,
@@ -106,7 +107,8 @@ export default new Vuex.Store({
         naamTapper: '',
         naamTapperSluit: '',
         Errors: [],
-        bezoekers: 0
+        bezoekers: 0,
+        afroomkluis: 0.00
       }
     }
   },
@@ -166,11 +168,10 @@ export default new Vuex.Store({
     showWrapper (context, wrapperName) {
       context.commit('SET_VISIBLE_WRAPPER', wrapperName)
     },
-    createKassablad (context, kassaType) {
+    createKassaContainer (context, kassaType) {
       context.commit('SET_LOADING_STATUS', 'loading')
-      // if kassacontainer does not exist
+      // Do this on start evening
       if (this.state.kassaContainerId === 0) {
-        console.log('is zero')
         axios.post(`${this.state.controllerUrl}kassacontainer`, {
           beginUur: moment(this.state.kassaContainer.beginUur).format('YYYY-MM-DDThh:mm:ss'),
           naamTapper: this.state.kassaContainer.naamTapper
@@ -183,7 +184,7 @@ export default new Vuex.Store({
           console.log('kassacontainer post error', error)
           context.commit('SET_LOADING_STATUS', 'notLoading')
         })
-      } else { // if kassacontainer does exist
+      } else { // do this on end evening
         console.log('is not zero')
         axios.put(
           `${this.state.controllerUrl}kassacontainer/${this.state.kassaContainer.id}`,

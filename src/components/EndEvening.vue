@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visibleWrapper === 'eindKassaWrapper'">
+  <div id="endKassaWrapper" v-if="visibleWrapper === 'eindKassaWrapper'">
     <a-form-model class="center" layout="vertical" :model="kassaContainer">
       <!-- FORMPART: EIND AVOND -->
       <CreateKassaBlad
@@ -57,7 +57,7 @@
               type="primary"
               ref="toNomButton"
               style="margin-left: 10px;"
-              @click="bezoekers"
+              @click="next('bezoekers')"
             >
               <a-icon type="double-right" />
             </a-button>
@@ -66,18 +66,18 @@
       </div>
       <!--FORMPART: BEZOEKERS -->
       <div v-if="visibleComponent === 'bezoekers'">
-        <a-form-label-item label="bezoekers">
+        <a-form-model-item label="bezoekers">
           <a-input-number
             ref="bezoekers"
             :default-value="0"
             :min="0"
             :max="300"
             :precision="0"
-            id="bezoekers"
-            v-model="bezoekers"
-            @pressEnter="createEindKassa"
+            v-model="kassaContainer.bezoekers"
+            @pressEnter="next('showNomination')"
+            @focus="$event.target.select()"
           />
-        </a-form-label-item>
+        </a-form-model-item>
         <a-form-model-item>
           <a-button @click="next('eindUur')">
             <a-icon type="double-left" />
@@ -87,7 +87,7 @@
               type="primary"
               ref="toNomButton"
               style="margin-left: 10px;"
-              @click="createEindKassa"
+              @click="next('showNomination')"
             >
               <a-icon type="double-right" />
             </a-button>
@@ -145,12 +145,47 @@
       <div v-if="visibleComponent ==='showOverview'">
         <a-form-model-item>
           <EindKassaTable class="endEveningTableWrapper center" v-bind:nominations="nominations" v-bind:beginKassaNominations="beginKassaNominations" />
+        </a-form-model-item>
+        <a-form-model-item>
           <a-button @click="next('showNomination')">
+            <a-icon type="double-left" />
+          </a-button>
+          <a-tooltip placement="bottom" title="Volgende" :mouseEnterDelay="1">
+            <a-button
+              type="primary"
+              ref="showOverview"
+              style="margin-left: 10px;"
+              @click="next('showAfroomkluisBedrag')"
+            >
+              <a-icon type="double-right" />
+            </a-button>
+          </a-tooltip>
+        </a-form-model-item>
+      </div>
+      <!-- FORMPART: AFROOMKLUIS BEDRAG -->
+      <div v-if="visibleComponent === 'showAfroomkluisBedrag'">
+        <span>Totaal in kassa: € {{ afroomkluisBedrag }}</span>
+        <a-form-model-item label="Bedrag voor afroomkluis:">
+          <a-input-number
+            ref="showAfroomkluisBedrag"
+            :default-value="0"
+            :min="0"
+            :max="maxValue"
+            :step="1.00"
+            :precision="2"
+            :formatter="value => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+            :parser="value => value.replace(/\€\s?|(,*)/g, '')"
+            v-model="kassaContainer.afroomkluis"
+            @pressEnter="onSubmit"
+            @focus="$event.target.select()"
+          />
+        </a-form-model-item>
+        <a-form-model-item>
+          <a-button @click="next('showOverview')">
             <a-icon type="double-left" />
           </a-button>
           <a-tooltip placement="bottom" title="Submit data(Enter)" :mouseEnterDelay="1">
             <a-button
-              ref="showOverview"
               type="primary"
               style="margin-left: 10px;"
               @click="onSubmit"
@@ -177,6 +212,7 @@ import Nomination from '@/components/Kassablad/Nomination.vue'
 import { mapState } from 'vuex'
 import EindKassaTable from '@/components/Kassablad/EindKassaTable.vue'
 import CreateKassaBlad from '@/components/Kassablad/CreateKassaBlad.vue'
+import helpers from '../functions/helperFunctions'
 
 export default {
   name: 'EndEvening',
@@ -209,7 +245,13 @@ export default {
       'kassas',
       'kassaId',
       'kassaType'
-    ])
+    ]),
+    afroomkluisBedrag: function () {
+      return helpers.subtractPrices(300.00, this.kassaContainer.afroomkluis)
+    },
+    maxValue: function () {
+      return 300.00 // TODO: replace with kassablad total
+    }
   },
   methods: {
     moment,
@@ -229,12 +271,8 @@ export default {
       }
       this.nextNomBool = false
     },
-    createEindKassa () {
-      // TODO: Update KassaContainer with tapper sluit and
-      this.$store.dispatch('createKassablad', 'end')
-      this.next('showNomination')
-    },
     onSubmit () {
+      this.$store.dispatch('createKassaContainer', 'end')
       this.$store.dispatch('saveNominations')
       this.formCount = 0
     }
@@ -253,7 +291,11 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss">
+#endKassaWrapper {
+  padding-top:calc(50vh - 200px);
+}
+
 .center {
   margin:auto;
   max-width:80%;
