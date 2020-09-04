@@ -62,7 +62,8 @@ export default {
       if (this.consumptieAmount > 0) {
         this.consumptieAmount -= 1
         this.item.aantal = this.consumptieAmount
-        this.updateConsumption(this.item.consumptieCountId)
+        console.log('consumptieId', this.item.consumptieCountId)
+        this.updateConsumption(this.item)
       }
     },
     updateConsumption (item) { // TODO: fix this shizzel just like create
