@@ -48,6 +48,7 @@
               type="date"
               placeholder="Pick a date"
               style="width: 100%;"
+              @change="viewDate"
             />
           </a-form-model-item>
           <a-form-model-item>
@@ -151,6 +152,7 @@ import Nomination from '@/components/Kassablad/Nomination.vue'
 import { mapState } from 'vuex'
 import BeginKassaTable from '@/components/Kassablad/BeginKassaTable.vue'
 import CreateKassaBlad from '@/components/Kassablad/CreateKassaBlad.vue'
+import helperFunctions from '../functions/helperFunctions'
 
 export default {
   name: 'StartEvening',
@@ -186,6 +188,9 @@ export default {
   },
   methods: {
     moment,
+    viewDate () {
+      console.log(moment(this.kassaContainer.beginUur))
+    },
     next (name) {
       this.$store.dispatch('showComponent', name)
     },
@@ -215,11 +220,7 @@ export default {
   },
   watch: {
     visibleComponent (newValue) {
-      setTimeout(() => {
-        if (this.$refs[newValue]) {
-          this.$refs[newValue].$el.focus()
-        }
-      }, 10)
+      helperFunctions.setFocus(this.$refs, newValue)
     }
   }
 }

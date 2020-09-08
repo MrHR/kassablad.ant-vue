@@ -95,7 +95,7 @@
         </a-form-model-item>
       </div>
       <!-- FORMPART: KASSA TELLEN SLUIT -->
-      <div v-if="visibleComponent ==='showNomination'">
+      <div v-if="visibleComponent === 'showNomination'">
         <!-- {{ this.kassas }} -->
         <!-- {{ nominations }} -->
         <Nomination
@@ -142,7 +142,7 @@
         </a-form-model-item>
       </div>
       <!-- FORMPART: EINDKASSA TABEL-->
-      <div v-if="visibleComponent ==='showOverview'">
+      <div v-if="visibleComponent === 'showOverview'">
         <a-form-model-item>
           <EindKassaTable class="endEveningTableWrapper center" v-bind:nominations="nominations" v-bind:beginKassaNominations="beginKassaNominations" />
         </a-form-model-item>
@@ -282,11 +282,7 @@ export default {
   },
   watch: {
     visibleComponent (newValue) {
-      setTimeout(() => {
-        if (this.$refs[newValue]) {
-          this.$refs[newValue].focus()
-        }
-      }, 10)
+      helpers.setFocus(this.$refs, newValue)
     }
   }
 }

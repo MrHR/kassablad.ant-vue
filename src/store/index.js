@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import moment from 'moment'
+// import { List } from 'ant-design-vue'
 // import nominations from '@/store/nominations.js'
 
 Vue.use(Vuex)
@@ -37,7 +38,8 @@ export default new Vuex.Store({
     profitChartData: null,
     beginVsEndChartData: null,
     kassabladen: [],
-    kassaContainers: []
+    kassaContainers: [],
+    kassaContainersTapper: []
   },
   mutations: {
     SET_LOADING_STATUS (state, status) {
@@ -78,8 +80,47 @@ export default new Vuex.Store({
       state.kassaContainer = data
       state.kassaContainerId = data.id
     },
+    SET_KASSACONTAINER_TAPPER (state, data) {
+      console.log('data', data)
+
+      state.kassaContainer.id = data.id
+      state.kassaContainer.beginUur = moment(data.beginUur)
+      state.kassaContainer.eindUur = moment()
+      state.kassaContainer.naamTapper = ''
+      state.kassaContainer.naamTapperSluit = ''
+      state.kassaContainer.Errors = []
+      state.kassaContainer.bezoekers = 0
+      state.kassaContainer.afroomkluis = 0.00
+      state.kassaContainer = data
+      state.kassaContainerId = data.id
+      state.kassaId = data.beginKassa.id
+      var nominations = []
+      data.beginKassa.nominationList.forEach(item => {
+        var nomination = {
+          id: item.id,
+          active: item.active,
+          dateAdded: item.dateAdded,
+          dateUpdated: item.dateUpdated,
+          updatedBy: item.UpdateBy,
+          createdBy: item.createdBy,
+          nomination: item.nomination,
+          multiplier: item.multiplier,
+          defaultAmount: item.amount,
+          total: `€ ${item.amount * item.nomination.multiplier}`
+        }
+        nominations.push(nomination)
+      })
+      state.beginKassaNominations = nominations
+      state.nominations = nominations
+
+      console.log('nominations', state.nominations)
+      console.log('begin nominations', state.beginKassaNominations)
+    },
     SET_KASSACONTAINERS (state, data) {
       state.kassaContainers = data
+    },
+    SET_KASSACONTAINERS_TAPPER (state, data) {
+      state.kassaContainersTapper = data
     },
     SET_PROFIT_CHART (state, data) {
       state.profitChartData = data
@@ -155,10 +196,24 @@ export default new Vuex.Store({
         context.commit('SET_LOADING_STATUS', 'notLoading')
       })
     },
+    fetchKassaContainerTapper (context, id) {
+      context.commit('SET_LOADING_STATUS', 'loading')
+      axios.get(`${this.state.controllerUrl}kassacontainer/tapper/${id}`).then(response => {
+        context.commit('SET_KASSACONTAINER_TAPPER', response.data)
+        context.commit('SET_LOADING_STATUS', 'notLoading')
+      })
+    },
     fetchKassaContainers (context) {
       context.commit('SET_LOADING_STATUS', 'loading')
       axios.get(`${this.state.controllerUrl}kassacontainer/ext`).then(response => {
         context.commit('SET_KASSACONTAINERS', response.data)
+        context.commit('SET_LOADING_STATUS', 'notLoading')
+      })
+    },
+    fetchKassaContainersTapper (context) {
+      context.commit('SET_LOADING_STATUS', 'loading')
+      axios.get(`${this.state.controllerUrl}kassacontainer/tapper`).then(response => {
+        context.commit('SET_KASSACONTAINERS_TAPPER', response.data)
         context.commit('SET_LOADING_STATUS', 'notLoading')
       })
     },

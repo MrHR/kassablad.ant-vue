@@ -37,6 +37,11 @@ const routes = [
     path: '/kassabladen/:id',
     name: 'Kassabladen_Detail',
     component: () => import('../views/Kassabladen_Detail.vue')
+  },
+  {
+    path: '/kassabladenTapper',
+    name: 'kassabladenTapper',
+    component: () => import('../views/KassabladenTapper.vue')
   }
 ]
 

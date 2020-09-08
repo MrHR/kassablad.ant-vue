@@ -25,15 +25,18 @@ export default {
       this.$store.dispatch('showComponent', this.nextEl)
     },
     focusInput () {
-      this.$refs.createKassabladButton.$el.focus()
+      setTimeout(() => {
+        if (this.$refs.createKassabladButton) {
+          this.$refs.createKassabladButton.$el.focus()
+        }
+      }, 10)
     }
   },
   watch: {
     visibleComponent (newValue) {
-      console.log('new value is', newValue)
       setTimeout(() => {
         if (this.$refs[newValue]) {
-          this.$refs[newValue].focus()
+          this.$refs[newValue].$el.focus()
         }
       }, 10)
     }

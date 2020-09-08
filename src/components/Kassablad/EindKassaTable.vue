@@ -57,6 +57,7 @@ export default {
     this.beginKassaNominations.forEach(beginNom => {
       const eindNom = this.nominations.filter(el => el.id === beginNom.id)[0]
       const tempObj = {
+        key: eindNom.id,
         multiplier: eindNom.multiplier,
         beginAantal: beginNom.defaultAmount,
         eindAantal: eindNom.defaultAmount,
