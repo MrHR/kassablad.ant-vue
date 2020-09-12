@@ -14,7 +14,7 @@ export default {
   setFocus (refs, ref) {
     setTimeout(() => {
       if (refs[ref]) {
-        refs[ref].$el.focus()
+        refs[ref].$el.focus() || refs[ref].focus()
       }
     }, 10)
   }

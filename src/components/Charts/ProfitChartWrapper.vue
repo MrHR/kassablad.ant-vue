@@ -32,11 +32,9 @@ export default {
   },
   methods: {
     onTabChange (key, type) {
-      console.log(key, type)
       this[type] = key
     },
     onChangeSetProfitChartDate (date, dateString) {
-      console.log('date', date, 'datestring', dateString)
       this.$store.dispatch('fetchProfitChartData', { startDate: dateString[0], endDate: dateString[1] })
       this.$store.dispatch('fetchBeginVsEndChartData', { startDate: dateString[0], endDate: dateString[1] })
     }

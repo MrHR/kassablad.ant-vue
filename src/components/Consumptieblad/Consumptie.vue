@@ -62,7 +62,6 @@ export default {
       if (this.consumptieAmount > 0) {
         this.consumptieAmount -= 1
         this.item.aantal = this.consumptieAmount
-        console.log('consumptieId', this.item.consumptieCountId)
         this.updateConsumption(this.item)
       }
     },

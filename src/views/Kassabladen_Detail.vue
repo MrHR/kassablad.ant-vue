@@ -97,7 +97,6 @@ export default {
   },
   watch: {
     kassaContainer (newValue) {
-      this.cacheData = this.kassaData.map(item => ({ ...item }))
       this.kassaContainer.beginKassa.nominationList.forEach(beginNom => {
         const eindNom = this.kassaContainer.eindKassa.nominationList
           .filter(endNom => endNom.nominationId === beginNom.nominationId)[0]

@@ -43,8 +43,7 @@
               :show-time="{ format: 'HH:mm' }"
               :format="dateFormat"
               showNom
-              :default-value="moment()"
-              :v-model="kassaContainer.beginUur"
+              v-model="kassaContainer.beginUur"
               type="date"
               placeholder="Pick a date"
               style="width: 100%;"
@@ -69,7 +68,6 @@
       </div>
       <!--FORMPART: KASSA OPENEN-->
       <div v-if="visibleComponent ==='showNomination'">
-        <!-- {{ this.kassas }} -->
         <div v-if="this.debug">
           {{ nominations }}
         </div>
@@ -77,7 +75,7 @@
             v-for="(item, index) in nominations"
             v-bind:item="item"
             v-bind:index="index"
-            v-bind:key="item.nomId"
+            v-bind:key="item.nominationId"
             v-bind:count="formCount"
             v-bind:focus="nomFocus"
             v-bind:next="nextNomBool"
@@ -183,7 +181,8 @@ export default {
       'kassaContainerId',
       'kassas',
       'kassaId',
-      'kassaType'
+      'kassaType',
+      'resetKassaContainer'
     ])
   },
   methods: {
@@ -216,7 +215,11 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('fetchNominations')
+    if (this.resetKassaContainer) {
+      console.log('reset')
+      this.$store.dispatch('resetKassaData')
+      this.$store.dispatch('fetchNominations')
+    }
   },
   watch: {
     visibleComponent (newValue) {

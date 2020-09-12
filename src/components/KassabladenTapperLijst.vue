@@ -43,6 +43,7 @@ export default {
     moment,
     gotoKassablad: function (item) {
       this.getKassabladData(item.id)
+      this.$router.push('kassablad')
     },
     getKassabladData: function (id) {
       this.$store.dispatch('fetchKassaContainerTapper', id)

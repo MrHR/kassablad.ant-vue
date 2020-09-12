@@ -4,6 +4,7 @@
   </a-table>
 </template>
 <script>
+import helpers from '../../functions/helperFunctions'
 const columns = [
   {
     title: 'Nominatie',
@@ -14,8 +15,8 @@ const columns = [
   },
   {
     title: 'Aantal',
-    dataIndex: 'defaultAmount',
-    key: 'defaultAmount',
+    dataIndex: 'amount',
+    key: 'amount',
     width: '33%'
   },
   {
@@ -30,16 +31,23 @@ export default {
   name: 'BeginKassaTable',
   props: ['nominations'],
   data () {
-    // console.log(this.cacheData)
     return {
-      beginKassaData: [],
       columns
     }
   },
-  mounted: function () {
-    this.beginKassaData = this.nominations
-    this.cacheData = this.beginKassaData.map(item => ({ ...item }))
-    // console.log('beginKassaCashedData', this.cacheData)
+  computed: {
+    beginKassaData: function () {
+      const noms = []
+      this.nominations.forEach(item => {
+        const nom = {
+          amount: item.amount,
+          multiplier: item.multiplier,
+          total: `€ ${helpers.calculatePrice(item.amount, item.multiplier)}`
+        }
+        noms.push(nom)
+      })
+      return noms
+    }
   }
 }
 </script>

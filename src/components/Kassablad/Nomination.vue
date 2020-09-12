@@ -7,14 +7,13 @@
         <span class="nom-item">x</span>
         <a-input-number
           ref="multiplierInput"
-          :default-value="item.defaultAmount"
+          :default-value="item.amount"
           :min="0"
           :max="maxValue"
           :precision="0"
           id="Multiplier"
-          v-model="amount"
+          v-model="item.amount"
           @pressEnter="goToNextItem(item)"
-          @change="updateAmount(item, amount)"
           @focus="$event.target.select()"
           help="De waarde moet een nummer zijn, lager dan ${maxValue}"
         />
@@ -32,33 +31,24 @@ export default {
   props: ['item', 'count', 'index', 'value', 'next'],
   data () {
     return {
-      amount: this.item.defaultAmount,
-      tickCounter: 0,
+      amount: this.item.amount,
       maxValue: 500,
       toggleElement: false
     }
   },
   methods: {
-    updateAmount (item, amount) {
-      item.defaultAmount = amount
-      item.total = `€ ${this.nomTotal}`
-    },
     goToNextItem (item) {
       this.$emit('goto-next', item)
     }
   },
   computed: {
     nomTotal: function () {
-      return helperFunctions.calculatePrice(this.item.multiplier, this.item.defaultAmount)
+      return helperFunctions.calculatePrice(this.item.multiplier, this.item.amount)
     }
-  },
-  mounted: function () {
-    this.tickCounter = 0
   },
   watch: {
     toggleElement (newValue) {
       setTimeout(() => {
-        this.tickCounter++
         if (this.$refs.multiplierInput) {
           this.$refs.multiplierInput.focus()
         }
@@ -67,8 +57,7 @@ export default {
     next (newValue) {
       setTimeout(() => {
         if (this.next && this.count === this.index) {
-          // console.log('next', this.next, 'item 2', this.item, 'amount 2', this.aantal)
-          this.goToNextItem(this.item, this.aantal)
+          this.goToNextItem(this.item)
         }
       }, 10)
     }

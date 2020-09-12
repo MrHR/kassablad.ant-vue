@@ -15,6 +15,7 @@
             ref="naamTapperSluit"
             placeholder="Bv.: Brent Vanheuverzwyn"
             @pressEnter="next('eindUur')"
+            @focus="$event.target.select()"
           />
         </a-form-model-item>
         <a-form-model-item>
@@ -41,8 +42,7 @@
             :show-time="{ format: 'HH:mm' }"
             :format="dateFormat"
             showNom
-            :default-value="moment()"
-            :v-model="kassaContainer.eindUur"
+            v-model="kassaContainer.eindUur"
             type="date"
             placeholder="Pick a date"
             style="width: 100%;"
@@ -74,7 +74,7 @@
             :max="300"
             :precision="0"
             v-model="kassaContainer.bezoekers"
-            @pressEnter="next('showNomination')"
+            @pressEnter="createKassaContainer"
             @focus="$event.target.select()"
           />
         </a-form-model-item>
@@ -87,7 +87,7 @@
               type="primary"
               ref="toNomButton"
               style="margin-left: 10px;"
-              @click="next('showNomination')"
+              @click="createKassaContainer"
             >
               <a-icon type="double-right" />
             </a-button>
@@ -102,7 +102,7 @@
           v-for="(item, index) in nominations"
           v-bind:item="item"
           v-bind:index="index"
-          v-bind:key="item.nomId"
+          v-bind:key="item.nominationId"
           v-bind:count="formCount"
           v-bind:focus="nomFocus"
           v-bind:next="nextNomBool"
@@ -271,8 +271,11 @@ export default {
       }
       this.nextNomBool = false
     },
-    onSubmit () {
+    createKassaContainer () {
       this.$store.dispatch('createKassaContainer', 'end')
+      this.next('showNomination')
+    },
+    onSubmit () {
       this.$store.dispatch('saveNominations')
       this.formCount = 0
     }

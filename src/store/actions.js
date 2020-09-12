@@ -16,6 +16,13 @@ export default {
       context.commit('SET_LOADING_STATUS', 'notLoading')
     })
   },
+  fetchConsumptionCount (context) {
+    context.commit('SET_LOADING_STATUS', 'loading')
+    axios.get(`${this.state.controllerUrl}consumptie?id=${this.state.kassaContainerId}`).then(response => {
+      context.commit('SET_CONSUMPTIONS_COUNT', response.data)
+      context.commit('SET_LOADING_STATUS', 'notLoading')
+    })
+  },
   fetchProfitChartData (context, data = []) {
     context.commit('SET_LOADING_STATUS', 'loading')
     axios.get(`${this.state.controllerUrl}chart?startdate=${data.startDate}&enddate=${data.endDate}`).then(response => {
@@ -73,10 +80,12 @@ export default {
   },
   createKassaContainer (context, kassaType) {
     context.commit('SET_LOADING_STATUS', 'loading')
+    console.log('kassaContainer Id ', this.state.kassaContainerId)
     // Do this on start evening
     if (this.state.kassaContainerId === 0) {
       axios.post(`${this.state.controllerUrl}kassacontainer`, {
         beginUur: moment(this.state.kassaContainer.beginUur).format('YYYY-MM-DDThh:mm:ss'),
+        eindUur: moment(this.state.beginUur).add('4', 'hours').format('YYYY-MM-DDThh:mm:ss'),
         naamTapper: this.state.kassaContainer.naamTapper
       }).then(response => {
         context.commit('SET_KASSACONTAINER', response.data)
@@ -87,7 +96,7 @@ export default {
         console.log('kassacontainer post error', error)
         context.commit('SET_LOADING_STATUS', 'notLoading')
       })
-    } else { // do this on end evening
+    } else if (this.state.kassaContainerId !== 0 && kassaType === 'end') { // do this on end evening
       console.log('is not zero')
       axios.put(
         `${this.state.controllerUrl}kassacontainer/${this.state.kassaContainer.id}`,
@@ -111,6 +120,7 @@ export default {
         kassaContainerId: this.state.kassaContainerId,
         type: kassaType
       }).then(response => {
+        console.log('response', response)
         context.commit('ADD_KASSA', response.data)
         context.commit('SET_LOADING_STATUS', 'notLoading')
       }).catch(error => {
@@ -126,8 +136,8 @@ export default {
     this.state.nominations.forEach(el => {
       axios.post(`${this.state.controllerUrl}KassaNominations`, {
         kassaId: this.state.kassaId,
-        nominationId: el.id,
-        amount: el.defaultAmount
+        nominationId: el.nominationId,
+        amount: el.amount
       }).then(response => {
         if (this.state.kassaType === 'begin') {
           this.commit('SET_BEGINKASSA_NOMINATIONS')

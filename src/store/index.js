@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import moment from 'moment'
+// import moment from 'moment'
 import actions from './actions'
 import mutations from './mutations'
 // import { List } from 'ant-design-vue'
@@ -10,7 +10,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    debug: false,
+    debug: true,
     debugUI: false,
     debugStore: false,
     controllerUrl: 'https://localhost:5001/api/',
@@ -24,8 +24,8 @@ export default new Vuex.Store({
     kassaContainerId: 0,
     kassaContainer: {
       id: 0,
-      beginUur: moment(),
-      eindUur: moment(),
+      beginUur: null,
+      eindUur: null,
       naamTapper: '',
       naamTapperSluit: '',
       Errors: [],
@@ -39,7 +39,9 @@ export default new Vuex.Store({
     beginVsEndChartData: null,
     kassabladen: [],
     kassaContainers: [],
-    kassaContainersTapper: []
+    kassaContainersTapper: [],
+    kassaContainerDetail: null,
+    resetKassaContainer: true
   },
   mutations,
   actions,

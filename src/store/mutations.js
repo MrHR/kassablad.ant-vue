@@ -5,8 +5,19 @@ export default {
     state.loadingStatus = status
   },
   SET_NOMINATIONS (state, nominations) {
-    state.nominations = nominations
+    const noms = []
+    nominations.forEach(nom => {
+      const Nom = {
+        kassaId: this.state.kassaId,
+        nominationId: nom.id,
+        amount: nom.defaultAmount,
+        multiplier: nom.multiplier
+      }
+      noms.push(Nom)
+    })
+    state.nominations = noms
     if (state.debug) console.log('set Nominations triggered with', nominations)
+    if (state.debug) console.log('set Noms triggered with', noms)
   },
   SET_BEGINKASSA_NOMINATIONS (state) {
     state.beginKassaNominations = JSON.parse(JSON.stringify(state.nominations))
@@ -21,7 +32,7 @@ export default {
     if (this.state.debugStore) console.log('set Consumptions triggered with', consumptions)
   },
   SET_CONSUMPTION_COUNT (state, consumptionCount) {
-    for (var i in state.consumptions) {
+    for (const i in state.consumptions) {
       if (state.consumptions[i].id === consumptionCount.consumptieId) {
         state.consumptions[i].consumptieCountId = consumptionCount.id
         break
@@ -37,11 +48,13 @@ export default {
   },
   SET_KASSACONTAINER (state, data) {
     state.kassaContainer = data
+    state.kassaContainer.naamTapperSluit = state.kassaContainer.naamTapper
     state.kassaContainerId = data.id
   },
   SET_KASSACONTAINER_TAPPER (state, data) {
-    console.log('data', data)
+    console.log('beginUur', data.beginUur)
 
+    state.resetKassaContainer = false
     state.kassaContainer.id = data.id
     state.kassaContainer.beginUur = moment(data.beginUur)
     state.kassaContainer.eindUur = moment()
@@ -63,8 +76,8 @@ export default {
         updatedBy: item.UpdateBy,
         createdBy: item.createdBy,
         nomination: item.nomination,
-        multiplier: item.multiplier,
-        defaultAmount: item.amount,
+        multiplier: item.nomination.multiplier,
+        amount: item.amount,
         total: `€ ${item.amount * item.nomination.multiplier}`
       }
       nominations.push(nomination)
@@ -72,6 +85,7 @@ export default {
     state.beginKassaNominations = nominations
     state.nominations = nominations
 
+    console.log('kassaContainer', state.kassaContainer)
     console.log('nominations', state.nominations)
     console.log('begin nominations', state.beginKassaNominations)
   },
@@ -92,6 +106,7 @@ export default {
   },
   ADD_KASSA (state, data) {
     state.kassas.push(data)
+    console.log('add kassa', data.id)
     state.kassaId = data.id
     state.kassaType = data.type
   },

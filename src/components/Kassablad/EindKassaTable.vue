@@ -53,18 +53,17 @@ export default {
     ...mapState(['beginKassaNominations'])
   },
   mounted: function () {
-    // this.cacheData = this.eindKassaData.map(item => ({ ...item }))
     this.beginKassaNominations.forEach(beginNom => {
-      const eindNom = this.nominations.filter(el => el.id === beginNom.id)[0]
+      const eindNom = this.nominations.filter(el => el.multiplier === beginNom.multiplier)[0]
       const tempObj = {
         key: eindNom.id,
         multiplier: eindNom.multiplier,
-        beginAantal: beginNom.defaultAmount,
-        eindAantal: eindNom.defaultAmount,
-        total: eindNom.total,
+        beginAantal: beginNom.amount,
+        eindAantal: eindNom.amount,
+        total: `€ ${helperFunctions.calculatePrice(eindNom.amount, eindNom.multiplier)}`,
         endTotal: `€ ${helperFunctions.subtractPrices(
-          helperFunctions.calculatePrice(eindNom.defaultAmount, eindNom.multiplier),
-          helperFunctions.calculatePrice(beginNom.defaultAmount, beginNom.multiplier))
+          helperFunctions.calculatePrice(eindNom.amount, eindNom.multiplier),
+          helperFunctions.calculatePrice(beginNom.amount, beginNom.multiplier))
         }`
       }
       this.eindKassaData.push(tempObj)
