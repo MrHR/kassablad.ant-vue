@@ -72,13 +72,14 @@
           {{ nominations }}
         </div>
           <Nomination
-            v-for="(item, index) in nominations"
+            v-for="(item, index) in kassaContainer.kassaNominations"
             v-bind:item="item"
             v-bind:index="index"
             v-bind:key="item.nominationId"
             v-bind:count="formCount"
-            v-bind:focus="nomFocus"
             v-bind:next="nextNomBool"
+            v-bind:focus="nomFocus"
+            v-bind:nominations="kassaContainer.nominations"
             @goto-next="gotoNextNom"
           ></Nomination>
           <a-form-model-item>
@@ -117,7 +118,7 @@
       <!--FORMPART: beginKassaNoms Table-->
       <div v-if="visibleComponent ==='showOverview'">
         <a-form-model-item>
-          <BeginKassaTable class="startEveningTableWrapper center" v-bind:nominations="nominations" />
+          <BeginKassaTable class="startEveningTableWrapper center" v-bind:nominations="kassaContainer" />
           <a-button @click="next('showNomination')">
             <a-icon type="double-left" />
           </a-button>
@@ -147,7 +148,7 @@
 import locale from 'ant-design-vue/es/date-picker/locale/nl_BE'
 import moment from 'moment'
 import Nomination from '@/components/Kassablad/Nomination.vue'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import BeginKassaTable from '@/components/Kassablad/BeginKassaTable.vue'
 import CreateKassaBlad from '@/components/Kassablad/CreateKassaBlad.vue'
 import helperFunctions from '../functions/helperFunctions'
@@ -177,13 +178,13 @@ export default {
       'debugUI',
       'visibleComponent',
       'visibleWrapper',
-      'kassaContainer',
       'kassaContainerId',
       'kassas',
       'kassaId',
       'kassaType',
       'resetKassaContainer'
-    ])
+    ]),
+    ...mapState({ kassaContainer: state => state.kassabladen.kassaContainer })
   },
   methods: {
     moment,
@@ -194,11 +195,11 @@ export default {
       this.$store.dispatch('showComponent', name)
     },
     gotoNextNom (item) {
-      if (this.formCount >= (this.nominations.length - 1)) {
+      if (this.formCount >= (this.kassaContainer.nominations.length - 1)) {
         this.next('showOverview')
       } else {
         // this.$refs.nextNom.$el.click()
-        if (this.formCount < (this.nominations.length - 1)) {
+        if (this.formCount < (this.kassaContainer.nominations.length - 1)) {
           this.formCount++
           this.nomFocus = true
         }
@@ -212,13 +213,14 @@ export default {
     onSubmit () {
       this.$store.dispatch('saveNominations')
       this.formCount = 0
-    }
+    },
+    ...mapActions('kassabladen', ['fetchNominations'])
   },
   created () {
     if (this.resetKassaContainer) {
       console.log('reset')
       this.$store.dispatch('resetKassaData')
-      this.$store.dispatch('fetchNominations')
+      this.fetchNominations()
     }
   },
   watch: {

@@ -3,7 +3,7 @@
   <div class="nomination">
     <div v-if="toggleElement = count === index">
       <a-form-model-item label="Valuta">
-        <span class="nom-item nom-multi nom-multi-left">&euro; {{ item.multiplier }}</span>
+        <span class="nom-item nom-multi nom-multi-left">&euro; {{ multiplier }}</span>
         <span class="nom-item">x</span>
         <a-input-number
           ref="multiplierInput"
@@ -28,7 +28,7 @@ import helperFunctions from '../../functions/helperFunctions.js'
 
 export default {
   name: 'Nomination',
-  props: ['item', 'count', 'index', 'value', 'next'],
+  props: ['item', 'count', 'index', 'next', 'nominations'],
   data () {
     return {
       amount: this.item.amount,
@@ -43,7 +43,10 @@ export default {
   },
   computed: {
     nomTotal: function () {
-      return helperFunctions.calculatePrice(this.item.multiplier, this.item.amount)
+      return helperFunctions.calculatePrice(this.multiplier, this.item.amount)
+    },
+    multiplier: function () {
+      return this.nominations.find(x => x.id === this.item.nominationId).multiplier
     }
   },
   watch: {

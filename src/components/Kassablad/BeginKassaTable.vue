@@ -5,6 +5,8 @@
 </template>
 <script>
 import helpers from '../../functions/helperFunctions'
+import { mapState } from 'vuex'
+
 const columns = [
   {
     title: 'Nominatie',
@@ -29,20 +31,27 @@ const columns = [
 ]
 export default {
   name: 'BeginKassaTable',
-  props: ['nominations'],
+  props: ['kassaContainer'],
   data () {
     return {
       columns
     }
   },
   computed: {
+    kassaNominations: function () {
+      return this.kassaContainer.kassaNominations
+    },
+    multiplier: function () {
+      return this.kassaContainer.nominations.find(x => x.id === this.item.nominationId).multiplier
+    },
     beginKassaData: function () {
       const noms = []
-      this.nominations.forEach(item => {
+      const _this = this
+      _this.kassaNominations.forEach(item => {
         const nom = {
           amount: item.amount,
-          multiplier: item.multiplier,
-          total: `€ ${helpers.calculatePrice(item.amount, item.multiplier)}`
+          multiplier: _this.multiplier,
+          total: `€ ${helpers.calculatePrice(item.amount, _this.multiplier)}`
         }
         noms.push(nom)
       })

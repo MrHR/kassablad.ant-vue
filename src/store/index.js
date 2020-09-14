@@ -3,12 +3,16 @@ import Vuex from 'vuex'
 // import moment from 'moment'
 import actions from './actions'
 import mutations from './mutations'
+import kassabladen from './kassabladen'
 // import { List } from 'ant-design-vue'
 // import nominations from '@/store/nominations.js'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  modules: {
+    kassabladen
+  },
   state: {
     debug: true,
     debugUI: false,
@@ -44,8 +48,5 @@ export default new Vuex.Store({
     resetKassaContainer: true
   },
   mutations,
-  actions,
-  modules: {
-    // nominations: nominations
-  }
+  actions
 })
