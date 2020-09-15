@@ -14,7 +14,7 @@
             v-model="kassaContainer.naamTapperSluit"
             ref="naamTapperSluit"
             placeholder="Bv.: Brent Vanheuverzwyn"
-            @pressEnter="next('eindUur')"
+            @pressEnter="next('Sluitingsuur')"
             @focus="$event.target.select()"
           />
         </a-form-model-item>
@@ -27,7 +27,7 @@
               type="primary"
               ref="toDateButton"
               style="margin-left: 10px;"
-              @click="next('eindUur')"
+              @click="next('Sluitingsuur')"
             >
               <a-icon type="double-right" />
             </a-button>
@@ -35,17 +35,15 @@
         </a-form-model-item>
       </div>
       <!-- FORMPART: EIND UUR EN DATUM -->
-      <div v-if="visibleComponent ==='eindUur'">
-        <a-form-model-item label="Eind Uur">
+      <div v-if="visibleComponent ==='Sluitingsuur'">
+        <a-form-model-item label="Sluitingsuur">
           <a-date-picker
-            ref="beginUur"
+            ref="Sluitingsuur"
             :show-time="{ format: 'HH:mm' }"
-            :format="dateFormat"
-            showNom
-            v-model="kassaContainer.eindUur"
-            type="date"
             placeholder="Pick a date"
+            :format="format"
             style="width: 100%;"
+            v-model="eindUur"
           />
         </a-form-model-item>
         <a-form-model-item>
@@ -69,17 +67,16 @@
         <a-form-model-item label="bezoekers">
           <a-input-number
             ref="bezoekers"
-            :default-value="0"
             :min="0"
             :max="300"
             :precision="0"
-            v-model="kassaContainer.bezoekers"
-            @pressEnter="createKassaContainer"
+            v-model="bezoekers"
             @focus="$event.target.select()"
+            @pressEnter="tempCreateKassaContainer"
           />
         </a-form-model-item>
         <a-form-model-item>
-          <a-button @click="next('eindUur')">
+          <a-button @click="next('Sluitingsuur')">
             <a-icon type="double-left" />
           </a-button>
           <a-tooltip placement="bottom" title="Volgende" :mouseEnterDelay="1">
@@ -87,7 +84,7 @@
               type="primary"
               ref="toNomButton"
               style="margin-left: 10px;"
-              @click="createKassaContainer"
+              @click="tempCreateKassaContainer"
             >
               <a-icon type="double-right" />
             </a-button>
@@ -99,19 +96,20 @@
         <!-- {{ this.kassas }} -->
         <!-- {{ nominations }} -->
         <Nomination
-          v-for="(item, index) in nominations"
+          v-for="(item, index) in kassaContainer.endKassaNominations"
           v-bind:item="item"
           v-bind:index="index"
           v-bind:key="item.nominationId"
           v-bind:count="formCount"
-          v-bind:focus="nomFocus"
           v-bind:next="nextNomBool"
+          v-bind:focus="nomFocus"
+          v-bind:nominations="kassaContainer.nominations"
           @goto-next="gotoNextNom"
         ></Nomination>
         <a-form-model-item>
           <!--GOTO: Previous form item(date)-->
           <a-button
-            v-if="formCount <= 0" @click="next('eindUur')">
+            v-if="formCount <= 0" @click="next('bezoekers')">
             <a-icon type="double-left" />
           </a-button>
           <!--GOTO: Previous Nomination-->
@@ -122,7 +120,7 @@
           <a-tooltip placement="bottom" title="Volgende(Enter)" :mouseEnterDelay="1">
             <a-button
               ref="nextNom"
-              v-if="formCount < (nominations.length - 1)"
+              v-if="formCount < (kassaContainer.nominations.length - 1)"
               type="primary" style="margin-left: 10px;"
               @click="nextNomBool = true;"
             >
@@ -131,20 +129,23 @@
           </a-tooltip>
           <!-- GOTO: form overview -->
           <a-button
-            ref=""
-            v-if="formCount >= (nominations.length -1)"
+            ref="showOverview"
+            v-if="formCount >= (kassaContainer.nominations.length -1)"
             type="primary"
             style="margin-left: 10px;"
             @click="next('showOverview')"
           >
-            <a-icon type="double-right" />
+            <!-- <a-icon type="double-right" /> -->
           </a-button>
         </a-form-model-item>
       </div>
       <!-- FORMPART: EINDKASSA TABEL-->
       <div v-if="visibleComponent === 'showOverview'">
         <a-form-model-item>
-          <EindKassaTable class="endEveningTableWrapper center" v-bind:nominations="nominations" v-bind:beginKassaNominations="beginKassaNominations" />
+          <EindKassaTable
+            class="endEveningTableWrapper center"
+            v-bind:kassaContainer="kassaContainer"
+          />
         </a-form-model-item>
         <a-form-model-item>
           <a-button @click="next('showNomination')">
@@ -170,12 +171,12 @@
             ref="showAfroomkluisBedrag"
             :default-value="0"
             :min="0"
-            :max="maxValue"
-            :step="1.00"
+            :max="kassaTotaal"
+            :step="0.05"
             :precision="2"
             :formatter="value => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
             :parser="value => value.replace(/\€\s?|(,*)/g, '')"
-            v-model="kassaContainer.afroomkluis"
+            v-model="afroomkluis"
             @pressEnter="onSubmit"
             @focus="$event.target.select()"
           />
@@ -197,6 +198,7 @@
       </div>
     </a-form-model>
     <div v-if="this.debug">
+      <b>Eind Uur:</b> {{ this.eindUur }} <br />
       <b>kassaType:</b> {{ this.kassaType }} <br />
       <b>KassaContainer:</b> {{ this.kassaContainer }} <br />
       <b>KassaContainerId:</b> {{ this.kassaContainerId }} <br />
@@ -206,10 +208,10 @@
   </div>
 </template>
 <script>
-import locale from 'ant-design-vue/es/date-picker/locale/nl_BE'
 import moment from 'moment'
+import 'ant-design-vue/es/date-picker/locale/nl_BE'
 import Nomination from '@/components/Kassablad/Nomination.vue'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import EindKassaTable from '@/components/Kassablad/EindKassaTable.vue'
 import CreateKassaBlad from '@/components/Kassablad/CreateKassaBlad.vue'
 import helpers from '../functions/helperFunctions'
@@ -223,13 +225,13 @@ export default {
   },
   data () {
     return {
-      locale,
+      moment,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       formCount: 0,
       nomFocus: false,
       nextNomBool: false,
-      dateFormat: 'DD/MM/YYYY HH:mm'
+      format: 'DD/MM/YYYY HH:mm'
     }
   },
   computed: {
@@ -240,52 +242,89 @@ export default {
       'debugUI',
       'visibleComponent',
       'visibleWrapper',
-      'kassaContainer',
       'kassaContainerId',
       'kassas',
       'kassaId',
       'kassaType'
     ]),
-    afroomkluisBedrag: function () {
-      return helpers.subtractPrices(300.00, this.kassaContainer.afroomkluis)
+    ...mapState('kassabladen', {
+      kassaContainer: state => state.kassaContainer
+    }),
+    eindUur: {
+      get () {
+        return this.$store.state.kassabladen.kassaContainer.eindUur
+      },
+      set (value) {
+        this.$store.commit('kassabladen/SET_EIND_UUR', value)
+      }
     },
-    maxValue: function () {
-      return 300.00 // TODO: replace with kassablad total
+    bezoekers: {
+      get () {
+        return this.$store.state.kassabladen.kassaContainer.bezoekers
+      },
+      set (value) {
+        this.$store.commit('kassabladen/SET_BEZOEKERS', value)
+      }
+    },
+    afroomkluis: {
+      get () {
+        return this.$store.state.kassabladen.kassaContainer.afroomkluis
+      },
+      set (value) {
+        this.$store.commit('kassabladen/SET_AFROOMKLUIS', value)
+      }
+    },
+    kassaTotaal: function () {
+      let total = 0
+      this.kassaContainer.endKassaNominations.forEach(el => {
+        const multiplier = this.kassaContainer.nominations.filter(x => x.id === el.nominationId)[0].multiplier
+        const amount = el.amount
+        total += helpers.calculatePrice(amount, multiplier)
+      })
+      return total
+    },
+    afroomkluisBedrag: function () {
+      return helpers.subtractPrices(this.kassaTotaal, this.kassaContainer.afroomkluis)
     }
   },
   methods: {
-    moment,
+    ...mapActions('kassabladen', [
+      'createKassaContainer',
+      'createKassa',
+      'saveKassaNominations',
+      'setEindUur',
+      'setBezoekers'
+    ]),
     next (name) {
       this.$store.dispatch('showComponent', name)
     },
     gotoNextNom (item) {
-      if (this.formCount >= (this.nominations.length - 1)) {
+      if (this.formCount >= (this.kassaContainer.nominations.length - 1)) {
         this.next('showOverview')
         // this.$refs.avondstartSubmitInput.click()
       } else {
         // this.$refs.nextNom.$el.click()
-        if (this.formCount < (this.nominations.length - 1)) {
+        if (this.formCount < (this.kassaContainer.nominations.length - 1)) {
           this.formCount++
           this.nomFocus = true
         }
       }
       this.nextNomBool = false
     },
-    createKassaContainer () {
-      this.$store.dispatch('createKassaContainer', 'end')
+    tempCreateKassaContainer () {
+      this.createKassaContainer('end')
       this.next('showNomination')
     },
     onSubmit () {
-      this.$store.dispatch('saveNominations')
+      this.createKassaContainer('end')
       this.formCount = 0
     }
   },
-  created () {
-    // TODO: get eindKassa Nominations
-  },
   watch: {
     visibleComponent (newValue) {
-      helpers.setFocus(this.$refs, newValue)
+      if (newValue !== 'showOverview') {
+        helpers.setFocus(this.$refs, newValue)
+      }
     }
   }
 }

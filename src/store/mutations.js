@@ -49,46 +49,48 @@ export default {
   SET_KASSACONTAINER (state, data) {
     state.kassaContainer = data
     state.kassaContainer.naamTapperSluit = state.kassaContainer.naamTapper
-    state.kassaContainerId = data.id
-  },
-  SET_KASSACONTAINER_TAPPER (state, data) {
-    console.log('beginUur', data.beginUur)
-
-    state.resetKassaContainer = false
-    state.kassaContainer.id = data.id
-    state.kassaContainer.beginUur = moment(data.beginUur)
+    state.kassaContainer.beginUur = moment()
     state.kassaContainer.eindUur = moment()
-    state.kassaContainer.naamTapper = ''
-    state.kassaContainer.naamTapperSluit = ''
-    state.kassaContainer.Errors = []
-    state.kassaContainer.bezoekers = 0
-    state.kassaContainer.afroomkluis = 0.00
-    state.kassaContainer = data
     state.kassaContainerId = data.id
-    state.kassaId = data.beginKassa.id
-    var nominations = []
-    data.beginKassa.nominationList.forEach(item => {
-      var nomination = {
-        id: item.id,
-        active: item.active,
-        dateAdded: item.dateAdded,
-        dateUpdated: item.dateUpdated,
-        updatedBy: item.UpdateBy,
-        createdBy: item.createdBy,
-        nomination: item.nomination,
-        multiplier: item.nomination.multiplier,
-        amount: item.amount,
-        total: `€ ${item.amount * item.nomination.multiplier}`
-      }
-      nominations.push(nomination)
-    })
-    state.beginKassaNominations = nominations
-    state.nominations = nominations
-
-    console.log('kassaContainer', state.kassaContainer)
-    console.log('nominations', state.nominations)
-    console.log('begin nominations', state.beginKassaNominations)
   },
+  // SET_KASSACONTAINER_TAPPER (state, data) {
+  //   console.log('beginUur', data.beginUur)
+
+  //   state.resetKassaContainer = false
+  //   state.kassaContainer.id = data.id
+  //   state.kassaContainer.beginUur = moment(data.beginUur)
+  //   state.kassaContainer.eindUur = moment()
+  //   state.kassaContainer.naamTapper = ''
+  //   state.kassaContainer.naamTapperSluit = ''
+  //   state.kassaContainer.Errors = []
+  //   state.kassaContainer.bezoekers = 0
+  //   state.kassaContainer.afroomkluis = 0.00
+  //   state.kassaContainer = data
+  //   state.kassaContainerId = data.id
+  //   state.kassaId = data.beginKassa.id
+  //   var nominations = []
+  //   data.beginKassa.nominationList.forEach(item => {
+  //     var nomination = {
+  //       id: item.id,
+  //       active: item.active,
+  //       dateAdded: item.dateAdded,
+  //       dateUpdated: item.dateUpdated,
+  //       updatedBy: item.UpdateBy,
+  //       createdBy: item.createdBy,
+  //       nomination: item.nomination,
+  //       multiplier: item.nomination.multiplier,
+  //       amount: item.amount,
+  //       total: `€ ${item.amount * item.nomination.multiplier}`
+  //     }
+  //     nominations.push(nomination)
+  //   })
+  //   state.beginKassaNominations = nominations
+  //   state.nominations = nominations
+
+  //   console.log('kassaContainer', state.kassaContainer)
+  //   console.log('nominations', state.nominations)
+  //   console.log('begin nominations', state.beginKassaNominations)
+  // },
   SET_KASSACONTAINERS (state, data) {
     state.kassaContainers = data
   },
@@ -118,7 +120,7 @@ export default {
     state.kassaContainer = {
       id: 0,
       beginUur: moment(),
-      eindUur: moment(),
+      eindUur: null,
       naamTapper: '',
       naamTapperSluit: '',
       Errors: [],

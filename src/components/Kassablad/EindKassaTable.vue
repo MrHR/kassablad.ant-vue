@@ -4,7 +4,6 @@
   </a-table>
 </template>
 <script>
-import { mapState } from 'vuex'
 import helperFunctions from '../../functions/helperFunctions'
 const columns = [
   {
@@ -42,28 +41,26 @@ const columns = [
 ]
 export default {
   name: 'EindKassaTable',
-  props: ['nominations'],
+  props: ['kassaContainer'],
   data () {
     return {
       columns,
       eindKassaData: []
     }
   },
-  computed: {
-    ...mapState(['beginKassaNominations'])
-  },
   mounted: function () {
-    this.beginKassaNominations.forEach(beginNom => {
-      const eindNom = this.nominations.filter(el => el.multiplier === beginNom.multiplier)[0]
+    this.kassaContainer.beginKassaNominations.forEach(beginNom => {
+      const eindNom = this.kassaContainer.endKassaNominations.filter(el => el.nominationId === beginNom.nominationId)[0]
+      const multiplier = this.kassaContainer.nominations.filter(x => x.id === eindNom.nominationId)[0].multiplier
       const tempObj = {
         key: eindNom.id,
-        multiplier: eindNom.multiplier,
+        multiplier: multiplier,
         beginAantal: beginNom.amount,
         eindAantal: eindNom.amount,
-        total: `€ ${helperFunctions.calculatePrice(eindNom.amount, eindNom.multiplier)}`,
+        total: `€ ${helperFunctions.calculatePrice(eindNom.amount, multiplier)}`,
         endTotal: `€ ${helperFunctions.subtractPrices(
-          helperFunctions.calculatePrice(eindNom.amount, eindNom.multiplier),
-          helperFunctions.calculatePrice(beginNom.amount, beginNom.multiplier))
+          helperFunctions.calculatePrice(eindNom.amount, multiplier),
+          helperFunctions.calculatePrice(beginNom.amount, multiplier))
         }`
       }
       this.eindKassaData.push(tempObj)

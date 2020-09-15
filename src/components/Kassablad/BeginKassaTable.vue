@@ -5,7 +5,7 @@
 </template>
 <script>
 import helpers from '../../functions/helperFunctions'
-import { mapState } from 'vuex'
+// import { mapState } from 'vuex'
 
 const columns = [
   {
@@ -37,21 +37,22 @@ export default {
       columns
     }
   },
+  methods: {
+    multiplier: function (item) {
+      return this.kassaContainer.nominations.find(x => x.id === item.nominationId).multiplier
+    }
+  },
   computed: {
     kassaNominations: function () {
-      return this.kassaContainer.kassaNominations
-    },
-    multiplier: function () {
-      return this.kassaContainer.nominations.find(x => x.id === this.item.nominationId).multiplier
+      return this.kassaContainer.beginKassaNominations
     },
     beginKassaData: function () {
       const noms = []
-      const _this = this
-      _this.kassaNominations.forEach(item => {
+      this.kassaContainer.beginKassaNominations.forEach(item => {
         const nom = {
           amount: item.amount,
-          multiplier: _this.multiplier,
-          total: `€ ${helpers.calculatePrice(item.amount, _this.multiplier)}`
+          multiplier: this.multiplier(item),
+          total: `€ ${helpers.calculatePrice(item.amount, this.multiplier(item))}`
         }
         noms.push(nom)
       })

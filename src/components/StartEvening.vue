@@ -41,13 +41,11 @@
             <a-date-picker
               ref="beginUur"
               :show-time="{ format: 'HH:mm' }"
-              :format="dateFormat"
-              showNom
-              v-model="kassaContainer.beginUur"
-              type="date"
               placeholder="Pick a date"
+              :default-value="moment()"
+              :format="format"
               style="width: 100%;"
-              @change="viewDate"
+              v-model="kassaContainer.beginUur"
             />
           </a-form-model-item>
           <a-form-model-item>
@@ -59,7 +57,7 @@
                 type="primary"
                 ref="toNomButton"
                 style="margin-left: 10px;"
-                @click="createKassaContainer"
+                @click="linkCreateKassaContainer"
               >
                 <a-icon type="double-right" />
               </a-button>
@@ -69,10 +67,10 @@
       <!--FORMPART: KASSA OPENEN-->
       <div v-if="visibleComponent ==='showNomination'">
         <div v-if="this.debug">
-          {{ nominations }}
+          {{ kassaContainer.beginKassaNominations }}
         </div>
           <Nomination
-            v-for="(item, index) in kassaContainer.kassaNominations"
+            v-for="(item, index) in kassaContainer.beginKassaNominations"
             v-bind:item="item"
             v-bind:index="index"
             v-bind:key="item.nominationId"
@@ -96,7 +94,7 @@
             <a-tooltip placement="bottom" title="Volgende(Enter)" :mouseEnterDelay="1">
               <a-button
                 ref="nextNom"
-                v-if="formCount < (nominations.length - 1)"
+                v-if="formCount < (kassaContainer.nominations.length - 1)"
                 type="primary" style="margin-left: 10px;"
                 @click="nextNomBool = true;"
               >
@@ -105,8 +103,8 @@
             </a-tooltip>
             <!-- GOTO: form overview -->
             <a-button
-              ref=""
-              v-if="formCount >= (nominations.length -1)"
+              ref="showOverview"
+              v-if="formCount >= (kassaContainer.nominations.length -1)"
               type="primary"
               style="margin-left: 10px;"
               @click="next('showOverview')"
@@ -118,7 +116,10 @@
       <!--FORMPART: beginKassaNoms Table-->
       <div v-if="visibleComponent ==='showOverview'">
         <a-form-model-item>
-          <BeginKassaTable class="startEveningTableWrapper center" v-bind:nominations="kassaContainer" />
+          <BeginKassaTable
+            class="startEveningTableWrapper center"
+            v-bind:kassaContainer="kassaContainer"
+          />
           <a-button @click="next('showNomination')">
             <a-icon type="double-left" />
           </a-button>
@@ -136,6 +137,7 @@
       </div>
     </a-form-model>
     <div v-if="this.debug">
+      <b>Begin Uur:</b> {{ this.kassaContainer.beginUur }} <br />
       <b>kassaType:</b> {{ this.kassaType }} <br />
       <b>KassaContainer:</b> {{ this.kassaContainer }} <br />
       <b>KassaContainerId:</b> {{ this.kassaContainerId }} <br />
@@ -145,8 +147,8 @@
   </div>
 </template>
 <script>
-import locale from 'ant-design-vue/es/date-picker/locale/nl_BE'
 import moment from 'moment'
+import 'ant-design-vue/es/date-picker/locale/nl_BE'
 import Nomination from '@/components/Kassablad/Nomination.vue'
 import { mapState, mapActions } from 'vuex'
 import BeginKassaTable from '@/components/Kassablad/BeginKassaTable.vue'
@@ -162,13 +164,14 @@ export default {
   },
   data () {
     return {
-      locale,
+      moment,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       formCount: 0,
       nomFocus: false,
       nextNomBool: false,
-      dateFormat: 'DD/MM/YYYY HH:mm'
+      format: 'DD/MM/YYYY HH:mm',
+      dateFormat: 'DD/MM/YYYY'
     }
   },
   computed: {
@@ -184,12 +187,23 @@ export default {
       'kassaType',
       'resetKassaContainer'
     ]),
-    ...mapState({ kassaContainer: state => state.kassabladen.kassaContainer })
+    ...mapState({ kassaContainer: state => state.kassabladen.kassaContainer }),
+    beginUur: {
+      get: function () {
+        return moment(this.kassaContainer.beginUur || moment(), 'DD/MM/YYYY HH:mm')
+      },
+      set: function (newValue) {
+        return moment(newValue || moment(), 'DD/MM/YYYY HH:mm')
+      }
+    }
   },
   methods: {
-    moment,
-    viewDate () {
-      console.log(moment(this.kassaContainer.beginUur))
+    ...mapActions('kassabladen', ['createKassaContainer', 'createKassa', 'saveKassaNominations']),
+    viewDate (date, dateString) {
+      this.dateString = dateString
+      console.log('datestring this', this.dateString)
+      console.log('date', date, 'datestring', dateString)
+      console.log(this.kassaContainer.beginUur)
     },
     next (name) {
       this.$store.dispatch('showComponent', name)
@@ -198,7 +212,6 @@ export default {
       if (this.formCount >= (this.kassaContainer.nominations.length - 1)) {
         this.next('showOverview')
       } else {
-        // this.$refs.nextNom.$el.click()
         if (this.formCount < (this.kassaContainer.nominations.length - 1)) {
           this.formCount++
           this.nomFocus = true
@@ -206,26 +219,26 @@ export default {
       }
       this.nextNomBool = false
     },
-    createKassaContainer () {
-      this.$store.dispatch('createKassaContainer')
+    linkCreateKassaContainer () {
+      this.createKassaContainer()
       this.next('showNomination')
     },
     onSubmit () {
-      this.$store.dispatch('saveNominations')
+      this.saveKassaNominations('begin')
       this.formCount = 0
-    },
-    ...mapActions('kassabladen', ['fetchNominations'])
+    }
   },
   created () {
     if (this.resetKassaContainer) {
       console.log('reset')
       this.$store.dispatch('resetKassaData')
-      this.fetchNominations()
     }
   },
   watch: {
     visibleComponent (newValue) {
-      helperFunctions.setFocus(this.$refs, newValue)
+      if (newValue !== 'showOverview') {
+        helperFunctions.setFocus(this.$refs, newValue)
+      }
     }
   }
 }
