@@ -88,31 +88,50 @@ export default {
     }
   },
   computed: {
-    ...mapState(['kassaContainer'])
+    ...mapState(['kassaContainers'])
   },
   created () {
-    this.$store.dispatch('fetchKassaContainer', this.$route.params.id)
   },
   mounted: function () {
+    if (this.kassaContainers.length === 0 || !this.kassaContainers) {
+      console.log('kassaContainers was empty')
+      this.$store.dispatch('fetchKassaContainers').then(() => {
+        this.drawKassaContainers()
+      })
+    } else {
+      this.drawKassaContainers()
+    }
   },
   watch: {
-    kassaContainer (newValue) {
-      this.kassaContainer.beginKassa.nominationList.forEach(beginNom => {
-        const eindNom = this.kassaContainer.eindKassa.nominationList
-          .filter(endNom => endNom.nominationId === beginNom.nominationId)[0]
-        const tempObj = {
-          nomination: `€ ${beginNom.nomination.multiplier}`,
-          beginAmount: `${beginNom.amount}`,
-          beginTotal: `${helperFunctions.calculatePrice(beginNom.amount, beginNom.nomination.multiplier)}`,
-          endAmount: `${eindNom.amount}`,
-          endTotal: `${helperFunctions.calculatePrice(eindNom.amount, eindNom.nomination.multiplier)}`,
-          difference: `€ ${helperFunctions.subtractPrices(
-            helperFunctions.calculatePrice(eindNom.amount, eindNom.nomination.multiplier),
-            helperFunctions.calculatePrice(beginNom.amount, beginNom.nomination.multiplier))
-          }`
-        }
-        this.kassaData.push(tempObj)
-      })
+  },
+  methods: {
+    drawKassaContainers () {
+      // Filter kassacontainer from list
+      const kassaContainer = this.kassaContainers
+        .filter(kc => parseInt(kc.beginKassa.id) === parseInt(this.$route.query.kassa_id) && kc !== null)[0]
+      if (kassaContainer) {
+        kassaContainer.beginKassa.nominationList.forEach(beginNom => {
+          const eindNom = kassaContainer.eindKassa.nominationList
+            .filter(endNom => endNom.nominationId === beginNom.nominationId)[0]
+          if (!eindNom) {
+            eindNom.amount = 0
+            eindNom.nomination.multiplier = 0
+          }
+          const tempObj = {
+            key: beginNom.id,
+            nomination: `€ ${beginNom.nomination.multiplier}`,
+            beginAmount: `${beginNom.amount}`,
+            beginTotal: `${helperFunctions.calculatePrice(beginNom.amount, beginNom.nomination.multiplier)}`,
+            endAmount: `${eindNom.amount}`,
+            endTotal: `${helperFunctions.calculatePrice(eindNom.amount, eindNom.nomination.multiplier)}`,
+            difference: `€ ${helperFunctions.subtractPrices(
+              helperFunctions.calculatePrice(eindNom.amount, eindNom.nomination.multiplier),
+              helperFunctions.calculatePrice(beginNom.amount, beginNom.nomination.multiplier))
+            }`
+          }
+          this.kassaData.push(tempObj)
+        })
+      }
     }
   }
 }

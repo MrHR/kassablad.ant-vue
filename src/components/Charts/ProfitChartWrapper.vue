@@ -10,7 +10,7 @@
           <ProfitChart :profitChartData="profitChartData" :stacked="false"/>
         </div>
         <div v-if="noTitleKey === 'beginVsEindChart'">
-          <ProfitChart :profitChartData="beginVsEndChartData" :stacked="true" />
+          <ProfitChart :profitChartData="beginVsEndChartData" :stacked="false" />
         </div>
         <a-range-picker @change="onChangeSetProfitChartDate" slot="tabBarExtraContent" style="margin:10px"/>
       </a-card>

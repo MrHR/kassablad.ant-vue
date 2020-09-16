@@ -185,7 +185,8 @@ export default {
       'kassas',
       'kassaId',
       'kassaType',
-      'resetKassaContainer'
+      'resetKassaContainer',
+      'loadingStatus'
     ]),
     ...mapState({ kassaContainer: state => state.kassabladen.kassaContainer }),
     beginUur: {
@@ -231,7 +232,7 @@ export default {
   created () {
     if (this.resetKassaContainer) {
       console.log('reset')
-      this.$store.dispatch('resetKassaData')
+      this.$store.commit('kassabladen/RESET_KASSA_DATA')
     }
   },
   watch: {

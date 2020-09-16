@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import actions from './actions'
 import mutations from './mutations'
 import kassabladen from './kassabladen'
+import consumpties from './consumpties'
 // import { List } from 'ant-design-vue'
 // import nominations from '@/store/nominations.js'
 
@@ -11,23 +12,21 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    kassabladen
+    kassabladen,
+    consumpties
   },
   state: {
-    debug: true,
+    debug: false,
     debugUI: false,
     debugStore: false,
     controllerUrl: 'https://localhost:5001/api/',
     loadingStatus: 'notLoading',
-    nominations: [],
-    beginKassaNominations: [],
     consumptions: [],
     consumptionCounts: [],
     visibleComponent: 'createKassabladButton',
     visibleWrapper: 'beginKassaWrapper',
     profitChartData: null,
     beginVsEndChartData: null,
-    kassabladen: [],
     kassaContainers: [],
     kassaContainersTapper: [],
     kassaContainerDetail: null,

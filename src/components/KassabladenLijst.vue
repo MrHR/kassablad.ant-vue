@@ -6,11 +6,11 @@
       style="text-align:left"
     >
       <a-list-item class="listItem" slot="renderItem" slot-scope="item">
-        <a slot="actions" :href="'http://localhost:3000/#/kassabladen/' + item.id">edit</a>
+        <a slot="actions" :href="'http://localhost:3000/#/kassabladen/' + item.id + '?kassa_id=' + item.beginKassa.id">edit</a>
         <a-list-item-meta
           :description="'' + item.type"
         >
-          <a slot="title" :href="'http://localhost:3000/#/kassabladen/' + item.id">Tapper: {{ item.naamTapper }}</a>
+          <a slot="title" :href="'http://localhost:3000/#/kassabladen/' + item.id + '?kassa_id=' + item.beginKassa.id">Tapper: {{ item.naamTapper }}</a>
           <a-avatar
             slot="avatar"
             src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
@@ -22,33 +22,22 @@
   </div>
 </template>
 <script>
-import locale from 'ant-design-vue/es/date-picker/locale/nl_BE'
 import moment from 'moment'
+import 'ant-design-vue/es/date-picker/locale/nl_BE'
 import { mapState } from 'vuex'
-// import helperFunctions from '../functions/helperFunctions'
-// import KassabladListItem from '@/components/Kassabladen/KassabladListItem'
 
 export default {
   name: 'KassabladenLijst',
-  components: {
-    // KassabladListItem
-  },
   data () {
     return {
-      locale
+      moment
     }
   },
   computed: {
     ...mapState(['kassaContainers'])
   },
-  mounted () {
-  },
-  methods: {
-    moment
-  },
   created () {
     this.$store.dispatch('fetchKassaContainers')
-    moment.locale()
   }
 }
 </script>

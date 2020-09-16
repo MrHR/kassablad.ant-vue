@@ -32,7 +32,7 @@
 </template>
 <script>
 import helperFunctions from '../../functions/helperFunctions.js'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'Consumptie',
@@ -46,30 +46,25 @@ export default {
     }
   },
   computed: {
-    ...mapState(['consumptions', 'consumptionCounts'])
+    ...mapState('consumpties', ['consumptions', 'consumptionCounts'])
   },
   methods: {
+    ...mapActions('consumpties', ['updateConsumption', 'createConsumption']),
     addConsumptie () {
       this.consumptieAmount += 1
       this.item.aantal = this.consumptieAmount
       if (!this.item.consumptieCountId) {
-        this.createConsumption(this.item)
+        this.createConsumption(this.item) // create consumption count in db
       } else {
-        this.updateConsumption(this.item)
+        this.updateConsumption(this.item) // update consumption count in db
       }
     },
     subtractConsumptie () {
       if (this.consumptieAmount > 0) {
         this.consumptieAmount -= 1
         this.item.aantal = this.consumptieAmount
-        this.updateConsumption(this.item)
+        this.updateConsumption(this.item) // update consumption count in db
       }
-    },
-    updateConsumption (item) { // TODO: fix this shizzel just like create
-      this.$store.dispatch('updateConsumption', item) // update consumption in db
-    },
-    createConsumption (item) {
-      this.$store.dispatch('createConsumption', item) // create consumption in db
     }
   },
   watch: {

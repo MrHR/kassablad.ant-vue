@@ -27,7 +27,7 @@
 import locale from 'ant-design-vue/es/date-picker/locale/nl_BE'
 import moment from 'moment'
 import Consumptie from '@/components/Consumptieblad/Consumptie.vue'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import helperFunctions from '../functions/helperFunctions'
 
 export default {
@@ -42,11 +42,10 @@ export default {
   },
   computed: {
     ...mapState([
-      'consumptions',
-      'consumptionCounts',
-      'debug',
+      'loadingStatus',
       'visibleWrapper'
     ]),
+    ...mapState('consumpties', ['consumptions', 'consumptionCounts', 'debug']),
     totalConsumptionCost: function () {
       let totalCost = 0
       this.consumptions.forEach(el => {
@@ -57,12 +56,13 @@ export default {
   },
   methods: {
     moment,
+    ...mapActions('consumpties', ['fetchConsumptions']),
     showEinde () {
       this.$store.dispatch('showWrapper', 'eindKassaWrapper')
     }
   },
   created () {
-    this.$store.dispatch('fetchConsumptions')
+    this.fetchConsumptions()
   }
 }
 </script>

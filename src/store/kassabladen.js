@@ -49,6 +49,7 @@ export default {
       const noms = []
       data.forEach(nom => {
         const Nom = {
+          key: nom.id,
           active: true,
           dateAdded: moment(),
           dateUpdated: moment(),
@@ -69,16 +70,6 @@ export default {
           break
       }
     },
-    // SET_USER_KASSA_NOMINATIONS (state, type) {
-    //   state.kassaContainer.kassas.find(kassa => {
-    //     if (kassa.type === type) {
-    //       kassa.kassaNominations = state.kassaContainer.kassaNominations
-    //     }
-    //   })
-    //   console.log('kassaContainer', state.kassaContainer)
-    //   // state.beginKassaNominations = JSON.parse(JSON.stringify(state.nominations))
-    //   // if (state.debugStore) console.log('beginkassanominations triggered with', state.beginKassaNominations)
-    // },
     SET_EIND_UUR (state, data) {
       state.kassaContainer.eindUur = data
     },
@@ -154,7 +145,6 @@ export default {
     },
     createKassa ({ state, commit, rootState, dispatch }, kassaType) {
       commit('SET_LOADING_STATUS', 'loading', { root: true })
-      console.log('creating kassa', state.kassaType, state.kassaId)
       if ((state.kassaId === 0 || kassaType !== state.kassaType) && state.kassaContainer.id !== 0) {
         axios.post(`${rootState.controllerUrl}kassa`, {
           kassaContainerId: state.kassaContainerId,
@@ -173,7 +163,6 @@ export default {
       }
     },
     fetchNominations ({ state, commit, rootState }) {
-      console.log('fetching')
       commit('SET_LOADING_STATUS', 'loading', { root: true })
       axios.get(`${rootState.controllerUrl}nomination`).then(response => {
         commit('SET_NOMINATIONS', response.data)
@@ -212,6 +201,13 @@ export default {
           console.log('saveNominations post error', error.response.data)
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
         })
+      })
+    },
+    fetchKassa ({ state, commit, rootState, dispatch }, type, id) {
+      commit('SET_LOADING_STATUS', 'loading', { root: true })
+      axios.get(`${rootState.controllerUrl}kassa?id=${id}&type=${type}`).then(response => {
+        commit('ADD_KASSA', response.data)
+        commit('SET_LOADING_STATUS', 'notLoading', { root: true })
       })
     }
   },

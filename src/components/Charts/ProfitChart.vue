@@ -16,7 +16,9 @@ var options = {
   },
   scales: {
     xAxes: [{
-      stacked: true
+      ticks: {
+        beginAtZero: true
+      }
     }],
     yAxes: [{
       ticks: {

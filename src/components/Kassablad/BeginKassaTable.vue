@@ -50,6 +50,7 @@ export default {
       const noms = []
       this.kassaContainer.beginKassaNominations.forEach(item => {
         const nom = {
+          key: item.key,
           amount: item.amount,
           multiplier: this.multiplier(item),
           total: `€ ${helpers.calculatePrice(item.amount, this.multiplier(item))}`
