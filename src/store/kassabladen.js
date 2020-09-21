@@ -21,8 +21,6 @@ export default {
   }),
   mutations: {
     SET_KASSACONTAINER (state, data) {
-      console.log('set kassacontainer', data)
-      // console.log('response data kassaContainer', moment(data.beginUur))
       state.kassaContainer.active = data.active
       state.kassaContainer.afroomkluis = data.afroomkluis
       state.kassaContainer.bezoekers = data.bezoekers
@@ -43,7 +41,6 @@ export default {
       state.kassaContainerId = data.id
     },
     SET_KASSACONTAINER_TAPPER (state, data) {
-      console.log('set kassacontainer tapper')
       state.kassaContainer.active = data.active
       state.kassaContainer.afroomkluis = data.afroomkluis
       state.kassaContainer.bezoekers = data.bezoekers
@@ -66,7 +63,6 @@ export default {
       state.kassaContainer.endKassaNominations = data.eindKassa != null ? data.eindKassa.nominationList : []
       state.kassaId = data.beginKassa != null ? data.beginKassa.id : 0
       state.kassaType = data.beginKassa != null ? data.beginKassa.type : null
-      console.log('state', state)
     },
     ADD_KASSA (state, data) {
       state.kassaContainer.kassas.push(data)
@@ -81,26 +77,22 @@ export default {
         const newArr = state.kassaContainer.beginKassaNominations
           .map(nom => {
             if (data.nominationId === nom.nominationId) {
-              console.log('found nom match', nom)
               return data
             } else {
               return nom
             }
           })
         state.kassaContainer.beginKassaNominations = newArr
-        console.log('new Array', state.kassaContainer.beginKassaNominations)
       } else if (state.kassaType === 'end') {
         const newArr = state.kassaContainer.endKassaNominations
           .map(nom => {
             if (data.nominationId === nom.nominationId) {
-              console.log('found nom match', nom)
               return data
             } else {
               return nom
             }
           })
         state.kassaContainer.endKassaNominations = newArr
-        console.log('new Array', state.kassaContainer.endKassaNominations)
       }
     },
     SET_KASSA_NOMINATIONS (state, data) {
@@ -135,11 +127,7 @@ export default {
     SET_CREATED_KASSA_NOMINATIONS (state, response) {
       switch (response.kassaType) {
         case 'begin':
-          console.log('kassanominations', state.kassaContainer.beginKassaNominations)
           state.kassaContainer.beginKassaNominations = response.data
-          console.log('kassanominations updated', state.kassaContainer.beginKassaNominations)
-          state.count++
-          console.log('this is called', state.count, 'times')
           break
         case 'end':
           state.kassaContainer.endKassaNominations = response.data
@@ -159,9 +147,7 @@ export default {
       state.kassaContainer.afroomkluis = data
     },
     SET_ACTIVITY (state, data) {
-      console.log(`%c setting activiteit ${data}`, 'color:blue')
       state.kassaContainer.activiteit = data
-      console.log('kassaContainer', state.kassaContainer.activiteit)
     },
     RESET_KASSA_DATA (state) {
       state.kassaContainerId = 0
@@ -202,7 +188,7 @@ export default {
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
         })
       } else if (state.kassaContainer.id !== 0) { // do this when kassaContainer exits
-        console.log('is not zero')
+        // console.log('is not zero')
         axios.put(
           `${rootState.controllerUrl}kassacontainer/${state.kassaContainer.id}`,
           {
@@ -229,7 +215,6 @@ export default {
             commit('SET_SETKASSANOMINATIONS_BOOL', true)
             dispatch('createKassa', 'end')
           }
-          console.log('kassacontainer put response: ', response)
         }).catch(error => {
           console.log('kassacontainer put error', error.response.data)
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
@@ -270,7 +255,6 @@ export default {
     },
     saveKassaNomination ({ state, commit, rootState }, nom) {
       commit('SET_LOADING_STATUS', 'loading', { root: true })
-      console.log('nomination: ', nom.id)
       if (nom.id !== 0 && typeof nom.id !== 'undefined') {
         axios.put(`${rootState.controllerUrl}kassaNominations/${nom.id}`, {
           id: nom.id,
@@ -283,7 +267,6 @@ export default {
           nominationId: nom.nominationId,
           amount: nom.amount
         }).then(response => {
-          console.log('kassaNomination was updated', response.data)
           commit('SET_KASSA_NOMINATION', response.data)
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
         }).catch(error => {
@@ -301,7 +284,6 @@ export default {
           nominationId: nom.nominationId,
           amount: nom.amount
         }).then(response => {
-          console.log('kassaNomination was created and saved', response.data)
           commit('SET_KASSA_NOMINATION', response.data)
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
         }).catch(error => {
@@ -344,11 +326,9 @@ export default {
       })
       switch (state.kassaType) {
         case 'begin':
-          console.log('query result kassanominations begin', kassaNominationsResult)
           commit('SET_CREATED_KASSA_NOMINATIONS', { data: kassaNominationsResult, kassaType: 'begin' })
           break
         case 'end':
-          console.log('query result kassanominations end', kassaNominationsResult)
           commit('SET_CREATED_KASSA_NOMINATIONS', { data: kassaNominationsResult, kassaType: 'end' })
           break
       }

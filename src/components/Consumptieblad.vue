@@ -2,15 +2,15 @@
   <div  v-if="visibleWrapper === 'consumpiteWrapper'" class="consumptieblad">
     <div v-if="this.debug">
       <b>consumptions: </b>{{ consumptions }}<br />
+      <b>consumptieCounts: </b>{{ consumptionCounts }}<br />
       <b>totalConsumptionCost: </b>{{ totalConsumptionCost }}<br />
       <b>cosumptionCounts: </b>{{ consumptionCounts }}<br />
     </div>
     <Consumptie
-      v-for="(item, index) in consumptions"
+      v-for="(item, index) in consumptionCounts"
       v-bind:item="item"
       v-bind:index="index"
-      v-bind:key="item.id"
-      :consumptieName="item.naam"
+      v-bind:key="item.key || item.id"
     />
     <div class="consumptieRow">
       <span class="consumptieName">
@@ -49,7 +49,12 @@ export default {
     totalConsumptionCost: function () {
       let totalCost = 0
       this.consumptions.forEach(el => {
-        totalCost = helperFunctions.sumPrices(totalCost, el.total)
+        const consumptieCount = this.consumptionCounts.filter(x => x.consumptieId === el.id)[0]
+        if (el && consumptieCount) {
+          const amount = consumptieCount.aantal
+          const prijs = helperFunctions.calculatePriceNoRound(amount, el.prijs)
+          totalCost = helperFunctions.sumPrices(totalCost, prijs)
+        }
       })
       return totalCost
     }
@@ -62,7 +67,7 @@ export default {
     }
   },
   created () {
-    this.fetchConsumptions(this.$store.state.kassabladen.kassaContainer.id)
+    this.fetchConsumptions()
   }
 }
 </script>

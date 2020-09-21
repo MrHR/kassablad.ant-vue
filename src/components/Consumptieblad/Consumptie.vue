@@ -1,9 +1,9 @@
 <template>
   <div class="consumptieRow">
     <span class="consumptieName">
-      <b>{{ consumptieName }} </b>
+      <b>{{ consumptie.naam }} </b>
     </span>
-    <span style="min-width:30px">€ {{ this.item.prijs }}</span>
+    <span style="min-width:30px">€ {{ consumptie.prijs }}</span>
     <span>x</span>
     <span class="consumptieAmount" style="margin-right:10px;min-width:50px;text-align:right;">
       <!-- {{ consumptieAmount }} -->
@@ -14,12 +14,12 @@
           :min="0"
           :max="1000"
           :precision="0"
-          v-model="consumptieAmount"
+          v-model="item.aantal"
         />
       </a-form-model-item>
     </span>
     <span style="min-width:30px">=</span>
-    <span style="min-width:40px">€ {{ this.item.total }}</span>
+    <span style="min-width:40px">€ {{ this.total }}</span>
     <a-button-group class="consumptieButtons">
       <a-button class="subtractConsumptie" :size="size" @click="subtractConsumptie">
         <a-icon type="minus" />
@@ -31,12 +31,12 @@
   </div>
 </template>
 <script>
-import helperFunctions from '../../functions/helperFunctions.js'
+// import helperFunctions from '../../functions/helperFunctions.js'
 import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'Consumptie',
-  props: ['item', 'consumptieName'],
+  props: ['item'],
   data () {
     return {
       size: null,
@@ -46,31 +46,32 @@ export default {
     }
   },
   computed: {
-    ...mapState('consumpties', ['consumptions', 'consumptionCounts'])
+    ...mapState('consumpties', ['consumptions', 'consumptionCounts']),
+    consumptie: function () {
+      return this.consumptions.filter(x => x.id === this.item.consumptieId)[0]
+    },
+    total: function () {
+      return (this.item.aantal * (this.consumptie.prijs * 100)) / 100
+    }
   },
   methods: {
-    ...mapActions('consumpties', ['updateConsumption', 'createConsumption']),
+    ...mapActions('consumpties', ['updateConsumptionCount', 'createConsumptionCount']),
     addConsumptie () {
-      this.consumptieAmount += 1
-      this.item.aantal = this.consumptieAmount
-      if (!this.item.consumptieCountId) {
-        this.createConsumption(this.item) // create consumption count in db
+      this.item.aantal += 1
+      if (!this.item.id) {
+        console.log('consumptionCount created')
+        this.createConsumptionCount({ item: this.item, consumptieId: this.consumptie.id }) // create consumption count in db
       } else {
-        this.updateConsumption(this.item) // update consumption count in db
+        console.log('consumptionCount updated')
+        this.updateConsumptionCount(this.item) // update consumption count in db
       }
     },
     subtractConsumptie () {
-      if (this.consumptieAmount > 0) {
-        this.consumptieAmount -= 1
-        this.item.aantal = this.consumptieAmount
-        this.updateConsumption(this.item) // update consumption count in db
+      if (this.item.aantal > 0) {
+        this.item.aantal -= 1
+        console.log('consumptionCount updated')
+        this.updateConsumptionCount(this.item) // update consumption count in db
       }
-    }
-  },
-  watch: {
-    consumptieAmount (newValue) {
-      // Update Row Total
-      this.item.total = helperFunctions.calculatePrice(newValue, this.item.prijs)
     }
   }
 }

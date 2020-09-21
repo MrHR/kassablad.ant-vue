@@ -53,9 +53,11 @@ export default {
   fetchKassaContainerTapper (context, id) {
     context.commit('SET_LOADING_STATUS', 'loading')
     context.commit('kassabladen/SET_SETKASSANOMINATIONS_BOOL', false)
+    context.commit('consumpties/SET_SETCONSUMPTIONCOUNTS_BOOL', false)
     axios.get(`${this.state.controllerUrl}kassacontainer/tapper/${id}`).then(response => {
       context.commit('kassabladen/SET_KASSACONTAINER_TAPPER', response.data)
       context.dispatch('kassabladen/fetchNominations')
+      context.dispatch('consumpties/fetchConsumptionCount')
       // context.commit('kassabladen/SET_KASSACONTAINER', response.data)
       context.commit('SET_LOADING_STATUS', 'notLoading')
     })
