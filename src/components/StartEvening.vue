@@ -16,12 +16,40 @@
               v-model="kassaContainer.naamTapper"
               ref="naamTapper"
               placeholder="Bv.: Brent Vanheuverzwyn"
-              @pressEnter="next('beginUur')"
+              @pressEnter="next('activiteit')"
             />
           </a-form-model-item>
           <a-form-model-item>
             <a-button @click="next('createKassabladButton')">
               Cancel
+            </a-button>
+            <a-tooltip placement="bottom" title="Volgende(Enter)" :mouseEnterDelay="1">
+              <a-button
+                type="primary"
+                ref="toActivityButton"
+                style="margin-left: 10px;"
+                @click="next('activiteit')"
+              >
+                <a-icon type="double-right" />
+              </a-button>
+            </a-tooltip>
+          </a-form-model-item>
+      </div>
+      <!--FORMPART: ACTIVITEIT -->
+      <div v-if="visibleComponent === 'activiteit'">
+        <a-form-model-item label="Activiteit">
+          <a-input
+            class="activiteit"
+            v-model="kassaContainer.activiteit"
+            ref="activiteit"
+            placeholder="Bv.: Café"
+            @change="setTitle"
+            @pressEnter="next('beginUur')"
+          />
+        </a-form-model-item>
+        <a-form-model-item>
+            <a-button @click="next('naamTapper')">
+              <a-icon type="double-left" />
             </a-button>
             <a-tooltip placement="bottom" title="Volgende(Enter)" :mouseEnterDelay="1">
               <a-button
@@ -37,19 +65,19 @@
       </div>
       <!--FORMPART: DATUM-->
       <div v-if="visibleComponent ==='beginUur'">
+        {{ kassaContainer.beginUur }}
           <a-form-model-item label="Openingsuur">
             <a-date-picker
               ref="beginUur"
               :show-time="{ format: 'HH:mm' }"
               placeholder="Pick a date"
-              :default-value="moment()"
               :format="format"
               style="width: 100%;"
-              v-model="kassaContainer.beginUur"
+              v-model="beginUur"
             />
           </a-form-model-item>
           <a-form-model-item>
-            <a-button @click="next('naamTapper')">
+            <a-button @click="next('activiteit')">
               <a-icon type="double-left" />
             </a-button>
             <a-tooltip placement="bottom" title="Volgende" :mouseEnterDelay="1">
@@ -177,24 +205,28 @@ export default {
   computed: {
     ...mapState([
       'debug',
-      'nominations',
       'debugUI',
       'visibleComponent',
       'visibleWrapper',
-      'kassaContainerId',
-      'kassas',
-      'kassaId',
-      'kassaType',
       'resetKassaContainer',
       'loadingStatus'
     ]),
-    ...mapState({ kassaContainer: state => state.kassabladen.kassaContainer }),
-    beginUur: {
-      get: function () {
-        return moment(this.kassaContainer.beginUur || moment(), 'DD/MM/YYYY HH:mm')
+    kassaContainer: {
+      get () {
+        return this.$store.state.kassabladen.kassaContainer
       },
-      set: function (newValue) {
-        return moment(newValue || moment(), 'DD/MM/YYYY HH:mm')
+      set (value) {
+        this.$store.commit('kassabladen/SET_KASSACONTAINER', value)
+      }
+    },
+    beginUur: {
+      get () {
+        const uur = this.$store.state.kassabladen.kassaContainer.beginUur
+        console.log('uur', uur)
+        return uur
+      },
+      set (value) {
+        this.$store.commit('kassabladen/SET_BEGIN_UUR', moment(value))
       }
     }
   },
@@ -225,8 +257,17 @@ export default {
       this.next('showNomination')
     },
     onSubmit () {
-      this.saveKassaNominations('begin')
+      // this.saveKassaNominations('begin')
+      this.$store.dispatch('showWrapper', 'consumpiteWrapper')
+      this.$store.dispatch('showComponent', 'createKassabladButton')
       this.formCount = 0
+    },
+    setTitle (e) {
+      window.document.title = e.target.value
+      this.$store.commit('SET_TITLE', `${e.target.value} - ${this.$store.state.kassabladen.kassaContainer.naamTapper}`)
+    },
+    updateBeginUur (date, dateString) {
+      this.$store.commit('kassabladen/SET_BEGIN_UUR', dateString)
     }
   },
   created () {

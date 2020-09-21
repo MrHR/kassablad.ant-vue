@@ -66,6 +66,14 @@ export default {
       const menuItem = document.getElementsByClassName('router-link-exact-active')[0]
       this.selectedKeys.push(menuItem.parentElement.id)
     }, 2)
+  },
+  watch: {
+    $route (to, from) {
+      if (from.name === 'Kassablad') {
+        this.$store.commit('SET_VISIBLE_COMPONENT', 'createKassabladButton')
+        this.$store.commit('SET_VISIBLE_WRAPPER', 'beginKassaWrapper')
+      }
+    }
   }
 }
 </script>

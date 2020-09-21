@@ -16,6 +16,7 @@ export default new Vuex.Store({
     consumpties
   },
   state: {
+    title: '',
     debug: false,
     debugUI: false,
     debugStore: false,

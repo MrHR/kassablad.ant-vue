@@ -317,6 +317,9 @@ export default {
     },
     onSubmit () {
       this.createKassaContainer('end')
+      this.$store.dispatch('showWrapper', 'beginKassaWrapper')
+      this.$store.dispatch('showComponent', 'createKassabladButton')
+      this.$store.commit('kassabladen/RESET_KASSA_DATA')
       this.formCount = 0
     }
   },

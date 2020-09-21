@@ -108,7 +108,9 @@ export default {
     drawKassaContainers () {
       // Filter kassacontainer from list
       const kassaContainer = this.kassaContainers
-        .filter(kc => parseInt(kc.beginKassa.id) === parseInt(this.$route.query.kassa_id) && kc !== null)[0]
+        .filter(kc => kc.id === parseInt(this.$route.params.id))[0]
+      console.log('this.kassaContainers', this.kassaContainers)
+      console.log('id', this.$route.params.id)
       if (kassaContainer) {
         kassaContainer.beginKassa.nominationList.forEach(beginNom => {
           const eindNom = kassaContainer.eindKassa.nominationList

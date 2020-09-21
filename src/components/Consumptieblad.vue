@@ -62,7 +62,7 @@ export default {
     }
   },
   created () {
-    this.fetchConsumptions()
+    this.fetchConsumptions(this.$store.state.kassabladen.kassaContainer.id)
   }
 }
 </script>

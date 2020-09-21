@@ -38,6 +38,8 @@ export default {
   },
   methods: {
     goToNextItem (item) {
+      console.log('saving kassa nomination')
+      this.$store.dispatch('kassabladen/saveKassaNomination', item)
       this.$emit('goto-next', item)
     }
   },

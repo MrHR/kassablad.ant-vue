@@ -3,8 +3,8 @@ import axios from 'axios'
 export default {
   namespaced: true,
   state: () => ({
-    debug: true,
-    debugStore: true,
+    debug: false,
+    debugStore: false,
     consumptions: [],
     consumptionCounts: []
   }),
@@ -24,50 +24,50 @@ export default {
           break
         }
       }
-      this.state.consumptionCounts.push(consumptionCount)
+      state.consumptionCounts.push(consumptionCount)
     }
   },
   actions: {
-    fetchConsumptions (context) {
-      context.commit('SET_LOADING_STATUS', 'loading', { root: true })
-      axios.get(`${this.state.controllerUrl}consumptie`).then(response => {
-        context.commit('SET_CONSUMPTIONS', response.data)
-        context.commit('SET_LOADING_STATUS', 'notLoading', { root: true })
+    fetchConsumptions ({ state, commit, rootState }) {
+      commit('SET_LOADING_STATUS', 'loading', { root: true })
+      axios.get(`${rootState.controllerUrl}consumptie`).then(response => {
+        commit('SET_CONSUMPTIONS', response.data)
+        commit('SET_LOADING_STATUS', 'notLoading', { root: true })
       })
     },
-    fetchConsumptionCount (context) {
-      context.commit('SET_LOADING_STATUS', 'loading', { root: true })
-      axios.get(`${this.state.controllerUrl}consumptie?id=${this.state.kassaContainerId}`).then(response => {
-        context.commit('SET_CONSUMPTIONS_COUNT', response.data)
-        context.commit('SET_LOADING_STATUS', 'notLoading', { root: true })
+    fetchConsumptionCount ({ state, commit, rootState }) {
+      commit('SET_LOADING_STATUS', 'loading', { root: true })
+      axios.get(`${rootState.controllerUrl}consumptie?id=${rootState.kassabladen.kassaContainer.id}`).then(response => {
+        commit('SET_CONSUMPTIONS_COUNT', response.data)
+        commit('SET_LOADING_STATUS', 'notLoading', { root: true })
       })
     },
-    createConsumption (context, item) {
-      context.commit('SET_LOADING_STATUS', 'loading', { root: true })
-      axios.post(`${this.state.controllerUrl}consumptiecount`, {
-        kassaContainerId: this.state.kassaContainerId,
+    createConsumption ({ state, commit, rootState }, item) {
+      commit('SET_LOADING_STATUS', 'loading', { root: true })
+      axios.post(`${rootState.controllerUrl}consumptiecount`, {
+        kassaContainerId: rootState.kassabladen.kassaContainer.id,
         consumptieId: item.id,
         aantal: item.aantal
       }).then(response => {
-        context.commit('SET_CONSUMPTION_COUNT', response.data)
-        context.commit('SET_LOADING_STATUS', 'notLoading', { root: true })
+        commit('SET_CONSUMPTION_COUNT', response.data)
+        commit('SET_LOADING_STATUS', 'notLoading', { root: true })
       }).catch(error => {
         console.log('consumptie post error', error.response)
-        console.log('SET_LOADING_STATUS', 'notLoading', { root: true })
+        commit('SET_LOADING_STATUS', 'notLoading', { root: true })
       })
     },
-    updateConsumption (context, item) {
-      context.commit('SET_LOADING_STATUS', 'loading', { root: true })
+    updateConsumption ({ state, commit, rootState }, item) {
+      commit('SET_LOADING_STATUS', 'loading', { root: true })
       let objConsumptionCount = null
-      for (var i in this.state.consumptionCounts) {
-        if (this.state.consumptionCounts[i].id === item.consumptieCountId) {
-          this.state.consumptionCounts[i].aantal = item.aantal
-          objConsumptionCount = this.state.consumptionCounts[i]
+      for (var i in state.consumptionCounts) {
+        if (state.consumptionCounts[i].id === item.consumptieCountId) {
+          state.consumptionCounts[i].aantal = item.aantal
+          objConsumptionCount = state.consumptionCounts[i]
         }
       }
-      axios.put(`${this.state.controllerUrl}consumptiecount/${objConsumptionCount.id}`, objConsumptionCount)
+      axios.put(`${rootState.controllerUrl}consumptiecount/${objConsumptionCount.id}`, objConsumptionCount)
         .then(response => {
-          context.commit('SET_LOADING_STATUS', 'notLoading', { root: true })
+          commit('SET_LOADING_STATUS', 'notLoading', { root: true })
         }).catch(error => {
           console.log('consumptie put error', error.response)
           console.log('SET_LOADING_STATUS', 'notLoading', { root: true })
