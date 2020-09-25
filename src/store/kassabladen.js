@@ -16,7 +16,8 @@ export default {
       endKassaNominations: [],
       eindUur: null,
       bezoekers: 0,
-      afroomkluis: 0
+      afroomkluis: 0,
+      concept: false
     }
   }),
   mutations: {
@@ -39,6 +40,7 @@ export default {
       state.kassaContainer.updatedBy = data.updatedBy
       state.kassaContainer.naamTapperSluit = state.kassaContainer.naamTapper
       state.kassaContainerId = data.id
+      state.kassaContainer.concept = data.concept
     },
     SET_KASSACONTAINER_TAPPER (state, data) {
       state.kassaContainer.active = data.active
@@ -63,6 +65,7 @@ export default {
       state.kassaContainer.endKassaNominations = data.eindKassa != null ? data.eindKassa.nominationList : []
       state.kassaId = data.beginKassa != null ? data.beginKassa.id : 0
       state.kassaType = data.beginKassa != null ? data.beginKassa.type : null
+      state.kassaContainer.concept = data.concept
     },
     ADD_KASSA (state, data) {
       state.kassaContainer.kassas.push(data)
@@ -178,7 +181,8 @@ export default {
           beginUur: moment(state.kassaContainer.beginUur).format('YYYY-MM-DDTHH:mm:ss'),
           eindUur: moment(state.beginUur).add('4', 'hours').format('YYYY-MM-DDTHH:mm:ss'),
           naamTapper: state.kassaContainer.naamTapper,
-          activiteit: state.kassaContainer.activiteit
+          activiteit: state.kassaContainer.activiteit,
+          concept: true
         }).then(response => {
           commit('SET_KASSACONTAINER', response.data)
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
@@ -207,7 +211,8 @@ export default {
             afroomkluis: state.kassaContainer.afroomkluis,
             inkomstBar: state.kassaContainer.inkomstBar,
             inkomstLidkaart: state.kassaContainer.inkomstLidkaart,
-            activiteit: state.kassaContainer.activiteit
+            activiteit: state.kassaContainer.activiteit,
+            concept: true
           }
         ).then(response => {
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })

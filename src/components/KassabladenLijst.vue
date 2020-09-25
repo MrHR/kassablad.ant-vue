@@ -2,15 +2,16 @@
   <div>
     <a-list
       bordered
+      :pagination="pagination"
       :data-source="kassaContainers"
       style="text-align:left"
     >
       <a-list-item class="listItem" slot="renderItem" slot-scope="item">
-        <a slot="actions" :href="'http://localhost:3000/#/kassabladen/' + item.id">edit</a>
+        <a slot="actions" :href="`${routUrl}#/kassabladen/` + item.id">edit</a>
         <a-list-item-meta
           :description="'' + item.type"
         >
-          <a slot="title" :href="'http://localhost:3000/#/kassabladen/' + item.id">Tapper: {{ item.naamTapper }}</a>
+          <a slot="title" :href="`${routUrl}#/kassabladen/` + item.id">Tapper: {{ item.naamTapper }}</a>
           <a-avatar
             slot="avatar"
             src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
@@ -30,11 +31,17 @@ export default {
   name: 'KassabladenLijst',
   data () {
     return {
-      moment
+      moment,
+      pagination: {
+        onChange: page => {
+          console.log(page)
+        },
+        pageSize: 10
+      }
     }
   },
   computed: {
-    ...mapState(['kassaContainers'])
+    ...mapState(['kassaContainers', 'routUrl'])
   },
   created () {
     this.$store.dispatch('fetchKassaContainers')
@@ -42,6 +49,9 @@ export default {
 }
 </script>
 <style>
+.kassabladen {
+  background-color:transparent !important;
+}
 .listItem {
   background-color:white;
 }

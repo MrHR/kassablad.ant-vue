@@ -21,6 +21,8 @@ export default new Vuex.Store({
     debugUI: false,
     debugStore: false,
     controllerUrl: 'https://localhost:5001/api/',
+    // routUrl: ' https://192.168.1.4:3000/',
+    routUrl: ' http://localhost:3000/',
     loadingStatus: 'notLoading',
     consumptions: [],
     consumptionCounts: [],
