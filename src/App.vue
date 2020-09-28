@@ -5,16 +5,16 @@
         <!--side menu -->
         <a-layout-sider>
           <a-menu theme="dark" mode="inline" :defaultSelectedKeys="selectedKeys">
-            <a-menu-item key="3" id="3">
-              <router-link to="/dashboard">
-                <a-icon type="dashboard" />
-                <span>Dashboard</span>
-              </router-link>
-            </a-menu-item>
             <a-menu-item key="2" id="2">
               <router-link to="/kassablad">
-                <a-icon type="account-book" />
+                <a-icon type="form" />
                 <span>Kassablad</span>
+              </router-link>
+            </a-menu-item>
+            <a-menu-item key="5" id="5">
+              <router-link to="/kassabladentapper">
+                <a-icon type="container" />
+                <span>Tapbladen Vandaag</span>
               </router-link>
             </a-menu-item>
             <a-menu-item key="4" id="4">
@@ -23,10 +23,16 @@
                 <span>Cafédagen</span>
               </router-link>
             </a-menu-item>
-            <a-menu-item key="5" id="5">
-              <router-link to="/kassabladentapper">
-                <a-icon type="database" />
-                <span>Tapbladen Vandaag</span>
+            <a-menu-item key="3" id="3">
+              <router-link to="/dashboard">
+                <a-icon type="dashboard" />
+                <span>Dashboard</span>
+              </router-link>
+            </a-menu-item>
+            <a-menu-item key="6" id="6">
+              <router-link to="/reporting">
+                <a-icon type="area-chart" />
+                <span>Rapportering</span>
               </router-link>
             </a-menu-item>
           </a-menu>

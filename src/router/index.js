@@ -40,8 +40,13 @@ const routes = [
   },
   {
     path: '/kassabladenTapper',
-    name: 'kassabladenTapper',
+    name: 'KassabladenTapper',
     component: () => import('../views/KassabladenTapper.vue')
+  },
+  {
+    path: '/reporting',
+    name: 'Reporting',
+    component: () => import('../views/Reporting.vue')
   }
 ]
 

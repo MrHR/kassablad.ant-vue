@@ -1,20 +1,20 @@
 <template>
-    <div class="profitChartWrapper">
-      <a-card
-        :loading="loading"
-        :tab-list="tabListNoTitle"
-        :active-tab-key="noTitleKey"
-        @tabChange="key => onTabChange(key, 'noTitleKey')"
-      >
-        <div v-if="noTitleKey === 'profitChart'">
-          <ProfitChart :profitChartData="profitChartData" :stacked="true" />
-        </div>
-        <div v-if="noTitleKey === 'beginVsEindChart'">
-          <ProfitChart :profitChartData="beginVsEndChartData" :stacked="false" />
-        </div>
-        <a-range-picker @change="onChangeSetProfitChartDate" slot="tabBarExtraContent" style="margin:10px"/>
-      </a-card>
-    </div>
+  <div class="profitChartWrapper">
+    <a-card
+      :loading="loading"
+      :tab-list="tabListNoTitle"
+      :active-tab-key="noTitleKey"
+      @tabChange="key => onTabChange(key, 'noTitleKey')"
+    >
+      <div v-if="noTitleKey === 'profitChart'">
+        <ProfitChart :profitChartData="profitChartData" :stacked="true" />
+      </div>
+      <div v-if="noTitleKey === 'beginVsEindChart'">
+        <ProfitChart :profitChartData="beginVsEndChartData" :stacked="false" />
+      </div>
+      <a-range-picker @change="onChangeSetProfitChartDate" slot="tabBarExtraContent" style="margin:10px"/>
+    </a-card>
+  </div>
 </template>
 <script>
 import ProfitChart from '../Charts/ProfitChart'
@@ -23,6 +23,24 @@ import { mapState } from 'vuex'
 export default {
   components: {
     ProfitChart
+  },
+  data () {
+    return {
+      loading: false,
+      size: 'large',
+      stacked: false,
+      tabListNoTitle: [
+        {
+          key: 'profitChart',
+          tab: 'Opbrengsten per avond'
+        },
+        {
+          key: 'beginVsEindChart',
+          tab: 'Begin-kassa vs Eind-kassa'
+        }
+      ],
+      noTitleKey: 'profitChart'
+    }
   },
   computed: {
     ...mapState([
@@ -42,24 +60,6 @@ export default {
   mounted () {
     this.$store.dispatch('fetchProfitChartData')
     this.$store.dispatch('fetchBeginVsEndChartData')
-  },
-  data () {
-    return {
-      loading: false,
-      size: 'large',
-      stacked: false,
-      tabListNoTitle: [
-        {
-          key: 'profitChart',
-          tab: 'Opbrengsten per avond'
-        },
-        {
-          key: 'beginVsEindChart',
-          tab: 'Begin-kassa vs Eind-kassa'
-        }
-      ],
-      noTitleKey: 'profitChart'
-    }
   }
 }
 </script>

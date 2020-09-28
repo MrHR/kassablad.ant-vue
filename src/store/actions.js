@@ -76,9 +76,9 @@ export default {
       context.commit('SET_LOADING_STATUS', 'notLoading')
     })
   },
-  fetchKassaContainers (context) {
+  fetchKassaContainers (context, data = []) {
     context.commit('SET_LOADING_STATUS', 'loading')
-    axios.get(`${this.state.controllerUrl}kassacontainer/ext`).then(response => {
+    axios.get(`${this.state.controllerUrl}kassacontainer/ext?startdate=${data.startDate}&enddate=${data.endDate}`).then(response => {
       context.commit('SET_KASSACONTAINERS', response.data)
       context.commit('SET_LOADING_STATUS', 'notLoading')
     })
@@ -87,6 +87,23 @@ export default {
     context.commit('SET_LOADING_STATUS', 'loading')
     axios.get(`${this.state.controllerUrl}kassacontainer/tapper`).then(response => {
       context.commit('SET_KASSACONTAINERS_TAPPER', response.data)
+      context.commit('SET_LOADING_STATUS', 'notLoading')
+    })
+  },
+  fetchExcelReport (context, data = []) {
+    context.commit('SET_LOADING_STATUS', 'loading')
+    axios({
+      url: `${this.state.controllerUrl}reporting`,
+      method: 'GET',
+      responseType: 'blob'
+    }).then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'file.xlsx')
+      document.body.appendChild(link)
+      link.click()
+      console.log('response download excel', response.data)
       context.commit('SET_LOADING_STATUS', 'notLoading')
     })
   },
