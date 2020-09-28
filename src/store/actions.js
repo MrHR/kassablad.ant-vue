@@ -36,6 +36,20 @@ export default {
       context.commit('SET_LOADING_STATUS', 'notLoading')
     })
   },
+  fetchTapperdagenChartData (context, data = []) {
+    context.commit('SET_LOADING_STATUS', 'loading')
+    axios.get(`${this.state.controllerUrl}chart/tapperdagenchart?startdate=${data.startDate}&enddate=${data.endDate}`).then(response => {
+      context.commit('SET_TAPPERDAGEN_CHART', response.data)
+      context.commit('SET_LOADING_STATUS', 'notLoading')
+    })
+  },
+  fetchTapperConsumptieChartData (context, data = []) {
+    context.commit('SET_LOADING_STATUS', 'loading')
+    axios.get(`${this.state.controllerUrl}chart/tapperconsumptieschart?startdate=${data.startDate}&enddate=${data.endDate}`).then(response => {
+      context.commit('SET_TAPPER_CONSUMPTIES_CHART', response.data)
+      context.commit('SET_LOADING_STATUS', 'notLoading')
+    })
+  },
   fetchKassabladen (context, data = []) {
     context.commit('SET_LOADING_STATUS', 'loading')
     axios.get(`${this.state.controllerUrl}kassa?startdate=${data.startDate}&enddate=${data.endDate}`).then(response => {

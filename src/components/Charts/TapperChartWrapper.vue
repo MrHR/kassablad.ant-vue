@@ -7,10 +7,13 @@
         :active-tab-key="noTitleKey"
         @tabChange="key => onTabChange(key, 'noTitleKey')"
       >
-        <div v-if="noTitleKey === 'profitChart'">
-          <ProfitChart :profitChartData="profitChartData" :stacked="true" />
+        <div v-if="noTitleKey === 'TapperCafedagen'">
+          <ProfitChart :profitChartData="tapperdagenData" :stacked="true" />
         </div>
-        <a-range-picker @change="onChangeSetProfitChartDate" slot="tabBarExtraContent" style="margin:10px"/>
+        <div v-if="noTitleKey === 'TapperConsumpties'">
+          <ProfitChart :profitChartData="tapperConsumptieData" :stacked="false" />
+        </div>
+        <a-range-picker @change="onChangeSetChartDate" slot="tabBarExtraContent" style="margin:10px"/>
       </a-card>
     </div>
 </template>
@@ -26,11 +29,15 @@ export default {
       stacked: false,
       tabListNoTitle: [
         {
-          key: 'profitChart',
-          tab: 'Opbrengsten per avond'
+          key: 'TapperCafedagen',
+          tab: 'Cafédagen per tapper'
+        },
+        {
+          key: 'TapperConsumpties',
+          tab: 'Consumptiekost per tapper'
         }
       ],
-      noTitleKey: 'profitChart'
+      noTitleKey: 'TapperCafedagen'
     }
   },
   components: {
@@ -38,19 +45,22 @@ export default {
   },
   computed: {
     ...mapState([
-      'profitChartData'
+      'tapperdagenData',
+      'tapperConsumptieData'
     ])
   },
   methods: {
     onTabChange (key, type) {
       this[type] = key
     },
-    onChangeSetProfitChartDate (date, dateString) {
-      this.$store.dispatch('fetchProfitChartData', { startDate: dateString[0], endDate: dateString[1] })
+    onChangeSetChartDate (date, dateString) {
+      this.$store.dispatch('fetchTapperdagenChartData', { startDate: dateString[0], endDate: dateString[1] })
+      this.$store.dispatch('fetchTapperConsumptieChartData', { startDate: dateString[0], endDate: dateString[1] })
     }
   },
   mounted () {
-    this.$store.dispatch('fetchProfitChartData')
+    this.$store.dispatch('fetchTapperdagenChartData')
+    this.$store.dispatch('fetchTapperConsumptieChartData')
   }
 }
 </script>

@@ -5,22 +5,16 @@
         <!--side menu -->
         <a-layout-sider>
           <a-menu theme="dark" mode="inline" :defaultSelectedKeys="selectedKeys">
-            <a-menu-item key="1" id="1">
-              <router-link to="/">
-                <a-icon type="user" />
-                <span>Home</span>
+            <a-menu-item key="3" id="3">
+              <router-link to="/dashboard">
+                <a-icon type="dashboard" />
+                <span>Dashboard</span>
               </router-link>
             </a-menu-item>
             <a-menu-item key="2" id="2">
               <router-link to="/kassablad">
                 <a-icon type="account-book" />
                 <span>Kassablad</span>
-              </router-link>
-            </a-menu-item>
-            <a-menu-item key="3" id="3">
-              <router-link to="/dashboard">
-                <a-icon type="dashboard" />
-                <span>Dashboard</span>
               </router-link>
             </a-menu-item>
             <a-menu-item key="4" id="4">

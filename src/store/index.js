@@ -30,6 +30,8 @@ export default new Vuex.Store({
     visibleWrapper: 'beginKassaWrapper',
     profitChartData: null,
     beginVsEndChartData: null,
+    tapperdagenData: null,
+    tapperConsumptieData: null,
     kassaContainers: [],
     kassaContainersTapper: [],
     kassaContainerDetail: null,

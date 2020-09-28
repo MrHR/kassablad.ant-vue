@@ -20,6 +20,12 @@ export default {
   SET_BEGIN_VS_END_CHART (state, data) {
     state.beginVsEndChartData = data
   },
+  SET_TAPPERDAGEN_CHART (state, data) {
+    state.tapperdagenData = data
+  },
+  SET_TAPPER_CONSUMPTIES_CHART (state, data) {
+    state.tapperConsumptieData = data
+  },
   SET_KASSABLADEND (state, data) {
     state.kassabladen = data
   },
