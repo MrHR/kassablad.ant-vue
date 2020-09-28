@@ -1,6 +1,7 @@
 <template>
-    <div class="profitChartWrapper">
+    <div class="tapperChartWrapper">
       <a-card
+        class="chartCard"
         :loading="loading"
         :tab-list="tabListNoTitle"
         :active-tab-key="noTitleKey"
@@ -8,9 +9,6 @@
       >
         <div v-if="noTitleKey === 'profitChart'">
           <ProfitChart :profitChartData="profitChartData" :stacked="true" />
-        </div>
-        <div v-if="noTitleKey === 'beginVsEindChart'">
-          <ProfitChart :profitChartData="beginVsEndChartData" :stacked="false" />
         </div>
         <a-range-picker @change="onChangeSetProfitChartDate" slot="tabBarExtraContent" style="margin:10px"/>
       </a-card>
@@ -21,28 +19,6 @@ import ProfitChart from '../Charts/ProfitChart'
 import { mapState } from 'vuex'
 
 export default {
-  components: {
-    ProfitChart
-  },
-  computed: {
-    ...mapState([
-      'profitChartData',
-      'beginVsEndChartData'
-    ])
-  },
-  methods: {
-    onTabChange (key, type) {
-      this[type] = key
-    },
-    onChangeSetProfitChartDate (date, dateString) {
-      this.$store.dispatch('fetchProfitChartData', { startDate: dateString[0], endDate: dateString[1] })
-      this.$store.dispatch('fetchBeginVsEndChartData', { startDate: dateString[0], endDate: dateString[1] })
-    }
-  },
-  mounted () {
-    this.$store.dispatch('fetchProfitChartData')
-    this.$store.dispatch('fetchBeginVsEndChartData')
-  },
   data () {
     return {
       loading: false,
@@ -52,14 +28,29 @@ export default {
         {
           key: 'profitChart',
           tab: 'Opbrengsten per avond'
-        },
-        {
-          key: 'beginVsEindChart',
-          tab: 'Begin-kassa vs Eind-kassa'
         }
       ],
       noTitleKey: 'profitChart'
     }
+  },
+  components: {
+    ProfitChart
+  },
+  computed: {
+    ...mapState([
+      'profitChartData'
+    ])
+  },
+  methods: {
+    onTabChange (key, type) {
+      this[type] = key
+    },
+    onChangeSetProfitChartDate (date, dateString) {
+      this.$store.dispatch('fetchProfitChartData', { startDate: dateString[0], endDate: dateString[1] })
+    }
+  },
+  mounted () {
+    this.$store.dispatch('fetchProfitChartData')
   }
 }
 </script>
@@ -67,14 +58,15 @@ export default {
   .ant-tabs-nav-scroll {
     text-align:left;
   }
-  .profitChartWrapper {
+  .tapperChartWrapper {
     width:100%;
     margin:10px;
     height:450px;
+    margin-top:60px;
     background-color: white;
     /* box-shadow: inset 0 10px 10px rgba(0, 0, 0, 0.4); */
   }
-  .profitChartWrapper h2 {
+  .tapperChartWrapper h2 {
     text-align:left;
     padding:10px 10px 0 10px;
   }

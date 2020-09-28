@@ -8,10 +8,10 @@ var options = {
   maintainAspectRatio: false,
   layout: {
     padding: {
-      left: 40,
-      right: 80,
-      top: 60,
-      bottom: 60
+      left: 30,
+      right: 50,
+      top: 50,
+      bottom: 50
     }
   },
   scales: {
@@ -37,19 +37,15 @@ export default {
   extends: Bar,
   props: ['profitChartData', 'stacked'],
   mounted () {
-    if (this.stacked) {
-      options.scales.yAxes.stacked = this.stacked
-    }
+    options.scales.yAxes[0].stacked = this.stacked
+    options.scales.xAxes[0].stacked = this.stacked
     this.renderChart(this.profitChartData, options)
   },
   watch: {
     profitChartData (newData) {
-      setTimeout(() => {
-        if (this.stacked) {
-          options.scales.yAxes[0].stacked = this.stacked
-        }
-        this.renderChart(this.profitChartData, options)
-      }, 10)
+      options.scales.yAxes[0].stacked = this.stacked
+      options.scales.xAxes[0].stacked = this.stacked
+      this.renderChart(this.profitChartData, options)
     }
   }
 }

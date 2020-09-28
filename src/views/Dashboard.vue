@@ -1,16 +1,19 @@
 <template>
   <div class="dashboard">
     <ProfitChartWrapper />
+    <TapperChartWrapper />
   </div>
 </template>
 
 <script>
 import ProfitChartWrapper from '../components/Charts/ProfitChartWrapper'
+import TapperChartWrapper from '../components/Charts/TapperChartWrapper'
 
 export default {
   name: 'Kassablad',
   components: {
-    ProfitChartWrapper
+    ProfitChartWrapper,
+    TapperChartWrapper
   }
 }
 </script>
