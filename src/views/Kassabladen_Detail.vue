@@ -103,6 +103,9 @@ export default {
     }
   },
   watch: {
+    kassaContainers (newValue) {
+      this.drawKassaContainers()
+    }
   },
   methods: {
     drawKassaContainers () {

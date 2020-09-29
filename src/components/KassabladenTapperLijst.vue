@@ -8,7 +8,7 @@
       <a-list-item class="listItem" slot="renderItem" slot-scope="item">
         <a slot="actions" @click="gotoKassablad(item)">edit</a>
         <a-list-item-meta :description="`Tapper: ${item.naamTapper} Datum: ${moment(item.beginUur).format('DD MMM YYYY, HH:mm')}`">
-          <a slot="title" :href="`${routUrl}/kassabladen/` + item.id">
+          <a slot="title" :href="`${routUrl}/#/kassabladen/${item.id}`">
             <b>{{ item.activiteit }}</b>
           </a>
         </a-list-item-meta>

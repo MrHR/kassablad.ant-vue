@@ -6,7 +6,7 @@
       :active-tab-key="tabListKey"
       @tabChange="key => onTabChange(key, 'tabListKey')"
     >
-      <a-range-picker v-model="dateString" @change="OnDateChange" slot="tabBarExtraContent" style="margin:10px"/>
+      <a-range-picker v-model="dateString" @change="OnDateChange" slot="tabBarExtraContent" style="margin:10px" :default-value="[moment().subtract(30, 'days'), moment()]"/>
       <a-button slot="tabBarExtraContent" @click="onDownloadExcel">
         <a-icon type="file-excel" />
       </a-button>
