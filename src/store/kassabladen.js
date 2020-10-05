@@ -6,7 +6,7 @@ export default {
   state: () => ({
     kassaId: 0,
     kassaType: null,
-    setKassaNominations: true,
+    setKassaNominations: false,
     count: 0,
     kassaContainer: {
       id: 0,
@@ -18,7 +18,8 @@ export default {
       bezoekers: 0,
       afroomkluis: 0,
       concept: false
-    }
+    },
+    kassaContainerRaw: {}
   }),
   mutations: {
     SET_KASSACONTAINER (state, data) {
@@ -61,11 +62,18 @@ export default {
       state.kassaContainer.updatedBy = data.updatedBy
       state.kassaContainer.naamTapperSluit = state.kassaContainer.naamTapper
       state.kassaContainerId = data.id
-      state.kassaContainer.beginKassaNominations = data.beginKassa != null ? data.beginKassa.nominationList : []
-      state.kassaContainer.endKassaNominations = data.eindKassa != null ? data.eindKassa.nominationList : []
+      // state.kassaContainer.beginKassaNominations =
+      //   data.beginKassa != null && data.beginKassa.nominationList.length > 0
+      //     ? data.beginKassa.nominationList : []
+      // state.kassaContainer.endKassaNominations =
+      //   data.eindKassa != null && data.eindKassa.nominationList.length > 0
+      //     ? data.eindKassa.nominationList : []
       state.kassaId = data.beginKassa != null ? data.beginKassa.id : 0
-      state.kassaType = data.beginKassa != null ? data.beginKassa.type : null
+      state.kassaType =
+        data.beginKassa != null && (data.eindKassa != null && data.eindKassa.nominationList.length > 0)
+          ? data.eindKassa.type : data.beginKassa.type
       state.kassaContainer.concept = data.concept
+      state.kassaContainerRaw = data
     },
     ADD_KASSA (state, data) {
       state.kassaContainer.kassas.push(data)
@@ -75,29 +83,7 @@ export default {
     SET_NOMINATIONS (state, data) {
       state.kassaContainer.nominations = data
     },
-    SET_KASSA_NOMINATION (state, data) {
-      if (state.kassaType === 'begin') {
-        const newArr = state.kassaContainer.beginKassaNominations
-          .map(nom => {
-            if (data.nominationId === nom.nominationId) {
-              return data
-            } else {
-              return nom
-            }
-          })
-        state.kassaContainer.beginKassaNominations = newArr
-      } else if (state.kassaType === 'end') {
-        const newArr = state.kassaContainer.endKassaNominations
-          .map(nom => {
-            if (data.nominationId === nom.nominationId) {
-              return data
-            } else {
-              return nom
-            }
-          })
-        state.kassaContainer.endKassaNominations = newArr
-      }
-    },
+    // map nominations to kassa nominations
     SET_KASSA_NOMINATIONS (state, data) {
       const noms = []
       data.forEach(nom => {
@@ -114,17 +100,30 @@ export default {
         }
         noms.push(Nom)
       })
-      switch (state.kassaType) {
-        case 'begin':
-          if (state.kassaContainer.beginKassaNominations.length <= 0) {
-            state.kassaContainer.beginKassaNominations = noms
-          }
-          break
-        case 'end':
-          if (state.kassaContainer.endKassaNominations.length <= 0) {
-            state.kassaContainer.endKassaNominations = noms
-          }
-          break
+      state.kassaContainer.beginKassaNominations = noms
+      state.kassaContainer.endKassaNominations = noms
+    },
+    SET_KASSA_NOMINATION (state, data) {
+      if (data.type === 'begin') {
+        const newArr = state.kassaContainer.beginKassaNominations
+          .map(nom => {
+            if (data.item.nominationId === nom.nominationId) {
+              return data.item
+            } else {
+              return nom
+            }
+          })
+        state.kassaContainer.beginKassaNominations = newArr
+      } else if (data.type === 'eind') {
+        const newArr = state.kassaContainer.endKassaNominations
+          .map(nom => {
+            if (data.item.nominationId === nom.nominationId) {
+              return data.item
+            } else {
+              return nom
+            }
+          })
+        state.kassaContainer.endKassaNominations = newArr
       }
     },
     SET_CREATED_KASSA_NOMINATIONS (state, response) {
@@ -176,7 +175,6 @@ export default {
       commit('SET_LOADING_STATUS', 'loading', { root: true })
       // Do this on start evening
       if (state.kassaContainer.id === 0) {
-        commit('SET_SETKASSANOMINATIONS_BOOL', true)
         axios.post(`${rootState.controllerUrl}kassacontainer`, {
           beginUur: moment(state.kassaContainer.beginUur).format('YYYY-MM-DDTHH:mm:ss'),
           eindUur: moment(state.beginUur).add('4', 'hours').format('YYYY-MM-DDTHH:mm:ss'),
@@ -217,7 +215,6 @@ export default {
         ).then(response => {
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
           if (kassaType === 'end') { // do this to make endkassa if none exists
-            commit('SET_SETKASSANOMINATIONS_BOOL', true)
             dispatch('createKassa', 'end')
           }
         }).catch(error => {
@@ -238,7 +235,6 @@ export default {
           // console.log('create kassa response', response.data)
           commit('ADD_KASSA', response.data)
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
-          commit('SET_SETKASSANOMINATIONS_BOOL', true)
           dispatch('fetchNominations')
         }).catch(error => {
           console.log('kassa post error', error)
@@ -248,15 +244,27 @@ export default {
         commit('SET_LOADING_STATUS', 'notLoading', { root: true })
       }
     },
-    fetchNominations ({ state, commit, rootState }) {
+    fetchNominations ({ state, commit, rootState, dispatch }) {
       commit('SET_LOADING_STATUS', 'loading', { root: true })
       axios.get(`${rootState.controllerUrl}nomination`).then(response => {
         commit('SET_NOMINATIONS', response.data)
-        if (state.setKassaNominations === true) {
-          commit('SET_KASSA_NOMINATIONS', response.data)
-        }
+        commit('SET_KASSA_NOMINATIONS', response.data)
+        if (state.setKassaNominations === true) dispatch('fetchkassaNominations')
         commit('SET_LOADING_STATUS', 'notLoading', { root: true })
       })
+    },
+    fetchkassaNominations ({ state, commit, rootState, dispatch }, data) {
+      commit('SET_LOADING_STATUS', 'loading', { root: true })
+      state.kassaContainerRaw.beginKassa.nominationList
+        .forEach(item => {
+          commit('SET_KASSA_NOMINATION', { item: item, type: 'begin' })
+        })
+      state.kassaContainerRaw.eindKassa.nominationList
+        .forEach(item => {
+          commit('SET_KASSA_NOMINATION', { item: item, type: 'eind' })
+        })
+      commit('SET_SETKASSANOMINATIONS_BOOL', false)
+      commit('SET_LOADING_STATUS', 'notLoading', { root: true })
     },
     saveKassaNomination ({ state, commit, rootState }, nom) {
       commit('SET_LOADING_STATUS', 'loading', { root: true })

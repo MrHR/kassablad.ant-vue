@@ -20,6 +20,7 @@
 import locale from 'ant-design-vue/es/date-picker/locale/nl_BE'
 import moment from 'moment'
 import { mapState } from 'vuex'
+// import helpers from '../functions/helperFunctions.js'
 
 export default {
   name: 'KassabladenTapperLijst',
@@ -29,13 +30,15 @@ export default {
     }
   },
   computed: {
-    ...mapState(['kassaContainersTapper', 'routUrl'])
+    ...mapState(['kassaContainersTapper', 'routUrl', 'selectedKeys'])
   },
   methods: {
     moment,
     gotoKassablad: function (item) {
       this.$store.dispatch('fetchKassaContainerTapper', item.id).then(() => {
         this.$router.push('kassablad')
+        // helpers.setMenuItem(2)
+        this.selectedKeys.push(2)
       })
     }
   },

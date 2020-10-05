@@ -1,3 +1,5 @@
+// import { forEach } from "core-js/fn/array"
+
 export default {
   // MATH FUNCTIONS
   calculatePrice: (amount, price) => {
@@ -20,5 +22,11 @@ export default {
         refs[ref].$el.focus() || refs[ref].focus()
       }
     }, 10)
+  },
+  setMenuItem (id) {
+    document.querySelector('li.ant-menu-item-selected')
+      .classList.remove('ant-menu-item-selected')
+    document.getElementById(`${id}`)
+      .classList.add('ant-menu-item-selected')
   }
 }

@@ -35,7 +35,8 @@ export default new Vuex.Store({
     kassaContainers: [],
     kassaContainersTapper: [],
     kassaContainerDetail: null,
-    resetKassaContainer: true
+    resetKassaContainer: true,
+    selectedKeys: []
   },
   mutations,
   actions

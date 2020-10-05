@@ -51,21 +51,26 @@
   </a-config-provider>
 </template>
 <script>
+import { mapState } from 'vuex'
 import Header from '../src/components/Menu/Header.vue'
+
 export default {
   components: {
     Header
   },
   data () {
     return {
-      selectedKeys: []
+      // selectedKeys: []
     }
+  },
+  computed: {
+    ...mapState(['selectedKeys'])
   },
   created () {
     setTimeout(() => {
       const menuItem = document.getElementsByClassName('router-link-exact-active')[0]
       this.selectedKeys.push(menuItem.parentElement.id)
-    }, 2)
+    }, 10)
   },
   watch: {
     $route (to, from) {

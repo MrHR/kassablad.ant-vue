@@ -276,6 +276,9 @@ export default {
       this.$store.commit('kassabladen/RESET_KASSA_DATA')
     }
   },
+  mounted () {
+    // TODO: if bestaand kassablad skip naar laatste savepoint
+  },
   watch: {
     visibleComponent (newValue) {
       if (newValue !== 'showOverview') {

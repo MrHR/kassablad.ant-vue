@@ -8,7 +8,7 @@ export default {
     debugStore: false,
     consumptions: [],
     consumptionCounts: [],
-    setConsumptionCounts: true,
+    setConsumptionCounts: false,
     totalCost: 0
   }),
   mutations: {
@@ -17,7 +17,6 @@ export default {
     },
     // map consumpties to consumtion counts
     SET_CONSUMPTION_COUNTS (state, data) {
-      console.log('settings consumption counts')
       const cCounts = []
       data.consumptions.forEach(consumption => {
         const cCount = {
@@ -37,7 +36,6 @@ export default {
     },
     // update consumption count that  was saved && set cCounts when editing
     SET_CONSUMPTIE_COUNT (state, data) {
-      console.log('setting individual consumption count')
       if (data.consumptieId !== 0 && data.id !== 0) {
         const newCCounts = state.consumptionCounts
           .map(cCount => {
@@ -60,29 +58,25 @@ export default {
       commit('SET_LOADING_STATUS', 'loading', { root: true })
       axios.get(`${rootState.controllerUrl}consumptie`).then(response => {
         commit('SET_CONSUMPTIONS', response.data)
-        // if (state.setConsumptionCounts === true) { // used to check if list should be populated ===> depracated?
         commit('SET_CONSUMPTION_COUNTS', {
           kassaContainerId: rootState.kassabladen.kassaContainer.id,
           consumptions: response.data
         })
-        // }
-        if (state.setConsumptionCounts === true) {
-          dispatch('fetchConsumptionCount')
-        }
+        if (state.setConsumptionCounts === true) dispatch('fetchConsumptionCount')
         commit('SET_LOADING_STATUS', 'notLoading', { root: true })
       })
     },
-    // Call on opening old kassablad to edit
-    fetchConsumptionCount ({ state, commit, rootState }) {
-      console.log('fetching the tappers consumption counts', rootState.kassabladen.kassaContainer.id)
+    // Call on opening old kassablad to edit - fetch tapper consumption counts
+    fetchConsumptionCount ({ state, commit, rootState, dispatch }) {
       commit('SET_LOADING_STATUS', 'loading', { root: true })
-      axios.get(`${rootState.controllerUrl}consumptiecount/container/${rootState.kassabladen.kassaContainer.id}`).then(response => {
-        console.log('setting consumption counts', response.data)
-        response.data.forEach(item => {
-          commit('SET_CONSUMPTIE_COUNT', item)
+      axios.get(`${rootState.controllerUrl}consumptiecount/container/${rootState.kassabladen.kassaContainer.id}`)
+        .then(response => {
+          response.data.forEach(item => {
+            commit('SET_CONSUMPTIE_COUNT', item)
+          })
+          commit('SET_SETCONSUMPTIONCOUNTS_BOOL', false)
+          commit('SET_LOADING_STATUS', 'notLoading', { root: true })
         })
-        commit('SET_LOADING_STATUS', 'notLoading', { root: true })
-      })
     },
     createConsumptionCount ({ state, commit, rootState }, data) {
       commit('SET_LOADING_STATUS', 'loading', { root: true })
@@ -105,7 +99,7 @@ export default {
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
         }).catch(error => {
           console.log('consumptie put error', error.response)
-          console.log('SET_LOADING_STATUS', 'notLoading', { root: true })
+          commit('SET_LOADING_STATUS', 'notLoading', { root: true })
         })
     }
   },
