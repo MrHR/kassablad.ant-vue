@@ -9,15 +9,15 @@
       <a-list-item class="listItem" slot="renderItem" slot-scope="item">
         <a slot="actions" :href="`${routUrl}#/kassabladen/` + item.id">edit</a>
         <a-list-item-meta
-          :description="'' + item.type"
+          :description="moment(item.beginUur).format('ddd, DD MMM YYYY, HH:mm') + ' - ' + moment(item.eindUur).format('HH:mm')"
         >
-          <a slot="title" :href="`${routUrl}#/kassabladen/` + item.id">Tapper: {{ item.naamTapper }}</a>
+          <a slot="title" :href="`${routUrl}#/kassabladen/` + item.id">{{ item.activiteit }}</a>
           <a-avatar
             slot="avatar"
             src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
           />
         </a-list-item-meta>
-        <div>{{ moment(item.beginUur).format('DD MMM YYYY, HH:mm') }}</div>
+        <div style="text-align:left;width:130px;">{{ item.naamTapper }}</div>
       </a-list-item>
     </a-list>
   </div>

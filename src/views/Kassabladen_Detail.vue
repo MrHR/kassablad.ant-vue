@@ -1,5 +1,19 @@
 <template>
-  <div class="kassabladen_detail">
+  <div class="kassabladen_detail" style="text-align:left">
+    <a-card :title="kassaContainerDetail != null && kassaContainerDetail != undefined ? kassaContainerDetail.activiteit  : 'loading...'" style="margin-bottom:30px">
+      <ul class="infoList" v-if="kassaContainerDetail != null && kassaContainerDetail != undefined">
+        <li><span>Tapper:</span><span>{{ kassaContainerDetail.naamTapper}}</span></li>
+        <li v-if="kassaContainerDetail.naamTapperSluit !== kassaContainerDetail.naamTapper">
+          <span>Tapper sluit:</span>
+          <span>{{ kassaContainerDetail.naamTapperSluit }}</span>
+        </li>
+        <li><span>Openingsuur:</span><span>{{ moment(kassaContainerDetail.beginUur).format('ddd, DD MMM YYYY, HH:mm') }}</span></li>
+        <li><span>Sluitingsuur:</span><span>{{ moment(kassaContainerDetail.eindUur).format('ddd, DD MMM YYYY, HH:mm') }}</span></li>
+        <li><span>Bezoekers:</span><span>{{ kassaContainerDetail.bezoekers }}</span></li>
+        <li><span>Bedrag naar afroomkluis:</span><span>€ {{ kassaContainerDetail.afroomkluis }}</span></li>
+      </ul>
+      <div v-if="!kassaContainerDetail && kassaContainerDetail != undefined">loading...</div>
+    </a-card>
     <a-table :columns="columns" :data-source="kassaData" :pagination="false" bordered>
       <div slot="multiply" slot-scope="text" class="extraIconWrapper">{{ text }} <a-icon class="extraIcon" type="close" /></div>
       <div slot="equals" slot-scope="text" class="extraIconWrapper">
@@ -11,6 +25,7 @@
   </div>
 </template>
 <script>
+import moment from 'moment'
 import { mapState } from 'vuex'
 import helperFunctions from '../functions/helperFunctions'
 const columns = [
@@ -83,8 +98,10 @@ export default {
   name: 'Kassabladen_Detail',
   data () {
     return {
+      moment,
       columns,
-      kassaData: []
+      kassaData: [],
+      kassaContainerDetail: null
     }
   },
   computed: {
@@ -94,7 +111,6 @@ export default {
   },
   mounted: function () {
     if (this.kassaContainers.length === 0 || !this.kassaContainers) {
-      console.log('kassaContainers was empty')
       this.$store.dispatch('fetchKassaContainers').then(() => {
         this.drawKassaContainers()
       })
@@ -112,15 +128,22 @@ export default {
       // Filter kassacontainer from list
       const kassaContainer = this.kassaContainers
         .filter(kc => kc.id === parseInt(this.$route.params.id))[0]
+      this.kassaContainerDetail = kassaContainer
       console.log('this.kassaContainers', this.kassaContainers)
       console.log('id', this.$route.params.id)
       if (kassaContainer) {
         kassaContainer.beginKassa.nominationList.forEach(beginNom => {
-          const eindNom = kassaContainer.eindKassa.nominationList
+          let eindNom = kassaContainer.eindKassa.nominationList
             .filter(endNom => endNom.nominationId === beginNom.nominationId)[0]
-          if (!eindNom) {
-            eindNom.amount = 0
-            eindNom.nomination.multiplier = 0
+          if (!eindNom || eindNom === 'undefined') {
+            eindNom = {
+              amount: 0,
+              nomination: {
+                multiplier: 0
+              }
+            }
+            // eindNom.amount = 0
+            // eindNom.nomination.multiplier = 0
           }
           const tempObj = {
             key: beginNom.id,
@@ -170,5 +193,20 @@ export default {
 
 .kassabladen_detail .iconMultipli svg {
   width:10px;
+}
+
+.infoList {
+  list-style: none;
+  padding:0;
+  margin:0;
+}
+.infoList li {
+  display: flex;
+  justify-content: space-between;
+  padding:4px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.infoList li span:first-child {
+  opacity:0.7;
 }
 </style>
