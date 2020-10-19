@@ -19,10 +19,12 @@ export default {
       afroomkluis: 0,
       concept: false
     },
-    kassaContainerRaw: {}
+    kassaContainerRaw: {},
+    beginKassaNominationsStored: []
   }),
   mutations: {
     SET_KASSACONTAINER (state, data) {
+      console.log('data', data)
       state.kassaContainer.active = data.active
       state.kassaContainer.afroomkluis = data.afroomkluis
       state.kassaContainer.bezoekers = data.bezoekers
@@ -104,6 +106,7 @@ export default {
       state.kassaContainer.endKassaNominations = noms
     },
     SET_KASSA_NOMINATION (state, data) {
+      console.log('type', data)
       if (data.type === 'begin') {
         const newArr = state.kassaContainer.beginKassaNominations
           .map(nom => {
@@ -126,7 +129,7 @@ export default {
         state.kassaContainer.endKassaNominations = newArr
       }
     },
-    SET_CREATED_KASSA_NOMINATIONS (state, response) {
+    SET_CREATED_KASSA_NOMINATIONS (state, response) { // DEPRECATED
       switch (response.kassaType) {
         case 'begin':
           state.kassaContainer.beginKassaNominations = response.data
@@ -151,6 +154,10 @@ export default {
     SET_ACTIVITY (state, data) {
       state.kassaContainer.activiteit = data
     },
+    SET_BEGIN_KASSA_NOMS (state, data) {
+      state.beginKassaNominationsStored = [...state.kassaContainer.beginKassaNominations]
+      console.log('noms', state.beginKassaNominationsStored)
+    },
     RESET_KASSA_DATA (state) {
       state.kassaContainerId = 0
       state.kassaId = 0
@@ -163,11 +170,17 @@ export default {
         endKassaNominations: [],
         eindUur: null,
         bezoekers: 0,
-        afroomkluis: 0
+        afroomkluis: 0,
+        concept: false
       }
     },
     SET_SETKASSANOMINATIONS_BOOL (state, bool) {
       state.setKassaNominations = bool
+    },
+    UPDATE_BEGIN_KASSANOM_AMOUNT (state, data) { // DEPRECATED ??
+      console.log('udapting kassa nom', data)
+      const nom = state.kassaContainer.beginKassaNominations.filter(el => el.nominationId === data.item.nominationId)[0]
+      nom.amount = data.amount
     }
   },
   actions: {
@@ -255,14 +268,18 @@ export default {
     },
     fetchkassaNominations ({ state, commit, rootState, dispatch }, data) {
       commit('SET_LOADING_STATUS', 'loading', { root: true })
-      state.kassaContainerRaw.beginKassa.nominationList
-        .forEach(item => {
-          commit('SET_KASSA_NOMINATION', { item: item, type: 'begin' })
-        })
-      state.kassaContainerRaw.eindKassa.nominationList
-        .forEach(item => {
-          commit('SET_KASSA_NOMINATION', { item: item, type: 'eind' })
-        })
+      if (state.kassaContainerRaw.beginKassa != null) {
+        state.kassaContainerRaw.beginKassa.nominationList
+          .forEach(item => {
+            commit('SET_KASSA_NOMINATION', { item: item, type: 'begin' })
+          })
+      }
+      if (state.kassaContainerRaw.eindKassa != null) {
+        state.kassaContainerRaw.eindKassa.nominationList
+          .forEach(item => {
+            commit('SET_KASSA_NOMINATION', { item: item, type: 'eind' })
+          })
+      }
       commit('SET_SETKASSANOMINATIONS_BOOL', false)
       commit('SET_LOADING_STATUS', 'notLoading', { root: true })
     },
@@ -280,7 +297,8 @@ export default {
           nominationId: nom.nominationId,
           amount: nom.amount
         }).then(response => {
-          commit('SET_KASSA_NOMINATION', response.data)
+          const type = rootState.visibleWrapper === 'beginKassaWrapper' ? 'begin' : 'eind'
+          commit('SET_KASSA_NOMINATION', { item: response.data, type: type })
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
         }).catch(error => {
           console.log('save post error', error.response.data)
@@ -297,7 +315,8 @@ export default {
           nominationId: nom.nominationId,
           amount: nom.amount
         }).then(response => {
-          commit('SET_KASSA_NOMINATION', response.data)
+          const type = rootState.visibleWrapper === 'beginKassaWrapper' ? 'begin' : 'eind'
+          commit('SET_KASSA_NOMINATION', { item: response.data, type: type })
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
         }).catch(error => {
           console.log('save post error', error.response.data)
@@ -329,6 +348,7 @@ export default {
             dispatch('showWrapper', 'beginKassaWrapper', { root: true })
             dispatch('showComponent', 'createKassabladButton', { root: true })
             commit('RESET_KASSA_DATA')
+            commit('consumpties/RESET_CONSUMPTION_DATA', null, { root: true })
           }
           kassaNominationsResult.push({ ...response.data, key: response.data.id })
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })

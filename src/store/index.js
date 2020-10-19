@@ -17,7 +17,7 @@ export default new Vuex.Store({
   },
   state: {
     title: '',
-    debug: false,
+    debug: true,
     debugUI: false,
     debugStore: false,
     controllerUrl: 'https://localhost:5001/api/',

@@ -95,7 +95,10 @@
       <!--FORMPART: KASSA OPENEN-->
       <div v-if="visibleComponent ==='showNomination'">
         <div v-if="this.debug">
-          {{ kassaContainer.beginKassaNominations }}
+          <span>BeginKassaNominations</span><br/>
+          {{ kassaContainer.beginKassaNominations }}<br /><br /><br />
+          <span>Eind kassa nominations</span><br/>
+          {{ kassaContainer.endKassaNominations }}
         </div>
           <Nomination
             v-for="(item, index) in kassaContainer.beginKassaNominations"
@@ -106,6 +109,7 @@
             v-bind:next="nextNomBool"
             v-bind:focus="nomFocus"
             v-bind:nominations="kassaContainer.nominations"
+            v-bind:nomId="item.nominationId"
             @goto-next="gotoNextNom"
           ></Nomination>
           <a-form-model-item>
@@ -166,11 +170,7 @@
     </a-form-model>
     <div v-if="this.debug">
       <b>Begin Uur:</b> {{ this.kassaContainer.beginUur }} <br />
-      <b>kassaType:</b> {{ this.kassaType }} <br />
       <b>KassaContainer:</b> {{ this.kassaContainer }} <br />
-      <b>KassaContainerId:</b> {{ this.kassaContainerId }} <br />
-      <b>Kassa Id:</b> {{ this.kassaId }} <br />
-      <b>Kassas:</b> {{ this.kassas }} <br />
     </div>
   </div>
 </template>
@@ -211,14 +211,21 @@ export default {
       'resetKassaContainer',
       'loadingStatus'
     ]),
-    kassaContainer: {
-      get () {
-        return this.$store.state.kassabladen.kassaContainer
-      },
-      set (value) {
-        this.$store.commit('kassabladen/SET_KASSACONTAINER', value)
-      }
-    },
+    ...mapState('kassabladen', {
+      kassaContainer: state => state.kassaContainer
+    }),
+    ...mapState('consumpties', {
+      consumptionCounts: state => state.consumptionCounts
+    }),
+    // kassaContainer: {
+    //   get () {
+    //     return this.$store.state.kassabladen.kassaContainer
+    //   },
+    //   set (value) {
+    //     console.log('value', value)
+    //     this.$store.commit('kassabladen/SET_KASSACONTAINER', value)
+    //   }
+    // },
     beginUur: {
       get () {
         const uur = this.$store.state.kassabladen.kassaContainer.beginUur
@@ -232,6 +239,7 @@ export default {
   },
   methods: {
     ...mapActions('kassabladen', ['createKassaContainer', 'createKassa', 'saveKassaNominations']),
+    ...mapActions('consumpties', ['fetchConsumptions']),
     viewDate (date, dateString) {
       this.dateString = dateString
       console.log('datestring this', this.dateString)
@@ -258,6 +266,11 @@ export default {
     },
     onSubmit () {
       // this.saveKassaNominations('begin')
+      this.$store.commit('kassabladen/SET_BEGIN_KASSA_NOMS')
+      console.log('consumptioncount', this.consumptionCounts.length)
+      if (this.consumptionCounts.length <= 0) {
+        this.fetchConsumptions()
+      }
       this.$store.dispatch('showWrapper', 'consumpiteWrapper')
       this.$store.dispatch('showComponent', 'createKassabladButton')
       this.formCount = 0
@@ -274,6 +287,7 @@ export default {
     if (this.resetKassaContainer) {
       console.log('reset')
       this.$store.commit('kassabladen/RESET_KASSA_DATA')
+      this.$store.commit('consumpties/RESET_CONSUMPTION_DATA')
     }
   },
   mounted () {

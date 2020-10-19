@@ -145,6 +145,7 @@
           <EindKassaTable
             class="endEveningTableWrapper center"
             v-bind:kassaContainer="kassaContainer"
+            v-bind:beginKassaNominations="beginKassaNominations"
           />
         </a-form-model-item>
         <a-form-model-item>
@@ -238,7 +239,6 @@ export default {
     ...mapState([
       'debug',
       'nominations',
-      'beginKassaNominations',
       'debugUI',
       'visibleComponent',
       'visibleWrapper',
@@ -248,7 +248,8 @@ export default {
       'kassaType'
     ]),
     ...mapState('kassabladen', {
-      kassaContainer: state => state.kassaContainer
+      kassaContainer: state => state.kassaContainer,
+      beginKassaNominations: state => state.beginKassaNominationsStored
     }),
     eindUur: {
       get () {
@@ -320,6 +321,7 @@ export default {
       this.$store.dispatch('showWrapper', 'beginKassaWrapper')
       this.$store.dispatch('showComponent', 'createKassabladButton')
       this.$store.commit('kassabladen/RESET_KASSA_DATA')
+      this.$store.commit('consumpties/RESET_CONSUMPTION_DATA')
       this.formCount = 0
     }
   },

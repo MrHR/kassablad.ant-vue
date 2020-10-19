@@ -49,7 +49,14 @@ export default {
       }
     },
     SET_SETCONSUMPTIONCOUNTS_BOOL (state, bool) {
+      console.log('setting bool', bool)
       state.setConsumptionCounts = bool
+    },
+    RESET_CONSUMPTION_DATA (state) {
+      state.consumptions = []
+      state.consumptionCounts = []
+      state.setConsumptionCounts = false
+      state.totalCost = 0
     }
   },
   actions: {
@@ -62,12 +69,14 @@ export default {
           kassaContainerId: rootState.kassabladen.kassaContainer.id,
           consumptions: response.data
         })
+        console.log('consumpitioncount bool', state.setConsumptionCounts)
         if (state.setConsumptionCounts === true) dispatch('fetchConsumptionCount')
         commit('SET_LOADING_STATUS', 'notLoading', { root: true })
       })
     },
     // Call on opening old kassablad to edit - fetch tapper consumption counts
     fetchConsumptionCount ({ state, commit, rootState, dispatch }) {
+      console.log('calling set consumptions')
       commit('SET_LOADING_STATUS', 'loading', { root: true })
       axios.get(`${rootState.controllerUrl}consumptiecount/container/${rootState.kassabladen.kassaContainer.id}`)
         .then(response => {

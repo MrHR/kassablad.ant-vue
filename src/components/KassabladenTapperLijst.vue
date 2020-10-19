@@ -35,6 +35,7 @@ export default {
   methods: {
     moment,
     gotoKassablad: function (item) {
+      this.$store.commit('SET_RESET_KASSACONTAINER', false)
       this.$store.dispatch('fetchKassaContainerTapper', item.id).then(() => {
         this.$router.push('kassablad')
         // helpers.setMenuItem(2)

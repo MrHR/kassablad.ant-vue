@@ -73,6 +73,7 @@ export default {
       context.dispatch('kassabladen/fetchNominations')
       context.dispatch('consumpties/fetchConsumptions')
       // context.commit('kassabladen/SET_KASSACONTAINER', response.data)
+      context.commit('SET_RESET_KASSACONTAINER', true)
       context.commit('SET_LOADING_STATUS', 'notLoading')
     })
   },

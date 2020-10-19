@@ -25,13 +25,13 @@
 </template>
 <script>
 import helperFunctions from '../../functions/helperFunctions.js'
+// import { mapState } from 'vuex'
 
 export default {
   name: 'Nomination',
-  props: ['item', 'count', 'index', 'next', 'nominations'],
+  props: ['item', 'count', 'index', 'next', 'nominations', 'nomId'],
   data () {
     return {
-      amount: this.item.amount,
       maxValue: 500,
       toggleElement: false
     }
@@ -41,6 +41,13 @@ export default {
       console.log('saving kassa nomination')
       this.$store.dispatch('kassabladen/saveKassaNomination', item)
       this.$emit('goto-next', item)
+    },
+    updateValue (e, item) { // DEPRECATED ??
+      console.log('committing', e)
+      this.$store.commit(
+        'kassabladen/UPDATE_BEGIN_KASSANOM_AMOUNT',
+        { item: item, amount: e }
+      )
     }
   },
   computed: {
@@ -50,6 +57,10 @@ export default {
     multiplier: function () {
       return this.nominations.find(x => x.id === this.item.nominationId).multiplier
     }
+    // amount () {
+    //   return this.$store.state.kassabladen.kassaContainer.beginKassaNominations
+    //     .filter(el => el.nominationId === this.nomId)[0].amount
+    // }
   },
   watch: {
     toggleElement (newValue) {

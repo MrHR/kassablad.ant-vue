@@ -31,5 +31,8 @@ export default {
   },
   SET_TITLE (state, value) {
     state.title = value
+  },
+  SET_RESET_KASSACONTAINER (state, value) {
+    state.resetKassaContainer = value
   }
 }

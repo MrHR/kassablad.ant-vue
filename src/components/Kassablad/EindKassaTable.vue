@@ -41,7 +41,7 @@ const columns = [
 ]
 export default {
   name: 'EindKassaTable',
-  props: ['kassaContainer'],
+  props: ['kassaContainer', 'beginKassaNominations'],
   data () {
     return {
       columns,
@@ -49,11 +49,12 @@ export default {
     }
   },
   mounted: function () {
-    this.kassaContainer.beginKassaNominations.forEach(beginNom => {
+    console.log('kassaContainer', this.kassaContainer)
+    this.beginKassaNominations.forEach(beginNom => {
       const eindNom = this.kassaContainer.endKassaNominations.filter(el => el.nominationId === beginNom.nominationId)[0]
       const multiplier = this.kassaContainer.nominations.filter(x => x.id === eindNom.nominationId)[0].multiplier
       const tempObj = {
-        key: eindNom.id,
+        key: eindNom.id * Math.random(),
         multiplier: multiplier,
         beginAantal: beginNom.amount,
         eindAantal: eindNom.amount,
