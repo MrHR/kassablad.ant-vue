@@ -108,7 +108,8 @@ export default {
   computed: {
     ...mapState([
       'kassaContainers',
-      'routUrl'
+      'routUrl',
+      'debug'
     ])
   },
   mounted () {
@@ -127,7 +128,7 @@ export default {
     moment,
     onDownloadExcel (e) {
       const dateStrings = this.dateString.map(date => moment(date).format('YYYY-MM-DD'))
-      console.log('download excel', dateStrings)
+      this.debug ?? console.log('download excel', dateStrings)
       this.$store.dispatch('fetchExcelReport', { startDate: dateStrings[0], endDate: dateStrings[1] })
     },
     onTabChange (key, type) {

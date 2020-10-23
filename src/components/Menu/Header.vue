@@ -4,7 +4,7 @@
     <div class="loading" v-if="loadingStatus == 'loading'">
       <a-icon type="loading" />
     </div>
-    <div class="concept" v-if="kassaContainer.concept">
+    <div class="concept" v-if="kassaContainer.concept && (visibleWrapper === 'beginKassaWrapper' || visibleWrapper === 'consumpiteWrapper' || visibleWrapper === 'eindKassaWrapper')">
       <a-tag class="loading" color="pink">
         concept
       </a-tag>
@@ -17,7 +17,7 @@ import { mapState } from 'vuex'
 export default {
   name: 'Header',
   computed: {
-    ...mapState(['title', 'loadingStatus']),
+    ...mapState(['title', 'loadingStatus', 'visibleWrapper']),
     ...mapState('kassabladen', ['kassaContainer'])
   }
 }

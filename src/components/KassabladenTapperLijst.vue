@@ -5,10 +5,11 @@
       :data-source="kassaContainersTapper"
       style="text-align:left"
     >
-      <a-list-item class="listItem" slot="renderItem" slot-scope="item">
+      <a-list-item class="listItem" slot="renderItem" slot-scope="item" v-if="item.concept === true">
         <a slot="actions" @click="gotoKassablad(item)">edit</a>
         <a-list-item-meta :description="`Tapper: ${item.naamTapper} Datum: ${moment(item.beginUur).format('DD MMM YYYY, HH:mm')}`">
-          <a slot="title" :href="`${routUrl}/#/kassabladen/${item.id}`">
+          <!-- <a slot="title" :href="`${routUrl}/#/kassabladen/${item.id}`"> --> <!--TODO: fix query returns empty on no begin or eindkassa error -->
+          <a slot="title" @click="gotoKassablad(item)">
             <b>{{ item.activiteit }}</b>
           </a>
         </a-list-item-meta>
@@ -34,17 +35,18 @@ export default {
   },
   methods: {
     moment,
+    // Routes to startEvening page and gets kassaContainer by Id
     gotoKassablad: function (item) {
       this.$store.commit('SET_RESET_KASSACONTAINER', false)
-      this.$store.dispatch('fetchKassaContainerTapper', item.id).then(() => {
+      this.$store.dispatch('fetchKassaContainerTapper', item.id).then(() => { // Fetches all kassaContainers with begin- and endkassa + kassanominations
         this.$router.push('kassablad')
         // helpers.setMenuItem(2)
         this.selectedKeys.push(2)
       })
     }
   },
-  created () {
-    this.$store.dispatch('fetchKassaContainersTapper')
+  created () { // On Component created
+    this.$store.dispatch('fetchKassaContainersTapper') // Fetches all the kassacontainers(only kassaContainer itself)
     moment.locale()
   }
 }

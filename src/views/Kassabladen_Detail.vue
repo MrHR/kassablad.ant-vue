@@ -1,6 +1,12 @@
 <template>
   <div class="kassabladen_detail" style="text-align:left">
-    <a-card :title="kassaContainerDetail != null && kassaContainerDetail != undefined ? kassaContainerDetail.activiteit  : 'loading...'" style="margin-bottom:30px">
+    <a-card
+      :title="(kassaContainerDetail != null
+        && kassaContainerDetail != undefined)
+        ? '#' + kassaContainerDetail.id + ' - ' + kassaContainerDetail.activiteit  : 'loading...'
+        "
+      style="margin-bottom:30px"
+    >
       <ul class="infoList" v-if="kassaContainerDetail != null && kassaContainerDetail != undefined">
         <li><span>Tapper:</span><span>{{ kassaContainerDetail.naamTapper}}</span></li>
         <li v-if="kassaContainerDetail.naamTapperSluit !== kassaContainerDetail.naamTapper">
@@ -12,7 +18,7 @@
         <li><span>Bezoekers:</span><span>{{ kassaContainerDetail.bezoekers }}</span></li>
         <li><span>Bedrag naar afroomkluis:</span><span>€ {{ kassaContainerDetail.afroomkluis }}</span></li>
       </ul>
-      <div v-if="!kassaContainerDetail && kassaContainerDetail != undefined">loading...</div>
+      <a-empty v-if="!kassaContainerDetail && kassaContainerDetail != undefined"/>
     </a-card>
     <a-table :columns="columns" :data-source="kassaData" :pagination="false" bordered>
       <div slot="multiply" slot-scope="text" class="extraIconWrapper">{{ text }} <a-icon class="extraIcon" type="close" /></div>
@@ -105,7 +111,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['kassaContainers'])
+    ...mapState(['kassaContainers', 'debug'])
   },
   created () {
   },
@@ -129,8 +135,8 @@ export default {
       const kassaContainer = this.kassaContainers
         .filter(kc => kc.id === parseInt(this.$route.params.id))[0]
       this.kassaContainerDetail = kassaContainer
-      console.log('this.kassaContainers', this.kassaContainers)
-      console.log('id', this.$route.params.id)
+      this.debug ?? console.log('this.kassaContainers', this.kassaContainers)
+      this.debug ?? console.log('id', this.$route.params.id)
       if (kassaContainer) {
         kassaContainer.beginKassa.nominationList.forEach(beginNom => {
           let eindNom = kassaContainer.eindKassa.nominationList

@@ -317,7 +317,7 @@ export default {
       this.next('showNomination')
     },
     onSubmit () {
-      this.createKassaContainer('end')
+      this.createKassaContainer('end', false)
       this.$store.dispatch('showWrapper', 'beginKassaWrapper')
       this.$store.dispatch('showComponent', 'createKassabladButton')
       this.$store.commit('kassabladen/RESET_KASSA_DATA')

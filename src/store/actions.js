@@ -80,6 +80,7 @@ export default {
   fetchKassaContainers (context, data = []) {
     context.commit('SET_LOADING_STATUS', 'loading')
     axios.get(`${this.state.controllerUrl}kassacontainer/ext?startdate=${data.startDate}&enddate=${data.endDate}`).then(response => {
+      console.log('response.data', response.data)
       context.commit('SET_KASSACONTAINERS', response.data)
       context.commit('SET_LOADING_STATUS', 'notLoading')
     })

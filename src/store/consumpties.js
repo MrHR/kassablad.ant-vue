@@ -49,7 +49,7 @@ export default {
       }
     },
     SET_SETCONSUMPTIONCOUNTS_BOOL (state, bool) {
-      console.log('setting bool', bool)
+      state.debug ?? console.log('setting bool', bool)
       state.setConsumptionCounts = bool
     },
     RESET_CONSUMPTION_DATA (state) {
@@ -69,14 +69,14 @@ export default {
           kassaContainerId: rootState.kassabladen.kassaContainer.id,
           consumptions: response.data
         })
-        console.log('consumpitioncount bool', state.setConsumptionCounts)
+        state.debug ?? console.log('consumpitioncount bool', state.setConsumptionCounts)
         if (state.setConsumptionCounts === true) dispatch('fetchConsumptionCount')
         commit('SET_LOADING_STATUS', 'notLoading', { root: true })
       })
     },
     // Call on opening old kassablad to edit - fetch tapper consumption counts
     fetchConsumptionCount ({ state, commit, rootState, dispatch }) {
-      console.log('calling set consumptions')
+      state.debug ?? console.log('calling set consumptions')
       commit('SET_LOADING_STATUS', 'loading', { root: true })
       axios.get(`${rootState.controllerUrl}consumptiecount/container/${rootState.kassabladen.kassaContainer.id}`)
         .then(response => {
@@ -97,7 +97,7 @@ export default {
         commit('SET_CONSUMPTIE_COUNT', response.data)
         commit('SET_LOADING_STATUS', 'notLoading', { root: true })
       }).catch(error => {
-        console.log('consumptie post error', error.response)
+        state.debug ?? console.log('consumptie post error', error.response)
         commit('SET_LOADING_STATUS', 'notLoading', { root: true })
       })
     },
@@ -107,7 +107,7 @@ export default {
         .then(response => {
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
         }).catch(error => {
-          console.log('consumptie put error', error.response)
+          state.debug ?? console.log('consumptie put error', error.response)
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
         })
     }

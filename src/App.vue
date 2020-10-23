@@ -74,9 +74,12 @@ export default {
   },
   watch: {
     $route (to, from) {
-      if (from.name === 'Kassablad') {
+      console.log('changing route', to.name)
+      if (to.name === 'Kassablad') {
         this.$store.commit('SET_VISIBLE_COMPONENT', 'createKassabladButton')
         this.$store.commit('SET_VISIBLE_WRAPPER', 'beginKassaWrapper')
+      } else {
+        this.$store.commit('SET_VISIBLE_WRAPPER', '')
       }
     }
   }

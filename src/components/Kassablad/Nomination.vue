@@ -25,7 +25,7 @@
 </template>
 <script>
 import helperFunctions from '../../functions/helperFunctions.js'
-// import { mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Nomination',
@@ -38,12 +38,12 @@ export default {
   },
   methods: {
     goToNextItem (item) {
-      console.log('saving kassa nomination')
+      this.debug ?? console.log('saving kassa nomination')
       this.$store.dispatch('kassabladen/saveKassaNomination', item)
       this.$emit('goto-next', item)
     },
     updateValue (e, item) { // DEPRECATED ??
-      console.log('committing', e)
+      this.debug ?? console.log('committing', e)
       this.$store.commit(
         'kassabladen/UPDATE_BEGIN_KASSANOM_AMOUNT',
         { item: item, amount: e }
@@ -51,6 +51,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(['debug']),
     nomTotal: function () {
       return helperFunctions.calculatePrice(this.multiplier, this.item.amount)
     },

@@ -4,6 +4,7 @@ import axios from 'axios'
 export default {
   namespaced: true,
   state: () => ({
+    debug: false,
     kassaId: 0,
     kassaType: null,
     setKassaNominations: false,
@@ -24,7 +25,7 @@ export default {
   }),
   mutations: {
     SET_KASSACONTAINER (state, data) {
-      console.log('data', data)
+      state.debug ?? console.log('data', data)
       state.kassaContainer.active = data.active
       state.kassaContainer.afroomkluis = data.afroomkluis
       state.kassaContainer.bezoekers = data.bezoekers
@@ -106,7 +107,7 @@ export default {
       state.kassaContainer.endKassaNominations = noms
     },
     SET_KASSA_NOMINATION (state, data) {
-      console.log('type', data)
+      state.debug ?? console.log('type', data)
       if (data.type === 'begin') {
         const newArr = state.kassaContainer.beginKassaNominations
           .map(nom => {
@@ -156,7 +157,7 @@ export default {
     },
     SET_BEGIN_KASSA_NOMS (state, data) {
       state.beginKassaNominationsStored = [...state.kassaContainer.beginKassaNominations]
-      console.log('noms', state.beginKassaNominationsStored)
+      state.debug ?? console.log('noms', state.beginKassaNominationsStored)
     },
     RESET_KASSA_DATA (state) {
       state.kassaContainerId = 0
@@ -178,13 +179,21 @@ export default {
       state.setKassaNominations = bool
     },
     UPDATE_BEGIN_KASSANOM_AMOUNT (state, data) { // DEPRECATED ??
-      console.log('udapting kassa nom', data)
+      state.debug ?? console.log('udapting kassa nom', data)
       const nom = state.kassaContainer.beginKassaNominations.filter(el => el.nominationId === data.item.nominationId)[0]
       nom.amount = data.amount
     }
   },
   actions: {
-    createKassaContainer ({ state, commit, rootState, dispatch }, kassaType) {
+    /*
+      Per nieuw tapblad is er een kassacontainer
+      deze bevat 2 kassa's(begin-kassa en eind-kassa)
+      die op hun beurt weer kassa nominaties bevatten
+
+      kassanominaties dienen om op te slagen hoeveel er
+      van elke munteenheid in de kassa zit bv. 2 muntjes van 1 cent
+    */
+    createKassaContainer ({ state, commit, rootState, dispatch }, kassaType, boolConcept = true) {
       commit('SET_LOADING_STATUS', 'loading', { root: true })
       // Do this on start evening
       if (state.kassaContainer.id === 0) {
@@ -223,7 +232,7 @@ export default {
             inkomstBar: state.kassaContainer.inkomstBar,
             inkomstLidkaart: state.kassaContainer.inkomstLidkaart,
             activiteit: state.kassaContainer.activiteit,
-            concept: true
+            concept: boolConcept
           }
         ).then(response => {
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })

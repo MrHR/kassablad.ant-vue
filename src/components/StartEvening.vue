@@ -229,7 +229,7 @@ export default {
     beginUur: {
       get () {
         const uur = this.$store.state.kassabladen.kassaContainer.beginUur
-        console.log('uur', uur)
+        this.debug ?? console.log('uur', uur)
         return uur
       },
       set (value) {
@@ -242,9 +242,9 @@ export default {
     ...mapActions('consumpties', ['fetchConsumptions']),
     viewDate (date, dateString) {
       this.dateString = dateString
-      console.log('datestring this', this.dateString)
-      console.log('date', date, 'datestring', dateString)
-      console.log(this.kassaContainer.beginUur)
+      this.debug ?? console.log('datestring this', this.dateString)
+      this.debug ?? console.log('date', date, 'datestring', dateString)
+      this.debug ?? console.log(this.kassaContainer.beginUur)
     },
     next (name) {
       this.$store.dispatch('showComponent', name)
@@ -267,7 +267,7 @@ export default {
     onSubmit () {
       // this.saveKassaNominations('begin')
       this.$store.commit('kassabladen/SET_BEGIN_KASSA_NOMS')
-      console.log('consumptioncount', this.consumptionCounts.length)
+      this.debug ?? console.log('consumptioncount', this.consumptionCounts.length)
       if (this.consumptionCounts.length <= 0) {
         this.fetchConsumptions()
       }
@@ -285,7 +285,7 @@ export default {
   },
   created () {
     if (this.resetKassaContainer) {
-      console.log('reset')
+      this.debug ?? console.log('reset')
       this.$store.commit('kassabladen/RESET_KASSA_DATA')
       this.$store.commit('consumpties/RESET_CONSUMPTION_DATA')
     }

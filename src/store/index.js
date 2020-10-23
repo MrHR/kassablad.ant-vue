@@ -27,7 +27,7 @@ export default new Vuex.Store({
     consumptions: [],
     consumptionCounts: [],
     visibleComponent: 'createKassabladButton',
-    visibleWrapper: 'beginKassaWrapper',
+    visibleWrapper: '',
     profitChartData: null,
     beginVsEndChartData: null,
     tapperdagenData: null,

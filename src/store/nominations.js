@@ -2,6 +2,7 @@ import axios from 'axios'
 
 const nominations = {
   state: {
+    debug: false,
     loadingStatus: 'notLoading',
     nominations: []
   },
@@ -11,7 +12,7 @@ const nominations = {
     },
     SET_NOMINATIONS (state, nominations) {
       state.nominations = nominations
-      console.log('nominations', JSON.stringify(state.nominations))
+      state.debug ?? console.log('nominations', JSON.stringify(state.nominations))
     }
   },
   actions: {

@@ -34,14 +34,14 @@ export default {
       moment,
       pagination: {
         onChange: page => {
-          console.log(page)
+          this.debug ?? console.log(page)
         },
         pageSize: 10
       }
     }
   },
   computed: {
-    ...mapState(['kassaContainers', 'routUrl'])
+    ...mapState(['kassaContainers', 'routUrl', 'debug'])
   },
   created () {
     this.$store.dispatch('fetchKassaContainers')

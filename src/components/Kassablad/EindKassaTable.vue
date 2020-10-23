@@ -5,6 +5,7 @@
 </template>
 <script>
 import helperFunctions from '../../functions/helperFunctions'
+import { mapState } from 'vuex'
 const columns = [
   {
     title: 'Nominatie',
@@ -48,8 +49,9 @@ export default {
       eindKassaData: []
     }
   },
+  computed: { ...mapState(['debug']) },
   mounted: function () {
-    console.log('kassaContainer', this.kassaContainer)
+    this.debug ?? console.log('kassaContainer', this.kassaContainer)
     this.beginKassaNominations.forEach(beginNom => {
       const eindNom = this.kassaContainer.endKassaNominations.filter(el => el.nominationId === beginNom.nominationId)[0]
       const multiplier = this.kassaContainer.nominations.filter(x => x.id === eindNom.nominationId)[0].multiplier

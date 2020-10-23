@@ -46,6 +46,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(['debug']),
     ...mapState('consumpties', ['consumptions', 'consumptionCounts']),
     consumptie: function () {
       return this.consumptions.filter(x => x.id === this.item.consumptieId)[0]
@@ -59,17 +60,17 @@ export default {
     addConsumptie () {
       this.item.aantal += 1
       if (!this.item.id) {
-        console.log('consumptionCount created')
+        this.debug ?? console.log('consumptionCount created')
         this.createConsumptionCount({ item: this.item, consumptieId: this.consumptie.id }) // create consumption count in db
       } else {
-        console.log('consumptionCount updated')
+        this.debug ?? console.log('consumptionCount updated')
         this.updateConsumptionCount(this.item) // update consumption count in db
       }
     },
     subtractConsumptie () {
       if (this.item.aantal > 0) {
         this.item.aantal -= 1
-        console.log('consumptionCount updated')
+        this.debug ?? console.log('consumptionCount updated')
         this.updateConsumptionCount(this.item) // update consumption count in db
       }
     }
