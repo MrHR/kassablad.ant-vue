@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Callback from '../views/Callback.vue'
+import { vuexOidcCreateRouterMiddleware } from 'vuex-oidc'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
@@ -47,11 +50,18 @@ const routes = [
     path: '/reporting',
     name: 'Reporting',
     component: () => import('../views/Reporting.vue')
+  },
+  {
+    path: '/callback',
+    name: 'callback',
+    component: Callback
   }
 ]
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
+router.beforeEach(vuexOidcCreateRouterMiddleware(store))
 
 export default router

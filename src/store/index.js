@@ -5,6 +5,9 @@ import actions from './actions'
 import mutations from './mutations'
 import kassabladen from './kassabladen'
 import consumpties from './consumpties'
+import users from './user/user'
+import { vuexOidcCreateStoreModule } from 'vuex-oidc'
+import { oidcSettings } from '../config/oidc'
 // import { List } from 'ant-design-vue'
 // import nominations from '@/store/nominations.js'
 
@@ -13,7 +16,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
     kassabladen,
-    consumpties
+    consumpties,
+    users,
+    oidcStore: vuexOidcCreateStoreModule(oidcSettings)
   },
   state: {
     title: '',
@@ -22,7 +27,7 @@ export default new Vuex.Store({
     debugStore: false,
     controllerUrl: 'https://localhost:5001/api/',
     // routUrl: ' https://192.168.1.4:3000/',
-    routUrl: ' http://localhost:3000/',
+    routUrl: ' https://localhost:3000/',
     loadingStatus: 'notLoading',
     consumptions: [],
     consumptionCounts: [],

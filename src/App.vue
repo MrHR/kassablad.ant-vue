@@ -2,7 +2,7 @@
   <a-config-provider>
     <div id="app">
       <a-layout>
-        <!--side menu -->
+        <!--left side menu -->
         <a-layout-sider>
           <a-menu theme="dark" mode="inline" :defaultSelectedKeys="selectedKeys">
             <a-menu-item key="2" id="2">
@@ -61,16 +61,23 @@ export default {
   data () {
     return {
       // selectedKeys: []
+      config: null,
+      mgr: null
     }
   },
   computed: {
     ...mapState(['selectedKeys'])
   },
   created () {
+    // set selected menu item on startup
     setTimeout(() => {
       const menuItem = document.getElementsByClassName('router-link-exact-active')[0]
-      this.selectedKeys.push(menuItem.parentElement.id)
+      if (menuItem) {
+        this.selectedKeys.push(menuItem.parentElement.id)
+      }
     }, 10)
+  },
+  mounted () {
   },
   watch: {
     $route (to, from) {
