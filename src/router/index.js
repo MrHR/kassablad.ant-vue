@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Kassablad from '../views/Kassablad.vue'
 import Callback from '../views/Callback.vue'
 import { vuexOidcCreateRouterMiddleware } from 'vuex-oidc'
 import store from '@/store'
@@ -11,7 +11,9 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Kassablad,
+    meta: { title: 'menu.home' },
+    redirect: '/dashboard'
   },
   {
     path: '/about',
@@ -24,7 +26,7 @@ const routes = [
   {
     path: '/kassablad',
     name: 'Kassablad',
-    component: () => import('../views/Kassablad.vue')
+    component: Kassablad
   },
   {
     path: '/dashboard',

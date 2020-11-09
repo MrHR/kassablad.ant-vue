@@ -3,11 +3,11 @@
     <a-form-model class="center" layout="vertical" :model="kassaContainer">
       <!-- FORMPART: EIND AVOND -->
       <CreateKassaBlad
-        buttonText="Eindig de Avond"
+        buttonText="Sluit het Café"
         nextEl="naamTapperSluit"
       ></CreateKassaBlad>
       <!-- FORMPART: TAPPER SLUIT NAAM -->
-      <div v-if="visibleComponent === 'naamTapperSluit'">
+      <div v-if="visibleComponent === 'naamTapperSluit'" class="formPart">
         <a-form-model-item label="Naam Tapper Sluit">
           <a-input
             class="naamTapper"
@@ -16,6 +16,7 @@
             placeholder="Bv.: Brent Vanheuverzwyn"
             @pressEnter="next('Sluitingsuur')"
             @focus="$event.target.select()"
+            style="max-width:300px"
           />
         </a-form-model-item>
         <a-form-model-item>
@@ -40,9 +41,9 @@
           <a-date-picker
             ref="Sluitingsuur"
             :show-time="{ format: 'HH:mm' }"
-            placeholder="Pick a date"
+            placeholder="Selecteer openingsuur en datum"
             :format="format"
-            style="width: 100%;"
+            style="width:300px"
             v-model="eindUur"
           />
         </a-form-model-item>
@@ -92,7 +93,7 @@
         </a-form-model-item>
       </div>
       <!-- FORMPART: KASSA TELLEN SLUIT -->
-      <div v-if="visibleComponent === 'showNomination'">
+      <div v-if="visibleComponent === 'showNomination'" class="formPart center textCenter">
         <!-- {{ this.kassas }} -->
         <!-- {{ nominations }} -->
         <Nomination
@@ -135,7 +136,7 @@
             style="margin-left: 10px;"
             @click="next('showOverview')"
           >
-            <!-- <a-icon type="double-right" /> -->
+            <a-icon type="double-right" />
           </a-button>
         </a-form-model-item>
       </div>
@@ -148,7 +149,7 @@
             v-bind:beginKassaNominations="beginKassaNominations"
           />
         </a-form-model-item>
-        <a-form-model-item>
+        <a-form-model-item class="textCenter">
           <a-button @click="next('showNomination')">
             <a-icon type="double-left" />
           </a-button>
@@ -336,12 +337,11 @@ export default {
 </script>
 <style lang="scss">
 #endKassaWrapper {
-  padding-top:calc(50vh - 200px);
+  text-align:left;
 }
 
 .center {
   margin:auto;
-  max-width:80%;
 }
 .title {
   margin-bottom:100px;

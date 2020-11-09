@@ -1,5 +1,5 @@
 <template>
-  <a-table :columns="columns" :data-source="beginKassaData" :pagination="false" bordered>
+  <a-table class="kassaTable" :columns="columns" :data-source="beginKassaData" :pagination="false" bordered>
     <a slot="multiplier" slot-scope="text">€ {{ text }}</a>
   </a-table>
 </template>
@@ -62,8 +62,11 @@ export default {
   }
 }
 </script>
-<style scoped>
-.editable-row-operations a {
+<style>
+.kassaTable .editable-row-operations a {
   margin-right: 8px;
+}
+.kassaTable .ant-table-tbody tr td {
+  padding:5px;
 }
 </style>

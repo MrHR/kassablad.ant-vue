@@ -18,7 +18,12 @@
       </span>
       <span><b>€ {{ totalConsumptionCost }}</b></span>
     </div>
-    <a-button @click="showEinde">
+    <a-button
+      @click="showEinde"
+      type="primary"
+      block
+      style="margin-top:30px;"
+    >
       Einde Avond
     </a-button>
   </div>

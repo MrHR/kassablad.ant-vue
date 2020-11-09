@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <a-card title="Vorige Kassabladen">
+    <div slot="extra">
+      <a-button icon="sync" @click="refresh" :loading="loadingStatus === 'loading'">
+        Refresh
+      </a-button>
+    </div>
     <a-list
       bordered
       :pagination="pagination"
@@ -7,11 +12,11 @@
       style="text-align:left"
     >
       <a-list-item class="listItem" slot="renderItem" slot-scope="item">
-        <a slot="actions" :href="`${routUrl}#/kassabladen/` + item.id">edit</a>
+        <a slot="actions" :href="`${routUrl}kassabladen/` + item.id">edit</a>
         <a-list-item-meta
           :description="moment(item.beginUur).format('ddd, DD MMM YYYY, HH:mm') + ' - ' + moment(item.eindUur).format('HH:mm')"
         >
-          <a slot="title" :href="`${routUrl}#/kassabladen/` + item.id">{{ item.activiteit }}</a>
+          <a slot="title" :href="`${routUrl}kassabladen/` + item.id">{{ item.activiteit }}</a>
           <a-avatar
             slot="avatar"
             src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
@@ -20,7 +25,7 @@
         <div style="text-align:left;width:130px;">{{ item.naamTapper }}</div>
       </a-list-item>
     </a-list>
-  </div>
+  </a-card>
 </template>
 <script>
 import moment from 'moment'
@@ -40,8 +45,13 @@ export default {
       }
     }
   },
+  methods: {
+    refresh () {
+      this.$store.dispatch('fetchKassaContainers')
+    }
+  },
   computed: {
-    ...mapState(['kassaContainers', 'routUrl', 'debug'])
+    ...mapState(['kassaContainers', 'routUrl', 'debug', 'loadingStatus'])
   },
   created () {
     this.$store.dispatch('fetchKassaContainers')

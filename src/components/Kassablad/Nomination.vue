@@ -1,8 +1,8 @@
 
 <template>
-  <div class="nomination">
-    <div v-if="toggleElement = count === index">
-      <a-form-model-item label="Valuta">
+  <div class="nomination" v-if="toggleElement = count === index">
+    <div>
+      <a-form-model-item label="">
         <span class="nom-item nom-multi nom-multi-left">&euro; {{ multiplier }}</span>
         <span class="nom-item">x</span>
         <a-input-number
@@ -82,6 +82,9 @@ export default {
 }
 </script>
 <style>
+  .nomination {
+    margin:5rem 0 0 0;
+  }
   .nomination .ant-form-item-children::before {
     content:'';
     position:absolute;

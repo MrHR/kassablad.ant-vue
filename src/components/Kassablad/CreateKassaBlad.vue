@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visibleComponent === 'createKassabladButton'">
+  <div v-if="visibleComponent === 'createKassabladButton'" class="kassabladButton">
     <a-button
       type="primary"
       ref="createKassabladButton"
@@ -44,5 +44,7 @@ export default {
 }
 </script>
 <style scoped>
-
+.kassabladButton {
+  text-align:center;
+}
 </style>

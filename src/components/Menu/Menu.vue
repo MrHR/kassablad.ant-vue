@@ -22,3 +22,11 @@ export default {
   name: 'Menu'
 }
 </script>
+<style>
+  .logo {
+    height:50px;
+    width:100%;
+    background-color:pink;
+    background-image:url('@/assets/0.5x/bron_logo_white@0.5x.png');
+  }
+</style>

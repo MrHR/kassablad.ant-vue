@@ -9,11 +9,13 @@ import axios from 'axios'
 import '../node_modules/oidc-client/dist/oidc-client'
 import 'ant-design-vue/dist/antd.css' // or 'ant-design-vue/dist/antd.less'
 import Vuelidate from 'vuelidate'
+import VueTypedJs from 'vue-typed-js'
 
 Vue.config.productionTip = false
 
 Vue.use(Antd)
 Vue.use(Vuelidate)
+Vue.use(VueTypedJs)
 // Vue.use(Input)
 // Vue.use(Form)
 

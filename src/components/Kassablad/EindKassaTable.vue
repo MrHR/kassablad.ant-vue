@@ -1,5 +1,5 @@
 <template>
-  <a-table :columns="columns" :data-source="eindKassaData" :pagination="false" bordered>
+  <a-table class="kassaTable" :columns="columns" :data-source="eindKassaData" :pagination="false" bordered>
     <a slot="multiplier" slot-scope="text">€ {{ text }}</a>
   </a-table>
 </template>

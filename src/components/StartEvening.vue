@@ -1,22 +1,21 @@
 <template>
   <div id="beginKassaWrapper" v-if="visibleWrapper === 'beginKassaWrapper'">
-    <a-form-model class="center" layout="vertical" :model="kassaContainer">
+    <a-form-model class="center" layout="horizontal" :model="kassaContainer">
       <!-- FORMPART: CREATE KASSACONTAINER -->
       <CreateKassaBlad
         buttonText="Start de Avond"
         nextEl="naamTapper"
       ></CreateKassaBlad>
       <!--FORMPART: TAPPER NAAM-->
-      <div v-if="visibleComponent === 'naamTapper'">
-          <a-form-model-item
-            label="Naam Tapper"
-          >
+      <div v-if="visibleComponent === 'naamTapper'" class="formPart">
+          <a-form-model-item label="Naam Tapper">
             <a-input
               class="naamTapper"
               v-model="kassaContainer.naamTapper"
               ref="naamTapper"
               placeholder="Bv.: Brent Vanheuverzwyn"
               @pressEnter="next('activiteit')"
+              style="max-width:300px;"
             />
           </a-form-model-item>
           <a-form-model-item>
@@ -36,7 +35,7 @@
           </a-form-model-item>
       </div>
       <!--FORMPART: ACTIVITEIT -->
-      <div v-if="visibleComponent === 'activiteit'">
+      <div v-if="visibleComponent === 'activiteit'" class="formPart">
         <a-form-model-item label="Activiteit">
           <a-input
             class="activiteit"
@@ -45,6 +44,7 @@
             placeholder="Bv.: Café"
             @change="setTitle"
             @pressEnter="next('beginUur')"
+            style="max-width:400px;"
           />
         </a-form-model-item>
         <a-form-model-item>
@@ -64,15 +64,14 @@
           </a-form-model-item>
       </div>
       <!--FORMPART: DATUM-->
-      <div v-if="visibleComponent ==='beginUur'">
-        {{ kassaContainer.beginUur }}
+      <div v-if="visibleComponent ==='beginUur'" class="formPart">
           <a-form-model-item label="Openingsuur">
             <a-date-picker
               ref="beginUur"
               :show-time="{ format: 'HH:mm' }"
-              placeholder="Pick a date"
+              placeholder="Selecteer openingsuur en datum"
               :format="format"
-              style="width: 100%;"
+              style="width:300px;"
               v-model="beginUur"
             />
           </a-form-model-item>
@@ -93,7 +92,7 @@
           </a-form-model-item>
       </div>
       <!--FORMPART: KASSA OPENEN-->
-      <div v-if="visibleComponent ==='showNomination'">
+      <div v-if="visibleComponent ==='showNomination'" class="formPart center textCenter">
         <div v-if="this.debug">
           <span>BeginKassaNominations</span><br/>
           {{ kassaContainer.beginKassaNominations }}<br /><br /><br />
@@ -146,7 +145,7 @@
           </a-form-model-item>
       </div>
       <!--FORMPART: beginKassaNoms Table-->
-      <div v-if="visibleComponent ==='showOverview'">
+      <div v-if="visibleComponent ==='showOverview'" class="center textCenter">
         <a-form-model-item>
           <BeginKassaTable
             class="startEveningTableWrapper center"
@@ -304,11 +303,16 @@ export default {
 </script>
 <style>
 #beginKassaWrapper {
-  padding-top:calc(50vh - 200px);
+  text-align:left;
+}
+.formPart {
+  max-width:500px;
 }
 .center {
   margin:auto;
-  max-width:80%;
+}
+.textCenter {
+  text-align: center;
 }
 .title {
   margin-bottom:100px;

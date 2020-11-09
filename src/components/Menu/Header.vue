@@ -5,7 +5,18 @@
       <a-tag class="concept" v-if="kassaContainer.concept && (visibleWrapper === 'beginKassaWrapper' || visibleWrapper === 'consumpiteWrapper' || visibleWrapper === 'eindKassaWrapper')" color="pink">
         concept
       </a-tag>
-      <a-avatar v-if="oidcUser" shape="square" icon="user" id="avatar" size="small" @click="signOutOidc"/>
+      <a-popover placement="bottom">
+        <template slot="content">
+          <p>{{ oidcUser.email }}</p>
+          <a-button @click="signOutOidc">
+            Log Out
+          </a-button>
+        </template>
+        <template slot="title">
+          <span>Info</span>
+        </template>
+        <a-avatar v-if="oidcUser" shape="square" icon="user" id="avatar" size="small" class="loggedIn"/>
+      </a-popover>
     </div>
     <a-icon class="loading" v-if="loadingStatus == 'loading'" type="loading" />
   </div>
@@ -18,27 +29,10 @@ export default {
   computed: {
     ...mapState(['title', 'loadingStatus', 'visibleWrapper']),
     ...mapState('kassabladen', ['kassaContainer']),
-    ...mapState('users', ['loggedIn']),
     ...mapGetters(['oidcUser'])
   },
   methods: {
-    login () {
-    },
     ...mapActions(['signOutOidc'])
-  },
-  watch: {
-    loggedIn (newValue) {
-      switch (newValue) {
-        case true:
-          document.getElementById('avatar').classList.add('loggedIn')
-          console.log('logged in ', document.getElementById('avatar').classList)
-          break
-        case false:
-          document.getElementById('avatar').classList.remove('loggedIn')
-          console.log('logged out ', document.getElementById('avatar').classList)
-          break
-      }
-    }
   }
 }
 </script>
@@ -80,6 +74,6 @@ export default {
     background-color: #bbbbbb;
   }
   .loggedIn {
-    background-color: #87d068;
+    background-color: #87d068 !important;
   }
 </style>

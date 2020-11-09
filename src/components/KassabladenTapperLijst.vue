@@ -7,7 +7,7 @@
     >
       <a-list-item class="listItem" slot="renderItem" slot-scope="item" v-if="item.concept === true">
         <a slot="actions" @click="gotoKassablad(item)">edit</a>
-        <a-list-item-meta :description="`Tapper: ${item.naamTapper} Datum: ${moment(item.beginUur).format('DD MMM YYYY, HH:mm')}`">
+        <a-list-item-meta :description="`Tapper: ${item.naamTapper} Datum: ${moment(item.beginUur).format('HH:mm')}`">
           <!-- <a slot="title" :href="`${routUrl}/#/kassabladen/${item.id}`"> --> <!--TODO: fix query returns empty on no begin or eindkassa error -->
           <a slot="title" @click="gotoKassablad(item)">
             <b>{{ item.activiteit }}</b>

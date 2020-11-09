@@ -22,5 +22,6 @@ export default {
 .kassabladen {
   padding:20px;
   background-color:rgba(0,0,0,0.03);
+  text-align: left;
 }
 </style>

@@ -3,18 +3,19 @@
     <div id="app">
       <a-layout>
         <!--left side menu -->
-        <a-layout-sider>
+        <a-layout-sider class="sider">
+        <div class="logo"/>
           <a-menu theme="dark" mode="inline" :defaultSelectedKeys="selectedKeys">
             <a-menu-item key="2" id="2">
               <router-link to="/kassablad">
                 <a-icon type="form" />
-                <span>Kassablad</span>
+                <span>Nieuw kassablad</span>
               </router-link>
             </a-menu-item>
             <a-menu-item key="5" id="5">
               <router-link to="/kassabladentapper">
                 <a-icon type="container" />
-                <span>Tapbladen Vandaag</span>
+                <span>Kassabladen van {{ moment().format('DD MMM') }}</span>
               </router-link>
             </a-menu-item>
             <a-menu-item key="4" id="4">
@@ -53,6 +54,7 @@
 <script>
 import { mapState } from 'vuex'
 import Header from '../src/components/Menu/Header.vue'
+import moment from 'moment'
 
 export default {
   components: {
@@ -61,6 +63,7 @@ export default {
   data () {
     return {
       // selectedKeys: []
+      moment,
       config: null,
       mgr: null
     }
@@ -98,6 +101,7 @@ export default {
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -113,6 +117,8 @@ export default {
   }
   .ant-layout-sider {
     box-shadow:5px 0 4px rgba(20, 20, 20, 0.01);
+    max-width:250px !important;
+    min-width:250px !important;
     .ant-menu, .ant-menu li {
       text-align:left;
     }
@@ -134,5 +140,16 @@ export default {
   text-align:left;
   height:50px;
   line-height:50px;
+}
+
+.logo {
+  margin:30px 0;
+  height:100px;
+  width:100%;
+  box-sizing: border-box;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image:url('../src/assets/0.5x/bron_logo_white@0.5x.png');
 }
 </style>
