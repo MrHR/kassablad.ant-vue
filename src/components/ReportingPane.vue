@@ -1,12 +1,23 @@
 <template>
   <div class="reportingPaneWrapper">
+    <div>
+      datestring
+      {{ this.dateString }}
+    </div>
     <a-card
       :loading="loading"
       :tab-list="tabList"
       :active-tab-key="tabListKey"
       @tabChange="key => onTabChange(key, 'tabListKey')"
     >
-      <a-range-picker v-model="dateString" @change="OnDateChange" slot="tabBarExtraContent" style="margin:10px" :default-value="[moment().subtract(30, 'days'), moment()]"/>
+      <a-range-picker
+        v-model="dateString"
+        @change="OnDateChange"
+        slot="tabBarExtraContent"
+        style="margin:10px"
+        :default-value="[moment().subtract(30, 'days'), moment()]"
+        :format="dateFormat"
+      />
       <a-button slot="tabBarExtraContent" @click="onDownloadExcel">
         <a-icon type="file-excel" />
       </a-button>
@@ -87,12 +98,13 @@ const columns = [
 export default {
   name: 'KassabladenTapperLijst',
   data () {
+    this.dateFormat = 'DD-MM-YYYY'
     return {
       columns,
       locale,
       kassaData: [],
       loading: false,
-      dateString: '',
+      dateString: [moment().subtract(30, 'days'), moment()],
       tabList: [
         {
           key: 'rapporteringKasboek',
