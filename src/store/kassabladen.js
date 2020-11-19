@@ -1,10 +1,11 @@
 import moment from 'moment'
 import axios from 'axios'
+import { cloneDeep } from 'lodash'
 
 export default {
   namespaced: true,
   state: () => ({
-    debug: false,
+    debug: true,
     kassaId: 0,
     kassaType: null,
     setKassaNominations: false,
@@ -18,7 +19,8 @@ export default {
       eindUur: null,
       bezoekers: 0,
       afroomkluis: 0,
-      concept: false
+      concept: false,
+      formSection: ''
     },
     kassaContainerRaw: {},
     beginKassaNominationsStored: []
@@ -156,7 +158,8 @@ export default {
       state.kassaContainer.activiteit = data
     },
     SET_BEGIN_KASSA_NOMS (state, data) {
-      state.beginKassaNominationsStored = [...state.kassaContainer.beginKassaNominations]
+      // state.beginKassaNominationsStored = [...state.kassaContainer.beginKassaNominations] // shallow copy causes problems
+      state.beginKassaNominationsStored = cloneDeep(state.kassaContainer.beginKassaNominations)
       state.debug ?? console.log('noms', state.beginKassaNominationsStored)
     },
     RESET_KASSA_DATA (state) {
@@ -182,6 +185,9 @@ export default {
       state.debug ?? console.log('udapting kassa nom', data)
       const nom = state.kassaContainer.beginKassaNominations.filter(el => el.nominationId === data.item.nominationId)[0]
       nom.amount = data.amount
+    },
+    SET_KASSACONTAINER_FORMSECTION (state, data) {
+      state.kassaContainer.formSection = data
     }
   },
   actions: {
@@ -193,16 +199,22 @@ export default {
       kassanominaties dienen om op te slagen hoeveel er
       van elke munteenheid in de kassa zit bv. 2 muntjes van 1 cent
     */
-    createKassaContainer ({ state, commit, rootState, dispatch }, kassaType, boolConcept = true) {
+    createKassaContainer (
+      { state, commit, rootState, dispatch },
+      kassaType,
+      boolConcept = true
+    ) {
       commit('SET_LOADING_STATUS', 'loading', { root: true })
       // Do this on start evening
       if (state.kassaContainer.id === 0) {
+        console.log('kassacontainer does not exit -> create one')
         axios.post(`${rootState.controllerUrl}kassacontainer`, {
           beginUur: moment(state.kassaContainer.beginUur).format('YYYY-MM-DDTHH:mm:ss'),
           eindUur: moment(state.beginUur).add('4', 'hours').format('YYYY-MM-DDTHH:mm:ss'),
           naamTapper: state.kassaContainer.naamTapper,
           activiteit: state.kassaContainer.activiteit,
-          concept: true
+          concept: true,
+          formSection: `{ "visibleWrapper": ${rootState.visibleWrapper}, "visibleComponent": ${rootState.visibleComponent} }`
         }).then(response => {
           commit('SET_KASSACONTAINER', response.data)
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
@@ -232,11 +244,13 @@ export default {
             inkomstBar: state.kassaContainer.inkomstBar,
             inkomstLidkaart: state.kassaContainer.inkomstLidkaart,
             activiteit: state.kassaContainer.activiteit,
-            concept: boolConcept
+            concept: boolConcept,
+            formSection: state.kassaContainer.formSection
           }
         ).then(response => {
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
-          if (kassaType === 'end') { // do this to make endkassa if none exists
+          if (kassaType === 'end') { // makes endkassa if none exists
+            console.log('making endkassa')
             dispatch('createKassa', 'end')
           }
         }).catch(error => {
@@ -381,6 +395,47 @@ export default {
         commit('ADD_KASSA', response.data)
         commit('SET_LOADING_STATUS', 'notLoading', { root: true })
       })
+    },
+    updateKassaContainer ({ state, commit, rootState, dispatch }) {
+      commit('SET_LOADING_STATUS', 'loading', { root: true })
+      axios.put(`${rootState.controllerUrl}kassacontainer/${state.kassaContainer.id}`, {
+        id: state.kassaContainer.id,
+        beginuur: moment(state.kassaContainer.beginUur).format('YYYY-MM-DDTHH:mm:ss'),
+        eindUur: moment(state.kassaContainer.eindUur).format('YYYY-MM-DDTHH:mm:ss'),
+        naamTapper: state.kassaContainer.naamTapper,
+        naamTapperSluit: state.kassaContainer.naamTapperSluit,
+        active: state.kassaContainer.active,
+        dateAdded: state.kassaContainer.dateAdded,
+        dateUpdated: state.kassaContainer.dateUpdated,
+        updatedBy: state.kassaContainer.updatedBy,
+        createdBy: state.kassaContainer.createdBy,
+        notes: state.kassaContainer.notes,
+        bezoekers: state.kassaContainer.bezoekers,
+        afroomkluis: state.kassaContainer.afroomkluis,
+        inkomstBar: state.kassaContainer.inkomstBar,
+        inkomstLidkaart: state.kassaContainer.inkomstLidkaart,
+        activiteit: state.kassaContainer.activiteit,
+        concept: state.kassaContainer.concept,
+        formSection: state.kassaContainer.formSection
+      }).then(response => {
+        console.log('succes udpating kassaContainer', response)
+        commit('SET_LOADING_STATUS', 'notLoading', { root: true })
+      }).catch(error => {
+        console.log('updateKassaContainer put error', error.response.data)
+        commit('SET_LOADING_STATUS', 'notLoading', { root: true })
+      })
+    },
+    saveFormSection ({ state, commit, rootState, dispatch }) {
+      // call this to update/save the formsection we are in
+      console.log('update kassaContainer', rootState.visibleWrapper, rootState.visibleComponent)
+      commit(
+        'kassabladen/SET_KASSACONTAINER_FORMSECTION',
+        `{ "visibleWrapper": ${rootState.visibleWrapper}, "visibleComponent": ${rootState.visibleComponent} }`
+      )
+      // execute this if kassaContainer to save formection to db
+      if (state.kassaContainer.id !== 0) {
+        dispatch('updateKassaContainer')
+      }
     }
   },
   getters: {

@@ -74,7 +74,7 @@
             v-model="bezoekers"
             @focus="$event.target.select()"
             @pressEnter="tempCreateKassaContainer"
-          />
+          /><!-- Creates eindkassa if none exists before moving on -->
         </a-form-model-item>
         <a-form-model-item>
           <a-button @click="next('Sluitingsuur')">
@@ -86,7 +86,7 @@
               ref="toNomButton"
               style="margin-left: 10px;"
               @click="tempCreateKassaContainer"
-            >
+            ><!-- Creates eindkassa if none exists before moving on -->
               <a-icon type="double-right" />
             </a-button>
           </a-tooltip>
@@ -295,10 +295,12 @@ export default {
       'createKassa',
       'saveKassaNominations',
       'setEindUur',
-      'setBezoekers'
+      'setBezoekers',
+      'saveFormSection'
     ]),
     next (name) {
       this.$store.dispatch('showComponent', name)
+      this.saveFormSection()
     },
     gotoNextNom (item) {
       if (this.formCount >= (this.kassaContainer.nominations.length - 1)) {
@@ -318,6 +320,7 @@ export default {
       this.next('showNomination')
     },
     onSubmit () {
+      this.$store.commit('SET_RESET_KASSACONTAINER', true)
       this.createKassaContainer('end', false)
       this.$store.dispatch('showWrapper', 'beginKassaWrapper')
       this.$store.dispatch('showComponent', 'createKassabladButton')

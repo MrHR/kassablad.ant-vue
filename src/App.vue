@@ -69,7 +69,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['selectedKeys'])
+    ...mapState(['selectedKeys', 'version'])
   },
   created () {
     // set selected menu item on startup
@@ -95,7 +95,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" :version="version">
 .ant-layout {
   overflow: hidden;
 }
@@ -150,6 +150,6 @@ export default {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  background-image:url('../src/assets/0.5x/bron_logo_white@0.5x.png');
+  background-image:url('../src/assets/0.5x/logo_bronneken.svg');
 }
 </style>

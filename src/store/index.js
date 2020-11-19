@@ -22,6 +22,7 @@ export default new Vuex.Store({
   },
   state: {
     title: '',
+    version: 0.1,
     debug: false,
     debugUI: false,
     debugStore: false,

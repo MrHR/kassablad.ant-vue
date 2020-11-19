@@ -49,10 +49,11 @@ export default {
       }
     },
     SET_SETCONSUMPTIONCOUNTS_BOOL (state, bool) {
-      state.debug ?? console.log('setting bool', bool)
+      console.log('setting bool', bool)
       state.setConsumptionCounts = bool
     },
     RESET_CONSUMPTION_DATA (state) {
+      console.log('resest consumption data')
       state.consumptions = []
       state.consumptionCounts = []
       state.setConsumptionCounts = false
@@ -69,7 +70,7 @@ export default {
           kassaContainerId: rootState.kassabladen.kassaContainer.id,
           consumptions: response.data
         })
-        state.debug ?? console.log('consumpitioncount bool', state.setConsumptionCounts)
+        console.log('consumpitioncount bool', state.setConsumptionCounts)
         if (state.setConsumptionCounts === true) dispatch('fetchConsumptionCount')
         commit('SET_LOADING_STATUS', 'notLoading', { root: true })
       })
@@ -83,7 +84,7 @@ export default {
           response.data.forEach(item => {
             commit('SET_CONSUMPTIE_COUNT', item)
           })
-          commit('SET_SETCONSUMPTIONCOUNTS_BOOL', false)
+          // commit('SET_SETCONSUMPTIONCOUNTS_BOOL', false)
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
         })
     },

@@ -8,31 +8,31 @@
       ></CreateKassaBlad>
       <!--FORMPART: TAPPER NAAM-->
       <div v-if="visibleComponent === 'naamTapper'" class="formPart">
-          <a-form-model-item label="Naam Tapper">
-            <a-input
-              class="naamTapper"
-              v-model="kassaContainer.naamTapper"
-              ref="naamTapper"
-              placeholder="Bv.: Brent Vanheuverzwyn"
-              @pressEnter="next('activiteit')"
-              style="max-width:300px;"
-            />
-          </a-form-model-item>
-          <a-form-model-item>
-            <a-button @click="next('createKassabladButton')">
-              Cancel
+        <a-form-model-item label="Naam Tapper">
+          <a-input
+            class="naamTapper"
+            v-model="kassaContainer.naamTapper"
+            ref="naamTapper"
+            placeholder="Bv.: Brent Vanheuverzwyn"
+            @pressEnter="next('activiteit')"
+            style="max-width:300px;"
+          />
+        </a-form-model-item>
+        <a-form-model-item>
+          <a-button @click="next('createKassabladButton')">
+            Cancel
+          </a-button>
+          <a-tooltip placement="bottom" title="Volgende(Enter)" :mouseEnterDelay="1">
+            <a-button
+              type="primary"
+              ref="toActivityButton"
+              style="margin-left: 10px;"
+              @click="next('activiteit')"
+            >
+              <a-icon type="double-right" />
             </a-button>
-            <a-tooltip placement="bottom" title="Volgende(Enter)" :mouseEnterDelay="1">
-              <a-button
-                type="primary"
-                ref="toActivityButton"
-                style="margin-left: 10px;"
-                @click="next('activiteit')"
-              >
-                <a-icon type="double-right" />
-              </a-button>
-            </a-tooltip>
-          </a-form-model-item>
+          </a-tooltip>
+        </a-form-model-item>
       </div>
       <!--FORMPART: ACTIVITEIT -->
       <div v-if="visibleComponent === 'activiteit'" class="formPart">
@@ -99,6 +99,7 @@
           <span>Eind kassa nominations</span><br/>
           {{ kassaContainer.endKassaNominations }}
         </div>
+        <p>Vul de hoeveelheid muntjes en briefjes in</p>
           <Nomination
             v-for="(item, index) in kassaContainer.beginKassaNominations"
             v-bind:item="item"
@@ -145,7 +146,7 @@
           </a-form-model-item>
       </div>
       <!--FORMPART: beginKassaNoms Table-->
-      <div v-if="visibleComponent ==='showOverview'" class="center textCenter">
+      <div v-if="visibleComponent ==='showOverview'" class="">
         <a-form-model-item>
           <BeginKassaTable
             class="startEveningTableWrapper center"
@@ -216,15 +217,6 @@ export default {
     ...mapState('consumpties', {
       consumptionCounts: state => state.consumptionCounts
     }),
-    // kassaContainer: {
-    //   get () {
-    //     return this.$store.state.kassabladen.kassaContainer
-    //   },
-    //   set (value) {
-    //     console.log('value', value)
-    //     this.$store.commit('kassabladen/SET_KASSACONTAINER', value)
-    //   }
-    // },
     beginUur: {
       get () {
         const uur = this.$store.state.kassabladen.kassaContainer.beginUur
@@ -237,7 +229,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions('kassabladen', ['createKassaContainer', 'createKassa', 'saveKassaNominations']),
+    ...mapActions('kassabladen', [
+      'createKassaContainer',
+      'createKassa',
+      'saveKassaNominations',
+      'updateKassaContainer',
+      'saveFormSection'
+    ]),
     ...mapActions('consumpties', ['fetchConsumptions']),
     viewDate (date, dateString) {
       this.dateString = dateString
@@ -247,6 +245,7 @@ export default {
     },
     next (name) {
       this.$store.dispatch('showComponent', name)
+      this.saveFormSection()
     },
     gotoNextNom (item) {
       if (this.formCount >= (this.kassaContainer.nominations.length - 1)) {
@@ -264,10 +263,10 @@ export default {
       this.next('showNomination')
     },
     onSubmit () {
-      // this.saveKassaNominations('begin')
       this.$store.commit('kassabladen/SET_BEGIN_KASSA_NOMS')
-      this.debug ?? console.log('consumptioncount', this.consumptionCounts.length)
+      console.log('consumptioncount', this.consumptionCounts.length)
       if (this.consumptionCounts.length <= 0) {
+        console.log('fetching')
         this.fetchConsumptions()
       }
       this.$store.dispatch('showWrapper', 'consumpiteWrapper')
@@ -282,15 +281,13 @@ export default {
       this.$store.commit('kassabladen/SET_BEGIN_UUR', dateString)
     }
   },
-  created () {
+  mounted () {
     if (this.resetKassaContainer) {
-      this.debug ?? console.log('reset')
+      console.log('reset')
       this.$store.commit('kassabladen/RESET_KASSA_DATA')
       this.$store.commit('consumpties/RESET_CONSUMPTION_DATA')
+      this.$store.commit('SET_RESET_KASSACONTAINER', false)
     }
-  },
-  mounted () {
-    // TODO: if bestaand kassablad skip naar laatste savepoint
   },
   watch: {
     visibleComponent (newValue) {
@@ -309,7 +306,8 @@ export default {
   max-width:500px;
 }
 .center {
-  margin:auto;
+  margin:auto !important;
+  max-width:500px;
 }
 .textCenter {
   text-align: center;

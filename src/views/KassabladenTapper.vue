@@ -1,8 +1,6 @@
 <template>
   <div class="kassabladenTapper">
-    <a-card :title="'Kassabladen vandaag: ' + moment().format('DD MMM YYYY')">
-      <KassabladenTapperLijst />
-    </a-card>
+    <KassabladenTapperLijst />
   </div>
 </template>
 

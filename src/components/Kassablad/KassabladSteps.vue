@@ -1,19 +1,19 @@
 <template>
-  <a-steps class="steps" v-if="visibleComponent !== 'createKassabladButton'">
-    <a-step status="finish" title="Open het café">
+  <a-steps size="small" :current="0" class="steps" v-if="visibleComponent !== 'createKassabladButton' || visibleWrapper === 'consumpiteWrapper'">
+    <a-step status="finish" title="Open de kassa">
+      <span slot="description">Vul info in en tel de kassa</span>
       <a-icon v-if="visibleWrapper === 'beginKassaWrapper'" slot="icon" type="loading" />
-      <a-icon v-else  slot="icon" type="idcard" />
+      <a-icon v-else slot="icon" type="idcard" />
     </a-step>
     <a-step status="finish" title="Consumptieblad">
+      <span slot="description">Hou als tapper je consumpties bij</span>
       <a-icon v-if="visibleWrapper === 'consumpiteWrapper'" slot="icon" type="loading" />
       <a-icon v-else slot="icon" type="solution" />
     </a-step>
     <a-step status="finish" title="Sluit het café">
+      <span slot="description">Vul info in en tel de kassa</span>
       <a-icon v-if="visibleWrapper === 'eindKassaWrapper'" slot="icon" type="loading" />
       <a-icon v-else slot="icon" type="euro" />
-    </a-step>
-    <a-step status="wait" title="Tot de volgende!">
-      <a-icon slot="icon" type="smile-o" />
     </a-step>
   </a-steps>
 </template>
@@ -31,6 +31,6 @@ export default {
 .steps {
   justify-content: space-between !important;
   text-align: left;
-  padding:3rem 0 !important;
+  padding:20px 15% !important;
 }
 </style>
