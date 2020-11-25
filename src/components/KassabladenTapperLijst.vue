@@ -10,6 +10,7 @@
       :data-source="kassaContainersTapper"
       style="text-align:left"
     >
+    <!-- Lijst van tapbladen vandaag -->
       <a-list-item class="listItem" slot="renderItem" slot-scope="item" v-if="item.concept === true">
         <a slot="actions" v-if="item.concept === true" @click="gotoKassablad(item)">finish</a>
         <a slot="actions" v-else @click="gotoKassablad(item)">edit</a>

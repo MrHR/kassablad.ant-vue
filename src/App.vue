@@ -1,10 +1,10 @@
 <template>
   <a-config-provider>
     <div id="app">
-      <a-layout>
+      <a-layout id="components-layout-demo-custom-trigger">
         <!--left side menu -->
-        <a-layout-sider class="sider">
-        <div class="logo"/>
+        <a-layout-sider class="sider" v-model="collapsed" :trigger="null" collapsible>
+          <div class="logo"/>
           <a-menu theme="dark" mode="inline" :defaultSelectedKeys="selectedKeys">
             <a-menu-item key="2" id="2">
               <router-link to="/kassablad">
@@ -15,7 +15,7 @@
             <a-menu-item key="5" id="5">
               <router-link to="/kassabladentapper">
                 <a-icon type="container" />
-                <span>Kassabladen van {{ moment().format('DD MMM') }}</span>
+                <span>Kassabladen {{ moment().format('DD MMM') }}</span>
               </router-link>
             </a-menu-item>
             <a-menu-item key="4" id="4">
@@ -41,6 +41,12 @@
         <!--top header and content -->
         <a-layout>
           <a-layout-header id="header">
+            <a-icon
+              class="trigger"
+              :type="collapsed ? 'menu-unfold' : 'menu-fold'"
+              @click="() => (collapsed = !collapsed)"
+              style="display:inline-block"
+            />
             <Header/>
           </a-layout-header>
           <a-layout-content>
@@ -65,7 +71,8 @@ export default {
       // selectedKeys: []
       moment,
       config: null,
-      mgr: null
+      mgr: null,
+      collapsed: false
     }
   },
   computed: {
@@ -113,12 +120,12 @@ export default {
   }
   .ant-layout-header {
     background-color:white;
-    box-shadow:0 5px 5px rgba(20, 20, 20, 0.01);
+    // box-shadow:0 5px 5px rgba(20, 20, 20, 0.01);
   }
   .ant-layout-sider {
-    box-shadow:5px 0 4px rgba(20, 20, 20, 0.01);
-    max-width:250px !important;
-    min-width:250px !important;
+    // box-shadow:5px 0 4px rgba(20, 20, 20, 0.01);
+    // max-width:250px !important;
+    // min-width:250px !important;
     .ant-menu, .ant-menu li {
       text-align:left;
     }
@@ -143,9 +150,9 @@ export default {
 }
 
 .logo {
-  margin:30px 0;
+  margin:30px auto;
   height:100px;
-  width:100%;
+  width:50%;
   box-sizing: border-box;
   background-size: contain;
   background-repeat: no-repeat;

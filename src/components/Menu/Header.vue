@@ -1,10 +1,20 @@
 <template>
   <div id="title">
+    <!-- Titel van app - wordt gehaald uit de huidige kassablad activiteit -->
     <h1>{{ title }}</h1>
     <div class="content-right">
-      <a-tag class="concept" v-if="kassaContainer.concept && (visibleWrapper === 'beginKassaWrapper' || visibleWrapper === 'consumpiteWrapper' || visibleWrapper === 'eindKassaWrapper')" color="pink">
+      <!-- Tag om aan te duiden of het tapblad en concept is -->
+      <a-tag
+        class="concept"
+        v-if="kassaContainer.concept &&
+          (visibleWrapper === 'beginKassaWrapper'
+            || visibleWrapper === 'consumpiteWrapper'
+            || visibleWrapper === 'eindKassaWrapper')"
+        color="pink"
+      >
         concept
       </a-tag>
+      <!-- Popover met info over gebruiker -->
       <a-popover placement="bottom">
         <template slot="content">
           <p>{{ oidcUser.email }}</p>
@@ -18,6 +28,7 @@
         <a-avatar v-if="oidcUser" shape="square" icon="user" id="avatar" size="small" class="loggedIn"/>
       </a-popover>
     </div>
+    <!-- Loading icon -->
     <a-icon class="loading" v-if="loadingStatus == 'loading'" type="loading" />
   </div>
 </template>
@@ -38,11 +49,13 @@ export default {
 </script>
 <style>
   #title {
-    min-width:100%;
+    width:calc(100% - 16px);
     height:100%;
     display:flex;
     align-items: center;
     justify-content: space-between;
+    float:right;
+    padding-left:20px;
   }
   #title h1 {
     display:inline-block;

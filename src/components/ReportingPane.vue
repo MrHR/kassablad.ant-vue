@@ -1,9 +1,5 @@
 <template>
   <div class="reportingPaneWrapper">
-    <div>
-      datestring
-      {{ this.dateString }}
-    </div>
     <a-card
       :loading="loading"
       :tab-list="tabList"

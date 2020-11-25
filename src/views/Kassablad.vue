@@ -24,15 +24,21 @@
       <p v-if="visibleComponent === 'showOverview'">
         Deze tabel toont hoeveel munteenheden er in de kassa aanwezig zijn
       </p>
-      <h2 v-if="visibleComponent === 'createKassabladButton'">
+      <h2 v-if="visibleComponent === 'createKassabladButton' && visibleWrapper !== 'consumpiteWrapper'">
         Open de kassa
       </h2>
-      <p v-if="visibleComponent === 'createKassabladButton'">
-        Druk op de knop en start het dronken avontuur!
+      <h2 v-else-if="visibleComponent === 'createKassabladButton' && visibleWrapper === 'consumpiteWrapper'">
+        Comsumpties
+      </h2>
+      <p v-if="visibleComponent === 'createKassabladButton' && visibleWrapper !== 'consumpiteWrapper'">
+        {{ this.message }}
+      </p>
+      <p  v-else-if="visibleComponent === 'createKassabladButton' && visibleWrapper === 'consumpiteWrapper'">
+        Vul in wat je deze avond drinkt
       </p>
     </a-card>
     <div class="home">
-      <a-card class="card" :title="visibleWrapper === 'consumpiteWrapper' ? 'Consumpties' : ''">
+      <a-card class="card" :title="visibleWrapper === 'consumpiteWrapper' ? '' : ''">
         <KassabladSteps />
         <StartEvening />
         <EndEvening />
@@ -52,6 +58,22 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'Kassablad',
+  data () {
+    return {
+      leuzen: [
+        'Druk op de knop en start een beschonken avontuur!',
+        'Gaat ge u weeral de kop in zuipen? Bende marginale drankorgels!',
+        'Jepla terug een avondje bron! Olé Olé',
+        'En we gaan nog nie no huis, balenge nie, belange nie...',
+        'Gil is een hoer.',
+        'Druk op de knop en verzuip uw zorgen!',
+        'Druk op de knop en aanschouw het drankgelag',
+        'Druk op de knop en laat je meenemen naar de wondere wereld van het marginale Narnia',
+        'Druk op de knop en schijt jezelf onder',
+        '...draai nu rond als een gans zo gaat de kabouterdans...'
+      ]
+    }
+  },
   components: {
     StartEvening,
     EndEvening,
@@ -59,7 +81,15 @@ export default {
     KassabladSteps
   },
   computed: {
-    ...mapState(['visibleWrapper', 'visibleComponent'])
+    ...mapState(['visibleWrapper', 'visibleComponent']),
+    message () {
+      return this.leuzen[Math.floor(Math.random() * this.leuzen.length)]
+    }
+  },
+  methods: {
+    refreshLeuzen () {
+      this.message = this.leuzen[Math.floor(Math.random() * this.leuzen.length)]
+    }
   }
 }
 </script>

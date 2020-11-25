@@ -1,6 +1,7 @@
 <template>
   <div class="kassabladen_detail">
     <a-table
+      class="reportingTable"
       :columns="columns"
       :data-source="kassaData"
       :pagination="true"
@@ -22,7 +23,10 @@ export default {
 }
 </script>
 <style>
-.kassabladen_detail {
-  padding:40px;
+.reportingTable table {
+  font-size:0.9rem;
+}
+.reportingTable table td {
+  padding:4px;
 }
 </style>

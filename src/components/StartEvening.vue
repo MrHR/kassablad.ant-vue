@@ -259,7 +259,7 @@ export default {
       this.nextNomBool = false
     },
     linkCreateKassaContainer () {
-      this.createKassaContainer()
+      this.createKassaContainer({ kassaType: 'start', boolConcept: true })
       this.next('showNomination')
     },
     onSubmit () {

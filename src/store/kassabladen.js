@@ -201,13 +201,12 @@ export default {
     */
     createKassaContainer (
       { state, commit, rootState, dispatch },
-      kassaType,
-      boolConcept = true
+      { kassaType, boolConcept = true }
     ) {
       commit('SET_LOADING_STATUS', 'loading', { root: true })
       // Do this on start evening
       if (state.kassaContainer.id === 0) {
-        console.log('kassacontainer does not exit -> create one')
+        // console.log('kassacontainer does not exit -> create one')
         axios.post(`${rootState.controllerUrl}kassacontainer`, {
           beginUur: moment(state.kassaContainer.beginUur).format('YYYY-MM-DDTHH:mm:ss'),
           eindUur: moment(state.beginUur).add('4', 'hours').format('YYYY-MM-DDTHH:mm:ss'),
@@ -224,7 +223,6 @@ export default {
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
         })
       } else if (state.kassaContainer.id !== 0) { // do this when kassaContainer exits
-        // console.log('is not zero')
         axios.put(
           `${rootState.controllerUrl}kassacontainer/${state.kassaContainer.id}`,
           {
@@ -250,7 +248,7 @@ export default {
         ).then(response => {
           commit('SET_LOADING_STATUS', 'notLoading', { root: true })
           if (kassaType === 'end') { // makes endkassa if none exists
-            console.log('making endkassa')
+            // console.log('making endkassa')
             dispatch('createKassa', 'end')
           }
         }).catch(error => {
@@ -428,8 +426,7 @@ export default {
     saveFormSection ({ state, commit, rootState, dispatch }) {
       // call this to update/save the formsection we are in
       console.log('update kassaContainer', rootState.visibleWrapper, rootState.visibleComponent)
-      commit(
-        'kassabladen/SET_KASSACONTAINER_FORMSECTION',
+      commit('SET_KASSACONTAINER_FORMSECTION',
         `{ "visibleWrapper": ${rootState.visibleWrapper}, "visibleComponent": ${rootState.visibleComponent} }`
       )
       // execute this if kassaContainer to save formection to db

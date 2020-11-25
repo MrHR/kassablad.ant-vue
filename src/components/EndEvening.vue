@@ -305,9 +305,7 @@ export default {
     gotoNextNom (item) {
       if (this.formCount >= (this.kassaContainer.nominations.length - 1)) {
         this.next('showOverview')
-        // this.$refs.avondstartSubmitInput.click()
       } else {
-        // this.$refs.nextNom.$el.click()
         if (this.formCount < (this.kassaContainer.nominations.length - 1)) {
           this.formCount++
           this.nomFocus = true
@@ -316,12 +314,13 @@ export default {
       this.nextNomBool = false
     },
     tempCreateKassaContainer () {
-      this.createKassaContainer('end')
+      this.createKassaContainer({ kassaType: 'end', boolConcept: true })
       this.next('showNomination')
     },
     onSubmit () {
       this.$store.commit('SET_RESET_KASSACONTAINER', true)
-      this.createKassaContainer('end', false)
+      console.log('creating kassacontainer')
+      this.createKassaContainer({ kassaType: 'end', boolConcept: false })
       this.$store.dispatch('showWrapper', 'beginKassaWrapper')
       this.$store.dispatch('showComponent', 'createKassabladButton')
       this.$store.commit('kassabladen/RESET_KASSA_DATA')
