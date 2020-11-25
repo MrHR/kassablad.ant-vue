@@ -65,7 +65,7 @@ export default {
         'Gaat ge u weeral de kop in zuipen? Bende marginale drankorgels!',
         'Jepla terug een avondje bron! Olé Olé',
         'En we gaan nog nie no huis, balenge nie, belange nie...',
-        'Gil is een hoer.',
+        'Tom stinkt.',
         'Druk op de knop en verzuip uw zorgen!',
         'Druk op de knop en aanschouw het drankgelag',
         'Druk op de knop en laat je meenemen naar de wondere wereld van het marginale Narnia',

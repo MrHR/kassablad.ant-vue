@@ -1,7 +1,9 @@
 {
   "name": "kassablad.ant-vue",
   "version": "0.1.0",
+  "description": "Front-end UI for kassa app 't Bronneken",
   "private": true,
+  "author": {"name": "Ruben"},
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
