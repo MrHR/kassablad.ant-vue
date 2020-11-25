@@ -1,14 +1,21 @@
 {
   "name": "kassablad.ant-vue",
   "version": "0.1.0",
-  "description": "Front-end UI for kassa app 't Bronneken",
   "private": true,
-  "author": {"name": "Ruben"},
+  "description": "Front-end UI for kassa app 't Bronneken",
+  "author": {
+    "name": "Ruben"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "electron:build": "vue-cli-service electron:build",
+    "electron:serve": "vue-cli-service electron:serve",
+    "postinstall": "electron-builder install-app-deps",
+    "postuninstall": "electron-builder install-app-deps"
   },
+  "main": "background.js",
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
     "ant-design-vue": "^1.6.2",
@@ -36,6 +43,8 @@
     "@vue/cli-service": "^4.4.0",
     "@vue/eslint-config-standard": "^5.1.2",
     "babel-eslint": "^10.1.0",
+    "electron": "^9.0.0",
+    "electron-devtools-installer": "^3.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
@@ -44,6 +53,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
+    "vue-cli-plugin-electron-builder": "~2.0.0-rc.5",
     "vue-template-compiler": "^2.6.11"
   }
 }

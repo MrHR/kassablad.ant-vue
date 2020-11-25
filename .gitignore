@@ -23,3 +23,6 @@ pnpm-debug.log*
 
 # just ignore this
 TODO.md
+
+#Electron-builder output
+/dist_electron
