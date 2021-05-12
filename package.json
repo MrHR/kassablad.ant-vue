@@ -11,7 +11,7 @@
     "@ant-design/icons": "^4.2.1",
     "ant-design-vue": "^1.6.2",
     "axios": "^0.19.2",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "core-js": "^3.6.5",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
